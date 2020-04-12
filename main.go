@@ -25,7 +25,7 @@ func main() {
 	book.Create(db)
 
 	result, _ := book.FindByID(db, 1)
-	fmt.Println(result.Title, result.Isbn, result.Category.Name)
+	fmt.Println(result.Title, result.Isbn, result.Category.Name, result.Format.Name)
 
 	category := model.NewCategory("magazine")
 	category.Create(db)
