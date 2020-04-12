@@ -18,7 +18,7 @@ type Book struct {
 
 // NewBook is constructor
 func NewBook(title string, isbn string, category *Category, format *Format) *Book {
-	return &Book{Title: title, Isbn: isbn, Category: category}
+	return &Book{Title: title, Isbn: isbn, Category: category, Format: format}
 }
 
 // SetTitle is setter of Title
