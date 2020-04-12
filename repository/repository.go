@@ -7,7 +7,7 @@ import (
 // Relations is
 func Relations() func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		return db.Preload("Category")
+		return db.Preload("Category").Preload("Format")
 	}
 }
 

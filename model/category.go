@@ -20,6 +20,24 @@ func (c *Category) SetName(name string) {
 	c.Name = name
 }
 
+// FindByID is
+func (c *Category) FindByID(db *gorm.DB, id int) (*Category, error) {
+	var category Category
+	if error := db.Find(&category).Error; error != nil {
+		return nil, error
+	}
+	return &category, nil
+}
+
+// FindAll is
+func (c *Category) FindAll(db *gorm.DB) (*[]Category, error) {
+	var categories []Category
+	if error := db.Find(&categories).Error; error != nil {
+		return nil, error
+	}
+	return &categories, nil
+}
+
 // Create is
 func (c *Category) Create(db *gorm.DB) (*Category, error) {
 	if error := db.Create(c).Error; error != nil {

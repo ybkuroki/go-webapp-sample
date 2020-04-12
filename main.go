@@ -37,5 +37,6 @@ func initDB() *gorm.DB {
 	}
 	db.AutoMigrate(&model.Book{})
 	db.AutoMigrate(&model.Category{})
+	db.AutoMigrate(&model.Format{})
 	return db
 }
