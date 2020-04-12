@@ -12,10 +12,12 @@ type Book struct {
 	Isbn       string
 	CategoryID int
 	Category   *Category
+	FormatID   int
+	Format     *Format
 }
 
 // NewBook is constructor
-func NewBook(title string, isbn string, category *Category) *Book {
+func NewBook(title string, isbn string, category *Category, format *Format) *Book {
 	return &Book{Title: title, Isbn: isbn, Category: category}
 }
 
@@ -32,6 +34,11 @@ func (b *Book) SetIsbn(isbn string) {
 // SetCategory is setter of Category
 func (b *Book) SetCategory(category *Category) {
 	b.Category = category
+}
+
+// SetFormat is setter of Format
+func (b *Book) SetFormat(format *Format) {
+	b.Format = format
 }
 
 // FindByID is

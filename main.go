@@ -18,7 +18,10 @@ func main() {
 	c := model.NewCategory("technical")
 	c.Create(db)
 
-	book := model.NewBook("test", "123-123-1", c)
+	f := model.NewFormat("paper")
+	f.Create(db)
+
+	book := model.NewBook("test", "123-123-1", c, f)
 	book.Create(db)
 
 	result, _ := book.FindByID(db, 1)
