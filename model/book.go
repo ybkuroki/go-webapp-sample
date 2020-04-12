@@ -1,9 +1,8 @@
 package model
 
 import (
-	"github.com/ybkuroki/go-webapp-sample/repository"
-
 	"github.com/jinzhu/gorm"
+	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
 // Book is struct
@@ -38,7 +37,7 @@ func (b *Book) SetCategory(category *Category) {
 // FindByID is
 func (b *Book) FindByID(db *gorm.DB, id int) (*Book, error) {
 	var book Book
-	if error := db.Scopes(Relations(), ByID(id)).Find(&book).Error; error != nil {
+	if error := db.Scopes(repository.Relations(), repository.ByID(id)).Find(&book).Error; error != nil {
 		return nil, error
 	}
 	return &book, nil
@@ -47,7 +46,7 @@ func (b *Book) FindByID(db *gorm.DB, id int) (*Book, error) {
 // FindAll is
 func (b *Book) FindAll(db *gorm.DB) (*[]Book, error) {
 	var books []Book
-	if error := db.Scopes(Relations()).Find(&books).Error; error != nil {
+	if error := db.Scopes(repository.Relations()).Find(&books).Error; error != nil {
 		return nil, error
 	}
 	return &books, nil

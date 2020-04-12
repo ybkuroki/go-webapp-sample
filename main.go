@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/repository"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -16,16 +15,16 @@ import (
 func main() {
 	db := initDB()
 
-	c := NewCategory("technical")
+	c := model.NewCategory("technical")
 	c.Create(db)
 
-	book := NewBook("test", "123-123-1", c)
+	book := model.NewBook("test", "123-123-1", c)
 	book.Create(db)
 
 	result, _ := book.FindByID(db, 1)
 	fmt.Println(result.Title, result.Isbn, result.Category.Name)
 
-	category := NewCategory("magazine")
+	category := model.NewCategory("magazine")
 	category.Create(db)
 
 	defer db.Close()
@@ -36,7 +35,7 @@ func initDB() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&Book{})
-	db.AutoMigrate(&Category{})
+	db.AutoMigrate(&model.Book{})
+	db.AutoMigrate(&model.Category{})
 	return db
 }
