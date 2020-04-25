@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
-
+	"github.com/ybkuroki/go-webapp-sample/controller"
 	"github.com/ybkuroki/go-webapp-sample/model"
+
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite"
@@ -15,20 +17,29 @@ import (
 func main() {
 	db := initDB()
 
-	c := model.NewCategory("technical")
-	c.Create(db)
+	e := echo.New()
 
-	f := model.NewFormat("paper")
-	f.Create(db)
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	book := model.NewBook("test", "123-123-1", c, f)
-	book.Create(db)
+	e.GET("/book/list", controller.BookList(db))
 
-	result, _ := book.FindByID(db, 1)
-	fmt.Println(result.Title, result.Isbn, result.Category.Name, result.Format.Name)
+	e.Start(":8080")
 
-	category := model.NewCategory("magazine")
-	category.Create(db)
+	//c := model.NewCategory("technical")
+	//c.Create(db)
+
+	//f := model.NewFormat("paper")
+	//f.Create(db)
+
+	//book := model.NewBook("test", "123-123-1", c, f)
+	//book.Create(db)
+
+	//result, _ := book.FindByID(db, 1)
+	//fmt.Println(result.Title, result.Isbn, result.Category.Name, result.Format.Name)
+
+	//category := model.NewCategory("magazine")
+	//category.Create(db)
 
 	defer db.Close()
 }
