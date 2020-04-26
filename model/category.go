@@ -6,8 +6,8 @@ import (
 
 // Category is struct
 type Category struct {
-	gorm.Model
-	Name string
+	ID   uint   `gorm:"primary_key" json:"id"`
+	Name string `json:"name"`
 }
 
 // NewCategory is constructor

@@ -7,13 +7,13 @@ import (
 
 // Book is struct
 type Book struct {
-	gorm.Model
-	Title      string
-	Isbn       string
-	CategoryID int
-	Category   *Category
-	FormatID   int
-	Format     *Format
+	ID         uint      `gorm:"primary_key" json:"id"`
+	Title      string    `json:"title"`
+	Isbn       string    `json:"isbn"`
+	CategoryID uint      `json:"category_id"`
+	Category   *Category `json:"category"`
+	FormatID   uint      `json:"format_id"`
+	Format     *Format   `json:"format"`
 }
 
 // NewBook is constructor

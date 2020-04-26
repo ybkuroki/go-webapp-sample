@@ -4,8 +4,8 @@ import "github.com/jinzhu/gorm"
 
 // Format is struct
 type Format struct {
-	gorm.Model
-	Name string
+	ID   uint   `gorm:"primary_key" json:"id"`
+	Name string `json:"name"`
 }
 
 // NewFormat is constructor
