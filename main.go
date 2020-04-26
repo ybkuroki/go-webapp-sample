@@ -22,7 +22,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	e.GET("/book/list", controller.BookList(db))
+	e.GET("/book/list", controller.GetBookList(db))
 
 	e.Start(":8080")
 
