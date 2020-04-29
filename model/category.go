@@ -1,13 +1,15 @@
 package model
 
 import (
+	"encoding/json"
+
 	"github.com/jinzhu/gorm"
 )
 
 // Category is struct
 type Category struct {
-	gorm.Model
-	Name string
+	ID   uint   `gorm:"primary_key" json:"id"`
+	Name string `json:"name"`
 }
 
 // NewCategory is constructor
@@ -44,4 +46,10 @@ func (c *Category) Create(db *gorm.DB) (*Category, error) {
 		return nil, error
 	}
 	return c, nil
+}
+
+// ToString is return string of object
+func (c *Category) ToString() (string, error) {
+	bytes, error := json.Marshal(c)
+	return string(bytes), error
 }

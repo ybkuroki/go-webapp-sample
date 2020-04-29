@@ -1,11 +1,15 @@
 package model
 
-import "github.com/jinzhu/gorm"
+import (
+	"encoding/json"
+
+	"github.com/jinzhu/gorm"
+)
 
 // Format is struct
 type Format struct {
-	gorm.Model
-	Name string
+	ID   uint   `gorm:"primary_key" json:"id"`
+	Name string `json:"name"`
 }
 
 // NewFormat is constructor
@@ -42,4 +46,10 @@ func (f *Format) Create(db *gorm.DB) (*Format, error) {
 		return nil, error
 	}
 	return f, nil
+}
+
+// ToString is return string of object
+func (f *Format) ToString() (string, error) {
+	bytes, error := json.Marshal(f)
+	return string(bytes), error
 }
