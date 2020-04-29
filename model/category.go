@@ -1,6 +1,8 @@
 package model
 
 import (
+	"encoding/json"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -44,4 +46,10 @@ func (c *Category) Create(db *gorm.DB) (*Category, error) {
 		return nil, error
 	}
 	return c, nil
+}
+
+// ToString is return string of object
+func (c *Category) ToString() (string, error) {
+	bytes, error := json.Marshal(c)
+	return string(bytes), error
 }

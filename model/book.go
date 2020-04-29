@@ -1,6 +1,8 @@
 package model
 
 import (
+	"encoding/json"
+
 	"github.com/jinzhu/gorm"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
@@ -81,4 +83,10 @@ func (b *Book) Create(db *gorm.DB) (*Book, error) {
 		return nil, error
 	}
 	return b, nil
+}
+
+// ToString is return string of object
+func (b *Book) ToString() (string, error) {
+	bytes, error := json.Marshal(b)
+	return string(bytes), error
 }
