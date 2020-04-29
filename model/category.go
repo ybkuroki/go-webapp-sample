@@ -9,7 +9,7 @@ import (
 // Category is struct
 type Category struct {
 	ID   uint   `gorm:"primary_key" json:"id"`
-	Name string `json:"name"`
+	Name string `validate:"required" json:"name"`
 }
 
 // NewCategory is constructor
@@ -23,7 +23,7 @@ func (c *Category) SetName(name string) {
 }
 
 // FindByID is
-func (c *Category) FindByID(db *gorm.DB, id int) (*Category, error) {
+func (c *Category) FindByID(db *gorm.DB, id uint) (*Category, error) {
 	var category Category
 	if error := db.Find(&category).Error; error != nil {
 		return nil, error

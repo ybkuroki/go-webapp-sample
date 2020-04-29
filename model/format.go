@@ -9,7 +9,7 @@ import (
 // Format is struct
 type Format struct {
 	ID   uint   `gorm:"primary_key" json:"id"`
-	Name string `json:"name"`
+	Name string `validate:"required" json:"name"`
 }
 
 // NewFormat is constructor
@@ -23,7 +23,7 @@ func (f *Format) SetName(name string) {
 }
 
 // FindByID is
-func (f *Format) FindByID(db *gorm.DB, id int) (*Format, error) {
+func (f *Format) FindByID(db *gorm.DB, id uint) (*Format, error) {
 	var format Format
 	if error := db.Find(&format).Error; error != nil {
 		return nil, error

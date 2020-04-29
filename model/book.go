@@ -5,13 +5,14 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/ybkuroki/go-webapp-sample/repository"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 // Book is struct
 type Book struct {
 	ID         uint      `gorm:"primary_key" json:"id"`
-	Title      string    `json:"title"`
-	Isbn       string    `json:"isbn"`
+	Title      string    `validate:"required,gte=3,lt=50" json:"title"`
+	Isbn       string    `validate:"required,gte=10,lt=20" json:"isbn"`
 	CategoryID uint      `json:"category_id"`
 	Category   *Category `json:"category"`
 	FormatID   uint      `json:"format_id"`
@@ -89,4 +90,32 @@ func (b *Book) Create(db *gorm.DB) (*Book, error) {
 func (b *Book) ToString() (string, error) {
 	bytes, error := json.Marshal(b)
 	return string(bytes), error
+}
+
+// Validate is
+func (b *Book) Validate() map[string]string {
+	result := make(map[string]string)
+	err := validator.New().Struct(b)
+
+	if err != nil {
+		errors := err.(validator.ValidationErrors)
+		if len(errors) != 0 {
+			for i := range errors {
+				switch errors[i].StructField() {
+				case "Title":
+					switch errors[i].Tag() {
+					case "required", "min", "max":
+						result["Title"] = "3文字以上50文字以下で入力してください"
+					}
+				case "Isbn":
+					switch errors[i].Tag() {
+					case "required", "min", "max":
+						result["Isbn"] = "10文字以上20文字以下で入力してください"
+					}
+				}
+			}
+		}
+		return result
+	}
+	return nil
 }
