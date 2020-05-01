@@ -16,6 +16,7 @@ func InitDB() {
 	if err != nil {
 		panic(fmt.Sprintf("[Error]: %s", err))
 	}
+	db.LogMode(true)
 }
 
 // GetConnection is
