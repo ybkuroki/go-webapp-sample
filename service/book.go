@@ -16,19 +16,22 @@ func FindAllBooks() *[]model.Book {
 
 // RegisterBook is
 func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
-	db := repository.GetConnection()
-	book := dto.Create()
+	errors := dto.Validate()
 
-	category := model.Category{}
-	book.Category, _ = category.FindByID(db, dto.CategoryID)
-
-	format := model.Format{}
-	book.Format, _ = format.FindByID(db, dto.FormatID)
-
-	errors := book.Validate()
 	if errors != nil {
+		db := repository.GetConnection()
+		book := dto.Create()
+
+		category := model.Category{}
+		book.Category, _ = category.FindByID(db, dto.CategoryID)
+
+		format := model.Format{}
+		book.Format, _ = format.FindByID(db, dto.FormatID)
+
 		result, _ := book.Create(db)
+
 		return result, nil
 	}
+
 	return nil, errors
 }
