@@ -21,6 +21,9 @@ func Init() *echo.Echo {
 			echo.HeaderContentType,
 			echo.HeaderContentLength,
 			echo.HeaderAcceptEncoding,
+			echo.HeaderXCSRFToken,
+			echo.HeaderAuthorization,
+			"X-XSRF-TOKEN",
 		},
 		AllowMethods: []string{
 			http.MethodGet,
@@ -35,7 +38,13 @@ func Init() *echo.Echo {
 		book := api.Group("/book")
 		{
 			book.GET("/list", controller.GetBookList())
-			book.POST("/regist", controller.PostBookRegist())
+			book.POST("/new", controller.PostBookRegist())
+		}
+
+		master := api.Group("/master")
+		{
+			master.GET("/category", controller.GetCategoryList())
+			master.GET("/format", controller.GetFormatList())
 		}
 
 		account := api.Group("/account")

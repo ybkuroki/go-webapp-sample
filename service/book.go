@@ -18,7 +18,7 @@ func FindAllBooks() *[]model.Book {
 func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
-	if errors != nil {
+	if errors == nil {
 		db := repository.GetConnection()
 		book := dto.Create()
 
