@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"encoding/json"
+
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -9,8 +11,8 @@ import (
 type RegBookDto struct {
 	Title      string `validate:"required,gte=3,lt=50" json:"title"`
 	Isbn       string `validate:"required,gte=10,lt=20" json:"isbn"`
-	CategoryID uint   `json:"category_id"`
-	FormatID   uint   `json:"format_id"`
+	CategoryID uint   `json:"categoryId"`
+	FormatID   uint   `json:"formatId"`
 }
 
 // NewRegBookDto is
@@ -51,4 +53,10 @@ func (b *RegBookDto) Validate() map[string]string {
 		return result
 	}
 	return nil
+}
+
+// ToString is return string of object
+func (b *RegBookDto) ToString() (string, error) {
+	bytes, error := json.Marshal(b)
+	return string(bytes), error
 }

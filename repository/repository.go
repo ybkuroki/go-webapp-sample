@@ -32,7 +32,7 @@ func Relations() func(*gorm.DB) *gorm.DB {
 }
 
 // ByID is
-func ByID(id int) func(*gorm.DB) *gorm.DB {
+func ByID(id uint) func(*gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
 		return db.Where("id = ?", id)
 	}

@@ -14,6 +14,14 @@ func FindAllBooks() *[]model.Book {
 	return result
 }
 
+// FindAllBooksByPage is
+func FindAllBooksByPage(page int, size int) *model.PageDto {
+	db := repository.GetConnection()
+	book := model.Book{}
+	result, _ := book.FindAllByPage(db, page, size)
+	return result
+}
+
 // RegisterBook is
 func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()

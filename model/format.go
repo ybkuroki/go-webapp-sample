@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/jinzhu/gorm"
+	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
 // Format is struct
@@ -25,7 +26,7 @@ func (f *Format) SetName(name string) {
 // FindByID is
 func (f *Format) FindByID(db *gorm.DB, id uint) (*Format, error) {
 	var format Format
-	if error := db.Find(&format).Error; error != nil {
+	if error := db.Scopes(repository.ByID(id)).Find(&format).Error; error != nil {
 		return nil, error
 	}
 	return &format, nil

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
@@ -11,7 +12,10 @@ import (
 // GetBookList is
 func GetBookList() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, service.FindAllBooks())
+		page, _ := strconv.Atoi(c.QueryParam("page"))
+		size, _ := strconv.Atoi(c.QueryParam("size"))
+
+		return c.JSON(http.StatusOK, service.FindAllBooksByPage(page, size))
 	}
 }
 
