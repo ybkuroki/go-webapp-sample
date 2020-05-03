@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"math"
 
-	"github.com/jinzhu/gorm"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
@@ -24,46 +23,26 @@ func NewBook(title string, isbn string, category *Category, format *Format) *Boo
 	return &Book{Title: title, Isbn: isbn, Category: category, Format: format}
 }
 
-// SetTitle is setter of Title
-func (b *Book) SetTitle(title string) {
-	b.Title = title
-}
-
-// SetIsbn is setter of Isbn
-func (b *Book) SetIsbn(isbn string) {
-	b.Isbn = isbn
-}
-
-// SetCategory is setter of Category
-func (b *Book) SetCategory(category *Category) {
-	b.Category = category
-}
-
-// SetFormat is setter of Format
-func (b *Book) SetFormat(format *Format) {
-	b.Format = format
-}
-
 // FindByID is
-func (b *Book) FindByID(db *gorm.DB, id uint) (*Book, error) {
+func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
 	var book Book
-	if error := db.Scopes(repository.Relations(), repository.ByID(id)).Find(&book).Error; error != nil {
+	if error := rep.Preload("Category").Preload("Format").Where("id = ?", id).Find(&book).Error; error != nil {
 		return nil, error
 	}
 	return &book, nil
 }
 
 // FindAll is
-func (b *Book) FindAll(db *gorm.DB) (*[]Book, error) {
+func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 	var books []Book
-	if error := db.Scopes(repository.Relations()).Find(&books).Error; error != nil {
+	if error := rep.Preload("Category").Preload("Format").Find(&books).Error; error != nil {
 		return nil, error
 	}
 	return &books, nil
 }
 
 // FindAllByPage is
-func (b *Book) FindAllByPage(db *gorm.DB, page int, size int) (*PageDto, error) {
+func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*PageDto, error) {
 	var books []Book
 
 	pagedto := NewPageDto()
@@ -71,10 +50,10 @@ func (b *Book) FindAllByPage(db *gorm.DB, page int, size int) (*PageDto, error) 
 	pagedto.Size = size
 	pagedto.NumberOfElements = pagedto.Size
 
-	db.Scopes(repository.Relations()).Find(&books).Count(&pagedto.TotalElements)
+	rep.Preload("Category").Preload("Format").Find(&books).Count(&pagedto.TotalElements)
 	pagedto.TotalPages = int(math.Ceil(float64(pagedto.TotalElements) / float64(pagedto.Size)))
 
-	if error := db.Scopes(repository.Relations()).Offset(page * pagedto.Size).Limit(size).Find(&books).Error; error != nil {
+	if error := rep.Preload("Category").Preload("Format").Offset(page * pagedto.Size).Limit(size).Find(&books).Error; error != nil {
 		return nil, error
 	}
 
@@ -83,24 +62,24 @@ func (b *Book) FindAllByPage(db *gorm.DB, page int, size int) (*PageDto, error) 
 }
 
 // Save is
-func (b *Book) Save(db *gorm.DB) (*Book, error) {
-	if error := db.Save(b).Error; error != nil {
+func (b *Book) Save(rep *repository.Repository) (*Book, error) {
+	if error := rep.Save(b).Error; error != nil {
 		return nil, error
 	}
 	return b, nil
 }
 
 // Update is
-func (b *Book) Update(db *gorm.DB) (*Book, error) {
-	if error := db.Update(b).Error; error != nil {
+func (b *Book) Update(rep *repository.Repository) (*Book, error) {
+	if error := rep.Update(b).Error; error != nil {
 		return nil, error
 	}
 	return b, nil
 }
 
 // Create is
-func (b *Book) Create(db *gorm.DB) (*Book, error) {
-	if error := db.Create(b).Error; error != nil {
+func (b *Book) Create(rep *repository.Repository) (*Book, error) {
+	if error := rep.Create(b).Error; error != nil {
 		return nil, error
 	}
 	return b, nil

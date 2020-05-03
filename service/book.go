@@ -8,17 +8,17 @@ import (
 
 // FindAllBooks is
 func FindAllBooks() *[]model.Book {
-	db := repository.GetConnection()
+	rep := repository.GetRepository()
 	book := model.Book{}
-	result, _ := book.FindAll(db)
+	result, _ := book.FindAll(rep)
 	return result
 }
 
 // FindAllBooksByPage is
 func FindAllBooksByPage(page int, size int) *model.PageDto {
-	db := repository.GetConnection()
+	rep := repository.GetRepository()
 	book := model.Book{}
-	result, _ := book.FindAllByPage(db, page, size)
+	result, _ := book.FindAllByPage(rep, page, size)
 	return result
 }
 
@@ -27,16 +27,16 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
-		db := repository.GetConnection()
+		rep := repository.GetRepository()
 		book := dto.Create()
 
 		category := model.Category{}
-		book.Category, _ = category.FindByID(db, dto.CategoryID)
+		book.Category, _ = category.FindByID(rep, dto.CategoryID)
 
 		format := model.Format{}
-		book.Format, _ = format.FindByID(db, dto.FormatID)
+		book.Format, _ = format.FindByID(rep, dto.FormatID)
 
-		result, _ := book.Create(db)
+		result, _ := book.Create(rep)
 
 		return result, nil
 	}

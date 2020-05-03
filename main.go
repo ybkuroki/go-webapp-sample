@@ -8,7 +8,7 @@ import (
 
 func main() {
 	repository.InitDB()
-	db := repository.GetConnection()
+	db := repository.GetDB()
 
 	// TODO: switch the following processing by environment
 	common.InitMasterData()

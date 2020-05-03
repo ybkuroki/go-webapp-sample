@@ -7,16 +7,16 @@ import (
 
 // FindAllCategories is
 func FindAllCategories() *[]model.Category {
-	db := repository.GetConnection()
+	rep := repository.GetRepository()
 	category := model.Category{}
-	result, _ := category.FindAll(db)
+	result, _ := category.FindAll(rep)
 	return result
 }
 
 // FindAllFormats is
 func FindAllFormats() *[]model.Format {
-	db := repository.GetConnection()
+	rep := repository.GetRepository()
 	format := model.Format{}
-	result, _ := format.FindAll(db)
+	result, _ := format.FindAll(rep)
 	return result
 }

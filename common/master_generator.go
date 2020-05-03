@@ -7,7 +7,7 @@ import (
 
 // InitMasterData is
 func InitMasterData() {
-	db := repository.GetConnection()
+	db := repository.GetDB()
 
 	db.DropTableIfExists(&model.Book{})
 	db.DropTableIfExists(&model.Category{})
@@ -17,15 +17,17 @@ func InitMasterData() {
 	db.AutoMigrate(&model.Category{})
 	db.AutoMigrate(&model.Format{})
 
+	rep := repository.GetRepository()
+
 	c := model.NewCategory("技術書")
-	c.Create(db)
+	c.Create(rep)
 	c = model.NewCategory("雑誌")
-	c.Create(db)
+	c.Create(rep)
 	c = model.NewCategory("小説")
-	c.Create(db)
+	c.Create(rep)
 
 	f := model.NewFormat("書籍")
-	f.Create(db)
+	f.Create(rep)
 	f = model.NewFormat("電子書籍")
-	f.Create(db)
+	f.Create(rep)
 }

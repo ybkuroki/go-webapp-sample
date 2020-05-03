@@ -3,7 +3,6 @@ package model
 import (
 	"encoding/json"
 
-	"github.com/jinzhu/gorm"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
@@ -24,26 +23,26 @@ func (f *Format) SetName(name string) {
 }
 
 // FindByID is
-func (f *Format) FindByID(db *gorm.DB, id uint) (*Format, error) {
+func (f *Format) FindByID(rep *repository.Repository, id uint) (*Format, error) {
 	var format Format
-	if error := db.Scopes(repository.ByID(id)).Find(&format).Error; error != nil {
+	if error := rep.Where("id = ?", id).Find(&format).Error; error != nil {
 		return nil, error
 	}
 	return &format, nil
 }
 
 // FindAll is
-func (f *Format) FindAll(db *gorm.DB) (*[]Format, error) {
+func (f *Format) FindAll(rep *repository.Repository) (*[]Format, error) {
 	var formats []Format
-	if error := db.Find(&formats).Error; error != nil {
+	if error := rep.Find(&formats).Error; error != nil {
 		return nil, error
 	}
 	return &formats, nil
 }
 
 // Create is
-func (f *Format) Create(db *gorm.DB) (*Format, error) {
-	if error := db.Create(f).Error; error != nil {
+func (f *Format) Create(rep *repository.Repository) (*Format, error) {
+	if error := rep.Create(f).Error; error != nil {
 		return nil, error
 	}
 	return f, nil
