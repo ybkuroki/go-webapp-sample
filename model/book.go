@@ -44,7 +44,30 @@ func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 // FindAllByPage is
 func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*Page, error) {
 	var books []Book
+	p := createPage(rep, &books, page, size)
 
+	if error := rep.Preload("Category").Preload("Format").Offset(page * p.Size).Limit(size).Find(&books).Error; error != nil {
+		return nil, error
+	}
+
+	p.Content = &books
+	return p, nil
+}
+
+// FindByTitle is
+func (b *Book) FindByTitle(rep *repository.Repository, title string, page int, size int) (*Page, error) {
+	var books []Book
+	p := createPage(rep, &books, page, size)
+
+	if error := rep.Preload("Category").Preload("Format").Where("title LIKE ?", "%"+title+"%").Offset(page * p.Size).Limit(size).Find(&books).Error; error != nil {
+		return nil, error
+	}
+
+	p.Content = &books
+	return p, nil
+}
+
+func createPage(rep *repository.Repository, books *[]Book, page int, size int) *Page {
 	p := NewPage()
 	p.Page = page
 	p.Size = size
@@ -53,12 +76,7 @@ func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*P
 	rep.Preload("Category").Preload("Format").Find(&books).Count(&p.TotalElements)
 	p.TotalPages = int(math.Ceil(float64(p.TotalElements) / float64(p.Size)))
 
-	if error := rep.Preload("Category").Preload("Format").Offset(page * p.Size).Limit(size).Find(&books).Error; error != nil {
-		return nil, error
-	}
-
-	p.Content = &books
-	return p, nil
+	return p
 }
 
 // Save is
@@ -80,6 +98,14 @@ func (b *Book) Update(rep *repository.Repository) (*Book, error) {
 // Create is
 func (b *Book) Create(rep *repository.Repository) (*Book, error) {
 	if error := rep.Create(b).Error; error != nil {
+		return nil, error
+	}
+	return b, nil
+}
+
+// Delete is
+func (b *Book) Delete(rep *repository.Repository) (*Book, error) {
+	if error := rep.Delete(b).Error; error != nil {
 		return nil, error
 	}
 	return b, nil

@@ -17,11 +17,6 @@ func NewFormat(name string) *Format {
 	return &Format{Name: name}
 }
 
-// SetName is setter of Name
-func (f *Format) SetName(name string) {
-	f.Name = name
-}
-
 // FindByID is
 func (f *Format) FindByID(rep *repository.Repository, id uint) (*Format, error) {
 	var format Format

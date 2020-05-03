@@ -38,7 +38,10 @@ func Init() *echo.Echo {
 		book := api.Group("/book")
 		{
 			book.GET("/list", controller.GetBookList())
+			book.GET("/search", controller.GetBookSearch())
 			book.POST("/new", controller.PostBookRegist())
+			book.POST("/edit", controller.PostBookEdit())
+			book.POST("/delete", controller.PostBookDelete())
 		}
 
 		master := api.Group("/master")

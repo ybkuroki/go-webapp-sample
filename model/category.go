@@ -17,11 +17,6 @@ func NewCategory(name string) *Category {
 	return &Category{Name: name}
 }
 
-// SetName is setter of Name
-func (c *Category) SetName(name string) {
-	c.Name = name
-}
-
 // FindByID is
 func (c *Category) FindByID(rep *repository.Repository, id uint) (*Category, error) {
 	var category Category
