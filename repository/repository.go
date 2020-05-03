@@ -7,46 +7,85 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // indirect
 )
 
-var db *gorm.DB
-var err error
+// Repository is struct
+type Repository struct {
+	db *gorm.DB
+}
+
+var rep *Repository
 
 // InitDB is
 func InitDB() {
-	db, err = gorm.Open("sqlite3", "book.db")
+	db, err := gorm.Open("sqlite3", "book.db")
 	if err != nil {
 		panic(fmt.Sprintf("[Error]: %s", err))
 	}
+	db.LogMode(true)
+	rep = &Repository{}
+	rep.db = db
 }
 
-// GetConnection is
-func GetConnection() *gorm.DB {
-	return db
+// GetRepository is
+func GetRepository() *Repository {
+	return rep
 }
 
-// Relations is
-func Relations() func(*gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Preload("Category").Preload("Format")
-	}
+// GetDB is
+func GetDB() *gorm.DB {
+	return rep.db
 }
 
-// ByID is
-func ByID(id int) func(*gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Where("id = ?", id)
-	}
+// Find is
+func (rep *Repository) Find(out interface{}, where ...interface{}) *gorm.DB {
+	return rep.db.Find(out, where...)
 }
 
-// ByName is
-func ByName(name string) func(*gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Where("name LIKE ?", "%"+name+"%")
-	}
+// Exec is
+func (rep *Repository) Exec(sql string, values ...interface{}) *gorm.DB {
+	return rep.db.Exec(sql, values...)
 }
 
-// ByTitle is
-func ByTitle(title string) func(*gorm.DB) *gorm.DB {
-	return func(db *gorm.DB) *gorm.DB {
-		return db.Where("title LIKE ?", "%"+title+"%")
-	}
+// First is
+func (rep *Repository) First(out interface{}, where ...interface{}) *gorm.DB {
+	return rep.db.First(out, where...)
+}
+
+// Raw is
+func (rep *Repository) Raw(sql string, values ...interface{}) *gorm.DB {
+	return rep.db.Raw(sql, values...)
+}
+
+// Create is
+func (rep *Repository) Create(value interface{}) *gorm.DB {
+	return rep.db.Create(value)
+}
+
+// Save is
+func (rep *Repository) Save(value interface{}) *gorm.DB {
+	return rep.db.Save(value)
+}
+
+// Update is
+func (rep *Repository) Update(value interface{}) *gorm.DB {
+	return rep.db.Update(value)
+}
+
+// Delete is
+func (rep *Repository) Delete(value interface{}) *gorm.DB {
+	return rep.db.Delete(value)
+}
+
+// Where is
+func (rep *Repository) Where(query interface{}, args ...interface{}) *gorm.DB {
+	return rep.db.Where(query, args...)
+}
+
+// Preload is
+func (rep *Repository) Preload(column string, conditions ...interface{}) *gorm.DB {
+	return rep.db.Preload(column, conditions...)
+}
+
+// Scopes is
+func (rep *Repository) Scopes(funcs ...func(*gorm.DB) *gorm.DB) *gorm.DB {
+	return rep.db.Scopes(funcs...)
 }
