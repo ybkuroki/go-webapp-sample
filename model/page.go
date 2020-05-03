@@ -1,7 +1,7 @@
 package model
 
-// PageDto is
-type PageDto struct {
+// Page is
+type Page struct {
 	Content          *[]Book `json:"content"`
 	Last             bool    `json:"last"`
 	TotalElements    int     `json:"totalElements"`
@@ -11,7 +11,7 @@ type PageDto struct {
 	NumberOfElements int     `json:"numberOfElements"`
 }
 
-// NewPageDto is constructor
-func NewPageDto() *PageDto {
-	return &PageDto{}
+// NewPage is constructor
+func NewPage() *Page {
+	return &Page{}
 }

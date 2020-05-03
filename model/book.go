@@ -42,23 +42,23 @@ func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 }
 
 // FindAllByPage is
-func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*PageDto, error) {
+func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*Page, error) {
 	var books []Book
 
-	pagedto := NewPageDto()
-	pagedto.Page = page
-	pagedto.Size = size
-	pagedto.NumberOfElements = pagedto.Size
+	p := NewPage()
+	p.Page = page
+	p.Size = size
+	p.NumberOfElements = p.Size
 
-	rep.Preload("Category").Preload("Format").Find(&books).Count(&pagedto.TotalElements)
-	pagedto.TotalPages = int(math.Ceil(float64(pagedto.TotalElements) / float64(pagedto.Size)))
+	rep.Preload("Category").Preload("Format").Find(&books).Count(&p.TotalElements)
+	p.TotalPages = int(math.Ceil(float64(p.TotalElements) / float64(p.Size)))
 
-	if error := rep.Preload("Category").Preload("Format").Offset(page * pagedto.Size).Limit(size).Find(&books).Error; error != nil {
+	if error := rep.Preload("Category").Preload("Format").Offset(page * p.Size).Limit(size).Find(&books).Error; error != nil {
 		return nil, error
 	}
 
-	pagedto.Content = &books
-	return pagedto, nil
+	p.Content = &books
+	return p, nil
 }
 
 // Save is

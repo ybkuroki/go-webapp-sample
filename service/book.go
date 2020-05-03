@@ -15,7 +15,7 @@ func FindAllBooks() *[]model.Book {
 }
 
 // FindAllBooksByPage is
-func FindAllBooksByPage(page int, size int) *model.PageDto {
+func FindAllBooksByPage(page int, size int) *model.Page {
 	rep := repository.GetRepository()
 	book := model.Book{}
 	result, _ := book.FindAllByPage(rep, page, size)
