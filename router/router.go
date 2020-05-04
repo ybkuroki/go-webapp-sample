@@ -55,6 +55,8 @@ func Init() *echo.Echo {
 			account.GET("/loginStatus", controller.GetLoginStatus())
 			account.GET("/loginAccount", controller.GetLoginAccount())
 		}
+
+		api.GET("/health", controller.GetHealthCheck())
 	}
 
 	return e

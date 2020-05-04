@@ -16,6 +16,12 @@ func GetLoginStatus() echo.HandlerFunc {
 // GetLoginAccount is
 func GetLoginAccount() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, "{name: test}")
+		return c.JSON(http.StatusOK, &Account{ID: 1, Name: "test"})
 	}
+}
+
+// Account is struct (TODO)
+type Account struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
 }
