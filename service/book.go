@@ -36,15 +36,28 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 
 	if errors == nil {
 		rep := repository.GetRepository()
-		book := dto.Create()
+		var result *model.Book
 
-		category := model.Category{}
-		book.Category, _ = category.FindByID(rep, dto.CategoryID)
+		rep.Transaction(func(txrep *repository.Repository) error {
+			var err error
+			book := dto.Create()
 
-		format := model.Format{}
-		book.Format, _ = format.FindByID(rep, dto.FormatID)
+			category := model.Category{}
+			if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
+				return err
+			}
 
-		result, _ := book.Create(rep)
+			format := model.Format{}
+			if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
+				return err
+			}
+
+			if result, err = book.Create(txrep); err != nil {
+				return err
+			}
+
+			return nil
+		})
 
 		return result, nil
 	}
@@ -58,19 +71,36 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 
 	if errors == nil {
 		rep := repository.GetRepository()
-		b := model.Book{}
-		book, _ := b.FindByID(rep, dto.ID)
+		var result *model.Book
 
-		book.Title = dto.Title
-		book.Isbn = dto.Isbn
+		rep.Transaction(func(txrep *repository.Repository) error {
+			var err error
+			var book *model.Book
 
-		category := model.Category{}
-		book.Category, _ = category.FindByID(rep, dto.CategoryID)
+			b := model.Book{}
+			if book, err = b.FindByID(txrep, dto.ID); err != nil {
+				return err
+			}
 
-		format := model.Format{}
-		book.Format, _ = format.FindByID(rep, dto.FormatID)
+			book.Title = dto.Title
+			book.Isbn = dto.Isbn
 
-		result, _ := book.Save(rep)
+			category := model.Category{}
+			if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
+				return err
+			}
+
+			format := model.Format{}
+			if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
+				return err
+			}
+
+			if result, err = book.Save(txrep); err != nil {
+				return err
+			}
+
+			return nil
+		})
 
 		return result, nil
 	}
@@ -84,10 +114,23 @@ func DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 
 	if errors == nil {
 		rep := repository.GetRepository()
-		b := model.Book{}
-		book, _ := b.FindByID(rep, dto.ID)
+		var result *model.Book
 
-		result, _ := book.Delete(rep)
+		rep.Transaction(func(txrep *repository.Repository) error {
+			var err error
+			var book *model.Book
+
+			b := model.Book{}
+			if book, err = b.FindByID(txrep, dto.ID); err != nil {
+				return nil
+			}
+
+			if result, err = book.Delete(txrep); err != nil {
+				return nil
+			}
+
+			return nil
+		})
 
 		return result, nil
 	}

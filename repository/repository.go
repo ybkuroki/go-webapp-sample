@@ -89,3 +89,26 @@ func (rep *Repository) Preload(column string, conditions ...interface{}) *gorm.D
 func (rep *Repository) Scopes(funcs ...func(*gorm.DB) *gorm.DB) *gorm.DB {
 	return rep.db.Scopes(funcs...)
 }
+
+// Transaction is
+// ref: https://github.com/jinzhu/gorm/blob/master/main.go#L533
+func (rep *Repository) Transaction(fc func(tx *Repository) error) (err error) {
+	panicked := true
+	tx := rep.db.Begin()
+	defer func() {
+		if panicked || err != nil {
+			tx.Rollback()
+		}
+	}()
+
+	txrep := &Repository{}
+	txrep.db = tx
+	err = fc(txrep)
+
+	if err == nil {
+		err = tx.Commit().Error
+	}
+
+	panicked = false
+	return
+}
