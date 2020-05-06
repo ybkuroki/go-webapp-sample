@@ -1,0 +1,11 @@
+database:
+  dialect: sqlite3
+  host:  book.db
+  port:
+  dbnmae: 
+  username: 
+  password: 
+  migration: true
+
+extension:
+  master_generator: true

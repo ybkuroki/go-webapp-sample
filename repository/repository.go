@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // indirect
+	"github.com/ybkuroki/go-webapp-sample/config"
 )
 
 // Repository is struct
@@ -16,7 +17,7 @@ var rep *Repository
 
 // InitDB is
 func InitDB() {
-	db, err := gorm.Open("sqlite3", "book.db")
+	db, err := gorm.Open(config.Config.Database.Dialect, config.Config.Database.Host)
 	if err != nil {
 		panic(fmt.Sprintf("[Error]: %s", err))
 	}

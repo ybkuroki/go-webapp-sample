@@ -2,11 +2,14 @@ package main
 
 import (
 	"github.com/ybkuroki/go-webapp-sample/common"
+	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"github.com/ybkuroki/go-webapp-sample/router"
 )
 
 func main() {
+	config.Load()
+
 	repository.InitDB()
 	db := repository.GetDB()
 
