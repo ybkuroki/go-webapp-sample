@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/sqlite" // indirect
+	"github.com/ybkuroki/go-webapp-sample/config"
 )
 
 // Repository is struct
@@ -14,9 +15,27 @@ type Repository struct {
 
 var rep *Repository
 
+const (
+	// SQLITE represents SQLite3
+	SQLITE = "sqlite3"
+	// POSTGRES represents PostgreSQL
+	POSTGRES = "postgres"
+	// MYSQL represents MySQL
+	MYSQL = "mysql"
+)
+
+func getConnection(config *config.Config) string {
+	if config.Database.Dialect == POSTGRES {
+		return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s", config.Database.Host, config.Database.Port, config.Database.Username, config.Database.Dbname, config.Database.Password)
+	} else if config.Database.Dialect == MYSQL {
+		return fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local", config.Database.Username, config.Database.Password, config.Database.Host, config.Database.Dbname)
+	}
+	return config.Database.Host
+}
+
 // InitDB is
 func InitDB() {
-	db, err := gorm.Open("sqlite3", "book.db")
+	db, err := gorm.Open(config.GetConfig().Database.Dialect, getConnection(config.GetConfig()))
 	if err != nil {
 		panic(fmt.Sprintf("[Error]: %s", err))
 	}
