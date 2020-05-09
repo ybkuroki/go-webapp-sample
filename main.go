@@ -16,7 +16,7 @@ func main() {
 	migration.CreateDatabase(config.GetConfig())
 	migration.InitMasterData(config.GetConfig())
 
-	router := router.Init()
+	router := router.Init(config.GetConfig())
 	router.Start(":8080")
 
 	defer db.Close()

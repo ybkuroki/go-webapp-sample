@@ -9,3 +9,4 @@ database:
 
 extension:
   master_generator: true
+  cors_enabled: true

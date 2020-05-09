@@ -7,7 +7,7 @@ import (
 	"github.com/jinzhu/configor"
 )
 
-// Config is struct
+// Config represents the composition of yml settings.
 type Config struct {
 	Database struct {
 		Dialect   string `default:"sqlite3"`
@@ -16,10 +16,11 @@ type Config struct {
 		Dbname    string
 		Username  string
 		Password  string
-		Migration bool `default:"true"`
+		Migration bool `default:"false"`
 	}
 	Extension struct {
-		MasterGenerator bool `default:"true"`
+		MasterGenerator bool `yaml:"master_generator" default:"false"`
+		CorsEnabled     bool `yaml:"cors_enabled" default:"false"`
 	}
 }
 
@@ -35,21 +36,22 @@ const (
 var config *Config
 var env *string
 
-// Load is
+// Load reads the settings written to the yml file
 func Load() {
 	env = flag.String("env", "develop", "To switch configurations.")
 	flag.Parse()
 	config = &Config{}
 	configor.Load(config, "application."+*env+".yml")
 	fmt.Println("Loaded this configuration : " + "application." + *env + ".yml")
+	fmt.Println(*config)
 }
 
-// GetConfig is
+// GetConfig returns the configuration data.
 func GetConfig() *Config {
 	return config
 }
 
-// GetEnv is
+// GetEnv returns the environment variable.
 func GetEnv() *string {
 	return env
 }
