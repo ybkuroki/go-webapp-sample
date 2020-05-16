@@ -1,0 +1,12 @@
+database:
+  dialect: postgres
+  host: postgres-db
+  port: 5432
+  dbnmae: testdb
+  username: testusr
+  password: testusr
+  migration: false
+
+extension:
+  master_generator: false
+  cors_enabled: false
