@@ -2,7 +2,7 @@ database:
   dialect: postgres
   host: postgres-db
   port: 5432
-  dbnmae: testdb
+  dbname: testdb
   username: testusr
   password: testusr
   migration: false

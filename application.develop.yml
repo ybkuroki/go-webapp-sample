@@ -2,7 +2,7 @@ database:
   dialect: sqlite3
   host:  book.db
   port:
-  dbnmae: 
+  dbname: 
   username: 
   password: 
   migration: true

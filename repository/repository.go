@@ -4,7 +4,8 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite" // indirect
+	_ "github.com/jinzhu/gorm/dialects/postgres" // indirect
+	_ "github.com/jinzhu/gorm/dialects/sqlite"   // indirect
 	"github.com/ybkuroki/go-webapp-sample/config"
 )
 
@@ -26,7 +27,7 @@ const (
 
 func getConnection(config *config.Config) string {
 	if config.Database.Dialect == POSTGRES {
-		return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s", config.Database.Host, config.Database.Port, config.Database.Username, config.Database.Dbname, config.Database.Password)
+		return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", config.Database.Host, config.Database.Port, config.Database.Username, config.Database.Dbname, config.Database.Password)
 	} else if config.Database.Dialect == MYSQL {
 		return fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local", config.Database.Username, config.Database.Password, config.Database.Host, config.Database.Dbname)
 	}
