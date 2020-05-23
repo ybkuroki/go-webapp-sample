@@ -7,13 +7,14 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/controller"
+	"github.com/ybkuroki/go-webapp-sample/logger"
 )
 
 // Init is
 func Init(config *config.Config) *echo.Echo {
 	e := echo.New()
 
-	e.Use(middleware.Logger())
+	logger.InitLogger(e)
 
 	if config.Extension.CorsEnabled {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
