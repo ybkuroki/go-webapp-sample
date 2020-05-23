@@ -43,7 +43,6 @@ func Load() {
 	config = &Config{}
 	configor.Load(config, "application."+*env+".yml")
 	fmt.Println("Loaded this configuration : " + "application." + *env + ".yml")
-	fmt.Println(*config)
 }
 
 // GetConfig returns the configuration data.
