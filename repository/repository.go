@@ -6,7 +6,9 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // indirect
 	_ "github.com/jinzhu/gorm/dialects/sqlite"   // indirect
+	"github.com/labstack/echo"
 	"github.com/ybkuroki/go-webapp-sample/config"
+	"github.com/ybkuroki/go-webapp-sample/logger"
 )
 
 // Repository is struct
@@ -35,12 +37,13 @@ func getConnection(config *config.Config) string {
 }
 
 // InitDB is
-func InitDB() {
+func InitDB(elog echo.Logger) {
 	db, err := gorm.Open(config.GetConfig().Database.Dialect, getConnection(config.GetConfig()))
 	if err != nil {
 		panic(fmt.Sprintf("[Error]: %s", err))
 	}
 	db.LogMode(true)
+	db.SetLogger(logger.NewLogger(elog))
 	rep = &Repository{}
 	rep.db = db
 }

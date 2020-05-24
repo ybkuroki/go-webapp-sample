@@ -7,15 +7,10 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/controller"
-	"github.com/ybkuroki/go-webapp-sample/logger"
 )
 
 // Init is
-func Init(config *config.Config) *echo.Echo {
-	e := echo.New()
-
-	logger.InitLogger(e)
-
+func Init(e *echo.Echo, config *config.Config) {
 	if config.Extension.CorsEnabled {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 			AllowCredentials: true,
@@ -64,6 +59,4 @@ func Init(config *config.Config) *echo.Echo {
 
 		api.GET("/health", controller.GetHealthCheck())
 	}
-
-	return e
 }
