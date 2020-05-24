@@ -32,6 +32,7 @@ func Init(e *echo.Echo, config *config.Config) {
 		}))
 	}
 
+	e.HTTPErrorHandler = controller.JSONErrorHandler
 	e.Use(middleware.Recover())
 
 	api := e.Group("/api")
