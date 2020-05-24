@@ -12,6 +12,11 @@ type Category struct {
 	Name string `validate:"required" json:"name"`
 }
 
+// TableName is
+func (Category) TableName() string {
+	return "category_master"
+}
+
 // NewCategory is constructor
 func NewCategory(name string) *Category {
 	return &Category{Name: name}

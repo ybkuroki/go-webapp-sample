@@ -10,11 +10,7 @@ import (
 )
 
 // Init is
-func Init(config *config.Config) *echo.Echo {
-	e := echo.New()
-
-	e.Use(middleware.Logger())
-
+func Init(e *echo.Echo, config *config.Config) {
 	if config.Extension.CorsEnabled {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 			AllowCredentials: true,
@@ -36,6 +32,7 @@ func Init(config *config.Config) *echo.Echo {
 		}))
 	}
 
+	e.HTTPErrorHandler = controller.JSONErrorHandler
 	e.Use(middleware.Recover())
 
 	api := e.Group("/api")
@@ -63,6 +60,4 @@ func Init(config *config.Config) *echo.Echo {
 
 		api.GET("/health", controller.GetHealthCheck())
 	}
-
-	return e
 }

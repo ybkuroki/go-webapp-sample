@@ -18,6 +18,11 @@ type Book struct {
 	Format     *Format   `json:"format"`
 }
 
+// TableName is
+func (Book) TableName() string {
+	return "book"
+}
+
 // NewBook is constructor
 func NewBook(title string, isbn string, category *Category, format *Format) *Book {
 	return &Book{Title: title, Isbn: isbn, Category: category, Format: format}

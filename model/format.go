@@ -12,6 +12,11 @@ type Format struct {
 	Name string `validate:"required" json:"name"`
 }
 
+// TableName is
+func (Format) TableName() string {
+	return "format_master"
+}
+
 // NewFormat is constructor
 func NewFormat(name string) *Format {
 	return &Format{Name: name}

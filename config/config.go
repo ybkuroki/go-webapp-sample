@@ -2,9 +2,9 @@ package config
 
 import (
 	"flag"
-	"fmt"
 
 	"github.com/jinzhu/configor"
+	"github.com/labstack/echo/v4"
 )
 
 // Config represents the composition of yml settings.
@@ -37,13 +37,12 @@ var config *Config
 var env *string
 
 // Load reads the settings written to the yml file
-func Load() {
+func Load(elog echo.Logger) {
 	env = flag.String("env", "develop", "To switch configurations.")
 	flag.Parse()
 	config = &Config{}
 	configor.Load(config, "application."+*env+".yml")
-	fmt.Println("Loaded this configuration : " + "application." + *env + ".yml")
-	fmt.Println(*config)
+	elog.Info("Loaded this configuration : " + "application." + *env + ".yml")
 }
 
 // GetConfig returns the configuration data.
