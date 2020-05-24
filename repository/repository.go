@@ -6,7 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // indirect
 	_ "github.com/jinzhu/gorm/dialects/sqlite"   // indirect
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/logger"
 )
