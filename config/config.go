@@ -4,7 +4,7 @@ import (
 	"flag"
 
 	"github.com/jinzhu/configor"
-	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 )
 
 // Config represents the composition of yml settings.
@@ -22,6 +22,11 @@ type Config struct {
 		MasterGenerator bool `yaml:"master_generator" default:"false"`
 		CorsEnabled     bool `yaml:"cors_enabled" default:"false"`
 	}
+	Log struct {
+		Format   string  `default:"${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}"`
+		Level    log.Lvl `default:"log.INFO"`
+		FilePath string  `yaml:"file_path"`
+	}
 }
 
 const (
@@ -37,12 +42,11 @@ var config *Config
 var env *string
 
 // Load reads the settings written to the yml file
-func Load(elog echo.Logger) {
+func Load() {
 	env = flag.String("env", "develop", "To switch configurations.")
 	flag.Parse()
 	config = &Config{}
 	configor.Load(config, "application."+*env+".yml")
-	elog.Info("Loaded this configuration : " + "application." + *env + ".yml")
 }
 
 // GetConfig returns the configuration data.

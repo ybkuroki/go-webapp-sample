@@ -12,8 +12,9 @@ import (
 func main() {
 	e := echo.New()
 
-	logger.InitLogger(e)
-	config.Load(e.Logger)
+	config.Load()
+	logger.InitLogger(e, config.GetConfig())
+	e.Logger.Info("Loaded this configuration : application." + *config.GetEnv() + ".yml")
 
 	repository.InitDB(e.Logger)
 	db := repository.GetDB()
