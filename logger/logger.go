@@ -3,6 +3,8 @@ package logger
 import (
 	"database/sql/driver"
 	"fmt"
+	"io"
+	"os"
 	"reflect"
 	"regexp"
 	"strings"
@@ -11,37 +13,44 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/labstack/gommon/log"
-)
-
-const (
-	logFormat = "${time_rfc3339} [${level}] ${host} ${method} ${uri} ${status}"
+	"github.com/ybkuroki/go-webapp-sample/config"
 )
 
 // InitLogger initialize logger.
-func InitLogger(e *echo.Echo) {
+func InitLogger(e *echo.Echo, config *config.Config) {
 	// logging for each request.
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: strings.Replace(logFormat, "${level}", "INFO", 1) + "\n",
+		Format: strings.Replace(config.Log.Format, "${level}", "INFO", 1) + "\n",
 	}))
 	// logging for the start and end of controller processes.
 	// ref: https://echo.labstack.com/guide/customization
 	e.Use(MyLoggerMiddleware)
 
 	// set logformat for echo logger.
-	e.Logger.SetHeader(logFormat)
-	e.Logger.SetLevel(log.DEBUG)
+	e.Logger.SetHeader(config.Log.Format)
+	e.Logger.SetLevel(config.Log.Level)
+
+	// if the log file exists, write both console and the log file.
+	if config.Log.FilePath != "" {
+		logfile, err := os.OpenFile(config.Log.FilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 066)
+		if err != nil {
+			panic("Cannot open the log file. Please check this file path. Path: " + config.Log.FilePath + ", Error: " + err.Error())
+		}
+		defer logfile.Close()
+
+		e.Logger.SetOutput(io.MultiWriter(logfile, os.Stdout))
+	}
 }
 
 // MyLoggerMiddleware is middleware for logging the start and end of controller processes.
 // ref: https://echo.labstack.com/cookbook/middleware
 func MyLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		c.Logger().Info("Controller Action Start")
+		c.Logger().Debug(c.Path() + " Action Start")
 		if err := next(c); err != nil {
 			c.Error(err)
 		}
-		c.Logger().Info("Controller Action End")
+		c.Logger().Debug(c.Path() + " Action End")
 		return nil
 	}
 }
@@ -71,7 +80,7 @@ func (l *Logger) Print(values ...interface{}) {
 func (l *Logger) Println(values []interface{}) {
 	sql := createLog(values)
 	if sql != "" {
-		l.logger.Info(sql)
+		l.logger.Debug(sql)
 	}
 }
 
