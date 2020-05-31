@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	logFormat = "${time_rfc3339} [${level}] ${host} ${method} ${uri} ${status}"
+	logFormat = "${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}"
 )
 
 // InitLogger initialize logger.
@@ -37,11 +37,11 @@ func InitLogger(e *echo.Echo) {
 // ref: https://echo.labstack.com/cookbook/middleware
 func MyLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		c.Logger().Info("Controller Action Start")
+		c.Logger().Debug(c.Path() + " Action Start")
 		if err := next(c); err != nil {
 			c.Error(err)
 		}
-		c.Logger().Info("Controller Action End")
+		c.Logger().Debug(c.Path() + " Action End")
 		return nil
 	}
 }
@@ -71,7 +71,7 @@ func (l *Logger) Print(values ...interface{}) {
 func (l *Logger) Println(values []interface{}) {
 	sql := createLog(values)
 	if sql != "" {
-		l.logger.Info(sql)
+		l.logger.Debug(sql)
 	}
 }
 
