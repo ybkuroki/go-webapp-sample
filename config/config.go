@@ -2,6 +2,7 @@ package config
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/jinzhu/configor"
 	"github.com/labstack/gommon/log"
@@ -24,7 +25,7 @@ type Config struct {
 	}
 	Log struct {
 		Format   string  `default:"${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}"`
-		Level    log.Lvl `default:"log.INFO"`
+		Level    log.Lvl `default:"2"`
 		FilePath string  `yaml:"file_path"`
 	}
 }
@@ -46,7 +47,9 @@ func Load() {
 	env = flag.String("env", "develop", "To switch configurations.")
 	flag.Parse()
 	config = &Config{}
-	configor.Load(config, "application."+*env+".yml")
+	if err := configor.Load(config, "application."+*env+".yml"); err != nil {
+		fmt.Println(err)
+	}
 }
 
 // GetConfig returns the configuration data.

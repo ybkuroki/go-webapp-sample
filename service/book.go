@@ -38,7 +38,7 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 		rep := repository.GetRepository()
 		var result *model.Book
 
-		rep.Transaction(func(txrep *repository.Repository) error {
+		_ = rep.Transaction(func(txrep *repository.Repository) error {
 			var err error
 			book := dto.Create()
 
@@ -73,7 +73,7 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		rep := repository.GetRepository()
 		var result *model.Book
 
-		rep.Transaction(func(txrep *repository.Repository) error {
+		_ = rep.Transaction(func(txrep *repository.Repository) error {
 			var err error
 			var book *model.Book
 
@@ -116,7 +116,7 @@ func DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		rep := repository.GetRepository()
 		var result *model.Book
 
-		rep.Transaction(func(txrep *repository.Repository) error {
+		_ = rep.Transaction(func(txrep *repository.Repository) error {
 			var err error
 			var book *model.Book
 

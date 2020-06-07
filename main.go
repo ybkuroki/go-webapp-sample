@@ -23,7 +23,9 @@ func main() {
 	migration.InitMasterData(config.GetConfig())
 
 	router.Init(e, config.GetConfig())
-	e.Start(":8080")
+	if err := e.Start(":8080"); err != nil {
+		e.Logger.Error(err)
+	}
 
 	defer db.Close()
 }

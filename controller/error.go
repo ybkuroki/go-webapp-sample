@@ -30,7 +30,9 @@ func JSONErrorHandler(err error, c echo.Context) {
 	apierr.Message = msg
 
 	if !c.Response().Committed {
-		c.JSON(code, apierr)
+		if err := c.JSON(code, apierr); err != nil {
+			c.Logger().Error(err)
+		}
 	}
 	c.Logger().Debug(err)
 }
