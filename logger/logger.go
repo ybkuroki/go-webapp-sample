@@ -16,6 +16,28 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/config"
 )
 
+var logger *Logger
+
+// Logger is an alternative implementation of *gorm.Logger
+type Logger struct {
+	elogger echo.Logger
+}
+
+// GetLogger is return Logger
+func GetLogger() *Logger {
+	return logger
+}
+
+// GetEchoLogger is return echo's logger
+func GetEchoLogger() echo.Logger {
+	return logger.elogger
+}
+
+// NewLogger create logger object for *gorm.DB from *echo.Logger
+func newLogger(elog echo.Logger) *Logger {
+	return &Logger{elogger: elog}
+}
+
 // InitLogger initialize logger.
 func InitLogger(e *echo.Echo, config *config.Config) {
 	// logging for each request.
@@ -40,6 +62,9 @@ func InitLogger(e *echo.Echo, config *config.Config) {
 
 		e.Logger.SetOutput(io.MultiWriter(logfile, os.Stdout))
 	}
+
+	// set package varriable logger.
+	logger = newLogger(e.Logger)
 }
 
 // MyLoggerMiddleware is middleware for logging the start and end of controller processes.
@@ -61,16 +86,6 @@ func MyLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 // ref: https://github.com/jinzhu/gorm/blob/master/logger.go
 // ===============================================================
 
-// Logger is an alternative implementation of *gorm.Logger
-type Logger struct {
-	logger echo.Logger
-}
-
-// NewLogger create logger object for *gorm.DB from *echo.Logger
-func NewLogger(elog echo.Logger) *Logger {
-	return &Logger{logger: elog}
-}
-
 // Print passes arguments to Println
 func (l *Logger) Print(values ...interface{}) {
 	l.Println(values)
@@ -80,7 +95,7 @@ func (l *Logger) Print(values ...interface{}) {
 func (l *Logger) Println(values []interface{}) {
 	sql := createLog(values)
 	if sql != "" {
-		l.logger.Debug(sql)
+		l.elogger.Debug(sql)
 	}
 }
 

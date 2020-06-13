@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
 	"github.com/ybkuroki/go-webapp-sample/repository"
@@ -10,7 +11,11 @@ import (
 func FindAllBooks() *[]model.Book {
 	rep := repository.GetRepository()
 	book := model.Book{}
-	result, _ := book.FindAll(rep)
+	result, err := book.FindAll(rep)
+	if err != nil {
+		logger.GetEchoLogger().Error(err.Error)
+		return nil
+	}
 	return result
 }
 
@@ -18,7 +23,11 @@ func FindAllBooks() *[]model.Book {
 func FindAllBooksByPage(page int, size int) *model.Page {
 	rep := repository.GetRepository()
 	book := model.Book{}
-	result, _ := book.FindAllByPage(rep, page, size)
+	result, err := book.FindAllByPage(rep, page, size)
+	if err != nil {
+		logger.GetEchoLogger().Error(err.Error)
+		return nil
+	}
 	return result
 }
 
@@ -26,7 +35,11 @@ func FindAllBooksByPage(page int, size int) *model.Page {
 func FindBooksByTitle(title string, page int, size int) *model.Page {
 	rep := repository.GetRepository()
 	book := model.Book{}
-	result, _ := book.FindByTitle(rep, title, page, size)
+	result, err := book.FindByTitle(rep, title, page, size)
+	if err != nil {
+		logger.GetEchoLogger().Error(err.Error)
+		return nil
+	}
 	return result
 }
 
@@ -38,7 +51,7 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 		rep := repository.GetRepository()
 		var result *model.Book
 
-		_ = rep.Transaction(func(txrep *repository.Repository) error {
+		err := rep.Transaction(func(txrep *repository.Repository) error {
 			var err error
 			book := dto.Create()
 
@@ -59,6 +72,11 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 			return nil
 		})
 
+		if err != nil {
+			logger.GetEchoLogger().Error(err.Error)
+			return nil, map[string]string{"error": "transaction error"}
+		}
+
 		return result, nil
 	}
 
@@ -73,7 +91,7 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		rep := repository.GetRepository()
 		var result *model.Book
 
-		_ = rep.Transaction(func(txrep *repository.Repository) error {
+		err := rep.Transaction(func(txrep *repository.Repository) error {
 			var err error
 			var book *model.Book
 
@@ -102,6 +120,11 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 			return nil
 		})
 
+		if err != nil {
+			logger.GetEchoLogger().Error(err.Error)
+			return nil, map[string]string{"error": "transaction error"}
+		}
+
 		return result, nil
 	}
 
@@ -116,21 +139,26 @@ func DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		rep := repository.GetRepository()
 		var result *model.Book
 
-		_ = rep.Transaction(func(txrep *repository.Repository) error {
+		err := rep.Transaction(func(txrep *repository.Repository) error {
 			var err error
 			var book *model.Book
 
 			b := model.Book{}
 			if book, err = b.FindByID(txrep, dto.ID); err != nil {
-				return nil
+				return err
 			}
 
 			if result, err = book.Delete(txrep); err != nil {
-				return nil
+				return err
 			}
 
 			return nil
 		})
+
+		if err != nil {
+			logger.GetEchoLogger().Error(err.Error)
+			return nil, map[string]string{"error": "transaction error"}
+		}
 
 		return result, nil
 	}
