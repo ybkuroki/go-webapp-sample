@@ -1,4 +1,4 @@
-name: Workflow for Golang
+name: check
 
 on:
   push:

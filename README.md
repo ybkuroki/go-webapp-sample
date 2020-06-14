@@ -38,7 +38,10 @@ The follwing figure is the map of this sample project.
 
 ```
 - go-webapp-sample
-  + common                  … Provide a common service of this system.
+  + config                  … Define configurations of this system.
+  + logger                  … Provide loggers.
+  + migration               … Provide database migration service for development.
+  + router                  … Define routing.
   + controller              … Define controllers.
   + model                   … Define models.
   + repository              … Provide a service of database access.

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
@@ -9,7 +10,11 @@ import (
 func FindAllCategories() *[]model.Category {
 	rep := repository.GetRepository()
 	category := model.Category{}
-	result, _ := category.FindAll(rep)
+	result, err := category.FindAll(rep)
+	if err != nil {
+		logger.GetEchoLogger().Error(err.Error)
+		return nil
+	}
 	return result
 }
 
@@ -17,6 +22,10 @@ func FindAllCategories() *[]model.Category {
 func FindAllFormats() *[]model.Format {
 	rep := repository.GetRepository()
 	format := model.Format{}
-	result, _ := format.FindAll(rep)
+	result, err := format.FindAll(rep)
+	if err != nil {
+		logger.GetEchoLogger().Error(err.Error)
+		return nil
+	}
 	return result
 }

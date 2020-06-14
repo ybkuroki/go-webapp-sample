@@ -16,7 +16,7 @@ func main() {
 	logger.InitLogger(e, config.GetConfig())
 	e.Logger.Info("Loaded this configuration : application." + *config.GetEnv() + ".yml")
 
-	repository.InitDB(e.Logger)
+	repository.InitDB()
 	db := repository.GetDB()
 
 	migration.CreateDatabase(config.GetConfig())
