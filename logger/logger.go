@@ -58,7 +58,6 @@ func InitLogger(e *echo.Echo, config *config.Config) {
 		if err != nil {
 			panic("Cannot open the log file. Please check this file path. Path: " + config.Log.FilePath + ", Error: " + err.Error())
 		}
-		defer logfile.Close()
 
 		e.Logger.SetOutput(io.MultiWriter(logfile, os.Stdout))
 	}
