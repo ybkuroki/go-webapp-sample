@@ -1,10 +1,15 @@
 # go-webapp-sample
 
+![license](https://img.shields.io/github/license/ybkuroki/go-webapp-sample?style=for-the-badge)
+![workflow](https://img.shields.io/github/workflow/status/ybkuroki/go-webapp-sample/check?label=check&style=for-the-badge&logo=github)
+![release](https://img.shields.io/github/release/ybkuroki/go-webapp-sample?style=for-the-badge&logo=github)
+
 ## Preface
 This sample project uses [Echo](https://echo.labstack.com/) and [Gorm](https://gorm.io/) written by [Golang](https://golang.org/). It provides only Web API. So, I recommend using a [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project as Web UI.
 
 ## Install
 Perform the following steps:
+1. Download and install [MinGW(gcc)](https://sourceforge.net/projects/mingw-w64/files/?source=navbar).
 1. Download and install [Visual Studio Code(VS Code)](https://code.visualstudio.com/).
 1. Download and install [Golang](https://golang.org/).
 1. Get the source code of this repository by the following command.
