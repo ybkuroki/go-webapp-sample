@@ -48,7 +48,7 @@ func Load() {
 	flag.Parse()
 	config = &Config{}
 	if err := configor.Load(config, "application."+*env+".yml"); err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error)
 	}
 }
 

@@ -1,4 +1,4 @@
-package test
+package controller
 
 import (
 	"net/http"
@@ -6,10 +6,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
 func TestGetHealthCheck(t *testing.T) {
-	router := Prepare()
+	router := test.Prepare()
+	router.GET("/api/health", GetHealthCheck())
 
 	req := httptest.NewRequest("GET", "/api/health", nil)
 	rec := httptest.NewRecorder()
