@@ -14,10 +14,14 @@ import (
 func Prepare() *echo.Echo {
 	e := echo.New()
 
-	config.Load()
-	config.GetConfig().Database.Host = "file::memory:?cache=shared"
-	config.GetConfig().Database.Migration = true
-	config.GetConfig().Extension.MasterGenerator = true
+	conf := &config.Config{}
+	conf.Database.Dialect = "sqlite3"
+	conf.Database.Host = "file::memory:?cache=shared"
+	conf.Database.Migration = true
+	conf.Extension.MasterGenerator = true
+	conf.Log.Format = "${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}"
+	conf.Log.Level = 1
+	config.SetConfig(conf)
 
 	logger.InitLogger(e, config.GetConfig())
 
