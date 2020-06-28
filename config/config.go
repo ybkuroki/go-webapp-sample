@@ -57,6 +57,11 @@ func GetConfig() *Config {
 	return config
 }
 
+// SetConfig sets configuration data.
+func SetConfig(conf *Config) {
+	config = conf
+}
+
 // GetEnv returns the environment variable.
 func GetEnv() *string {
 	return env
