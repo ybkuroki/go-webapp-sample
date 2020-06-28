@@ -11,9 +11,9 @@ import (
 
 func TestGetHealthCheck(t *testing.T) {
 	router := test.Prepare()
-	router.GET("/api/health", GetHealthCheck())
+	router.GET(APIHealth, GetHealthCheck())
 
-	req := httptest.NewRequest("GET", "/api/health", nil)
+	req := httptest.NewRequest("GET", APIHealth, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)

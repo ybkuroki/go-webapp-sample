@@ -11,9 +11,9 @@ import (
 
 func TestGetLoginStatus(t *testing.T) {
 	router := test.Prepare()
-	router.GET("/api/account/loginStatus", GetLoginStatus())
+	router.GET(APIAccountLoginStatus, GetLoginStatus())
 
-	req := httptest.NewRequest("GET", "/api/account/loginStatus", nil)
+	req := httptest.NewRequest("GET", APIAccountLoginStatus, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -24,9 +24,9 @@ func TestGetLoginStatus(t *testing.T) {
 
 func TestGetLoginAccount(t *testing.T) {
 	router := test.Prepare()
-	router.GET("/api/account/loginAccount", GetLoginAccount())
+	router.GET(APIAccountLoginAccount, GetLoginAccount())
 
-	req := httptest.NewRequest("GET", "/api/account/loginAccount", nil)
+	req := httptest.NewRequest("GET", APIAccountLoginAccount, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)

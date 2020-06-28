@@ -10,8 +10,8 @@ import (
 )
 
 // Init is
-func Init(e *echo.Echo, config *config.Config) {
-	if config.Extension.CorsEnabled {
+func Init(e *echo.Echo, conf *config.Config) {
+	if conf.Extension.CorsEnabled {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 			AllowCredentials: true,
 			AllowOrigins:     []string{"*"},
@@ -35,29 +35,18 @@ func Init(e *echo.Echo, config *config.Config) {
 	e.HTTPErrorHandler = controller.JSONErrorHandler
 	e.Use(middleware.Recover())
 
-	api := e.Group("/api")
-	{
-		book := api.Group("/book")
-		{
-			book.GET("/list", controller.GetBookList())
-			book.GET("/search", controller.GetBookSearch())
-			book.POST("/new", controller.PostBookRegist())
-			book.POST("/edit", controller.PostBookEdit())
-			book.POST("/delete", controller.PostBookDelete())
-		}
+	e.GET(controller.APIBookList, controller.GetBookList())
+	e.GET(controller.APIBookSearch, controller.GetBookSearch())
+	e.POST(controller.APIBookRegist, controller.PostBookRegist())
+	e.POST(controller.APIBookEdit, controller.PostBookEdit())
+	e.POST(controller.APIBookDelete, controller.PostBookDelete())
 
-		master := api.Group("/master")
-		{
-			master.GET("/category", controller.GetCategoryList())
-			master.GET("/format", controller.GetFormatList())
-		}
+	e.GET(controller.APIMasterCategory, controller.GetCategoryList())
+	e.GET(controller.APIMasterFormat, controller.GetFormatList())
 
-		account := api.Group("/account")
-		{
-			account.GET("/loginStatus", controller.GetLoginStatus())
-			account.GET("/loginAccount", controller.GetLoginAccount())
-		}
+	e.GET(controller.APIAccountLoginStatus, controller.GetLoginStatus())
+	e.GET(controller.APIAccountLoginAccount, controller.GetLoginAccount())
 
-		api.GET("/health", controller.GetHealthCheck())
-	}
+	e.GET(controller.APIHealth, controller.GetHealthCheck())
+
 }
