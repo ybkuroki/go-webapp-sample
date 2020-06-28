@@ -123,7 +123,7 @@ func setUpTestData() {
 		Format:     &model.Format{ID: 1, Name: "書籍"},
 	}
 	repo := repository.GetRepository()
-	model.Save(repo)
+	_, _ = model.Save(repo)
 }
 
 func createRegDto() *dto.RegBookDto {
