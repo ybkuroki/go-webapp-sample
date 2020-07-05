@@ -33,6 +33,10 @@ const (
 	APIAccountLoginStatus = APIAccount + "/loginStatus"
 	// APIAccountLoginAccount is
 	APIAccountLoginAccount = APIAccount + "/loginAccount"
+	// APIAccountLogin is
+	APIAccountLogin = APIAccount + "/login"
+	// APIAccountLogout is
+	APIAccountLogout = APIAccount + "/logout"
 )
 
 const (

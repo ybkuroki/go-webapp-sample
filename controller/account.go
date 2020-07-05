@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/ybkuroki/go-webapp-sample/model"
+	session "github.com/ybkuroki/go-webapp-sample/session"
 )
 
 // GetLoginStatus is
@@ -16,12 +18,29 @@ func GetLoginStatus() echo.HandlerFunc {
 // GetLoginAccount is
 func GetLoginAccount() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, &Account{ID: 1, Name: "test"})
+		return c.JSON(http.StatusOK, &model.Account{ID: 1, Name: "test"})
 	}
 }
 
-// Account is struct (TODO)
-type Account struct {
-	ID   uint   `json:"id"`
-	Name string `json:"name"`
+// PostLogin is
+func PostLogin() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		account := session.GetAccount(c)
+		if session.GetAccount(c) == nil {
+			a := &model.Account{ID: 1, Name: "test"}
+			_ = session.SetAccount(c, a)
+			_ = session.Save(c)
+			return c.JSON(http.StatusOK, a)
+		}
+		return c.JSON(http.StatusOK, account)
+	}
+}
+
+// PostLogout is
+func PostLogout() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		_ = session.SetAccount(c, nil)
+		_ = session.Save(c)
+		return c.NoContent(http.StatusOK)
+	}
 }

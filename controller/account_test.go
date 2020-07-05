@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
@@ -32,5 +33,5 @@ func TestGetLoginAccount(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.JSONEq(t, test.ConvertToString(&Account{ID: 1, Name: "test"}), rec.Body.String())
+	assert.JSONEq(t, test.ConvertToString(&model.Account{ID: 1, Name: "test"}), rec.Body.String())
 }
