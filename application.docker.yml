@@ -10,8 +10,15 @@ database:
 extension:
   master_generator: false
   cors_enabled: false
+  security_enabled: true
 
 log:
   format: ${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}
   level: 2
   file_path: ./application.log
+
+security:
+  exclude_path:
+    - /api/account/login
+    - /api/account/logout
+    - /api/health

@@ -22,11 +22,15 @@ type Config struct {
 	Extension struct {
 		MasterGenerator bool `yaml:"master_generator" default:"false"`
 		CorsEnabled     bool `yaml:"cors_enabled" default:"false"`
+		SecurityEnabled bool `yaml:"security_enabled" default:"false"`
 	}
 	Log struct {
 		Format   string  `default:"${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}"`
 		Level    log.Lvl `default:"2"`
 		FilePath string  `yaml:"file_path"`
+	}
+	Security struct {
+		ExculdePath []string `yaml:"exclude_path"`
 	}
 }
 

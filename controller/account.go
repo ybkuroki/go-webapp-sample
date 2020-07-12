@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/model"
-	session "github.com/ybkuroki/go-webapp-sample/session"
+	"github.com/ybkuroki/go-webapp-sample/service"
+	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
 // GetLoginStatus is
@@ -18,19 +18,25 @@ func GetLoginStatus() echo.HandlerFunc {
 // GetLoginAccount is
 func GetLoginAccount() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, &model.Account{ID: 1, Name: "test"})
+		return c.JSON(http.StatusOK, session.GetAccount(c))
 	}
 }
 
 // PostLogin is
 func PostLogin() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		username := c.FormValue("username")
+		password := c.FormValue("password")
+
 		account := session.GetAccount(c)
-		if session.GetAccount(c) == nil {
-			a := &model.Account{ID: 1, Name: "test"}
-			_ = session.SetAccount(c, a)
-			_ = session.Save(c)
-			return c.JSON(http.StatusOK, a)
+		if account == nil {
+			authenticate, a := service.AuthenticateByUsernameAndPassword(username, password)
+			if authenticate == true {
+				_ = session.SetAccount(c, a)
+				_ = session.Save(c)
+				return c.JSON(http.StatusOK, a)
+			}
+			return c.NoContent(http.StatusUnauthorized)
 		}
 		return c.JSON(http.StatusOK, account)
 	}

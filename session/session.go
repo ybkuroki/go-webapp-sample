@@ -7,14 +7,53 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
+	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/model"
 )
 
 const (
+	// sessionStr represents a string of session key.
 	sessionStr = "GSESSION"
 	// Account is the key of account data in the session.
 	Account = "Account"
 )
+
+// Init initalize session authentication.
+func Init(e *echo.Echo, conf *config.Config) {
+	if conf.Extension.SecurityEnabled {
+		e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+		e.Use(AuthenticationMiddleware(conf))
+	}
+}
+
+// AuthenticationMiddleware is the middleware of session authentication for echo.
+func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			if isExcludePath(c.Path(), conf.Security.ExculdePath) == false {
+				account := GetAccount(c)
+				if account == nil {
+					return c.JSON(http.StatusUnauthorized, false)
+				}
+				_ = Save(c)
+			}
+			if err := next(c); err != nil {
+				c.Error(err)
+			}
+			return nil
+		}
+	}
+}
+
+// isExcludePath judges whether a given path is exclude path.
+func isExcludePath(cpath string, paths []string) bool {
+	for i := range paths {
+		if cpath == paths[i] {
+			return true
+		}
+	}
+	return false
+}
 
 // Get returns a session for the current request.
 func Get(c echo.Context) *sessions.Session {
@@ -27,7 +66,6 @@ func Save(c echo.Context) error {
 	sess := Get(c)
 	sess.Options = &sessions.Options{
 		Path:     "/",
-		MaxAge:   86400 * 7,
 		HttpOnly: true,
 	}
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
@@ -50,9 +88,10 @@ func SetValue(c echo.Context, key string, value interface{}) error {
 // GetValue returns value of session.
 func GetValue(c echo.Context, key string) string {
 	sess := Get(c)
-	v, _ := sess.Values[key]
-	if v != nil {
-		return v.(string)
+	v := sess.Values[key]
+	data, result := v.(string)
+	if result == true && data != "null" {
+		return data
 	}
 	return ""
 }
