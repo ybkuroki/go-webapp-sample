@@ -3,6 +3,7 @@ package session
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
@@ -30,12 +31,8 @@ func Init(e *echo.Echo, conf *config.Config) {
 func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			if isExcludePath(c.Path(), conf.Security.ExculdePath) == false {
-				account := GetAccount(c)
-				if account == nil {
-					return c.JSON(http.StatusUnauthorized, false)
-				}
-				_ = Save(c)
+			if hasAuthorization(c, conf) == false {
+				return c.JSON(http.StatusUnauthorized, false)
 			}
 			if err := next(c); err != nil {
 				c.Error(err)
@@ -45,10 +42,31 @@ func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
 	}
 }
 
-// isExcludePath judges whether a given path is exclude path.
-func isExcludePath(cpath string, paths []string) bool {
+// hasAuthorization judges whether the user has the right to access the path.
+func hasAuthorization(c echo.Context, conf *config.Config) bool {
+	currentPath := c.Path()
+	if equalPath(currentPath, conf.Security.ExculdePath) {
+		return true
+	}
+	account := GetAccount(c)
+	if account == nil {
+		return false
+	}
+	if account.Authority.Name == "Admin" && equalPath(currentPath, conf.Security.AdminPath) {
+		_ = Save(c)
+		return true
+	}
+	if account.Authority.Name == "User" && equalPath(currentPath, conf.Security.UserPath) {
+		_ = Save(c)
+		return true
+	}
+	return false
+}
+
+// equalPath judges whether a given path contains in the path list.
+func equalPath(cpath string, paths []string) bool {
 	for i := range paths {
-		if cpath == paths[i] {
+		if regexp.MustCompile(paths[i]).Match([]byte(cpath)) {
 			return true
 		}
 	}

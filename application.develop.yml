@@ -19,6 +19,13 @@ log:
 
 security:
   exclude_path:
-    - /api/account/login
-    - /api/account/logout
-    - /api/health
+    - /api/account/login$
+    - /api/account/logout$
+    - /api/health$
+  user_path:
+    - /api/account/.*
+    - /api/master/.*
+    - /api/book/list
+    - /api/book/search.*
+  admin_path:
+    - /api/.*
