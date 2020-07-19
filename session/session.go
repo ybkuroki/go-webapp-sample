@@ -31,7 +31,7 @@ func Init(e *echo.Echo, conf *config.Config) {
 func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			if hasAuthorization(c, conf) == false {
+			if !hasAuthorization(c, conf) {
 				return c.JSON(http.StatusUnauthorized, false)
 			}
 			if err := next(c); err != nil {
@@ -108,7 +108,7 @@ func GetValue(c echo.Context, key string) string {
 	sess := Get(c)
 	v := sess.Values[key]
 	data, result := v.(string)
-	if result == true && data != "null" {
+	if result && data != "null" {
 		return data
 	}
 	return ""
@@ -124,7 +124,7 @@ func GetAccount(c echo.Context) *model.Account {
 	v := GetValue(c, Account)
 	if v != "" {
 		a := &model.Account{}
-		json.Unmarshal([]byte(v), a)
+		_ = json.Unmarshal([]byte(v), a)
 		return a
 	}
 	return nil

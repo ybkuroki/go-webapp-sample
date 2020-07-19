@@ -46,8 +46,11 @@ func Init(e *echo.Echo, conf *config.Config) {
 
 	e.GET(controller.APIAccountLoginStatus, controller.GetLoginStatus())
 	e.GET(controller.APIAccountLoginAccount, controller.GetLoginAccount())
-	e.POST(controller.APIAccountLogin, controller.PostLogin())
-	e.POST(controller.APIAccountLogout, controller.PostLogout())
+
+	if conf.Extension.SecurityEnabled {
+		e.POST(controller.APIAccountLogin, controller.PostLogin())
+		e.POST(controller.APIAccountLogout, controller.PostLogout())
+	}
 
 	e.GET(controller.APIHealth, controller.GetHealthCheck())
 
