@@ -11,6 +11,11 @@ func InitMasterData(config *config.Config) {
 	if config.Extension.MasterGenerator {
 		rep := repository.GetRepository()
 
+		r := model.NewAuthority("Admin")
+		_, _ = r.Create(rep)
+		a := model.NewAccountWithPlainPassword("test", "test", r)
+		_, _ = a.Create(rep)
+
 		c := model.NewCategory("技術書")
 		_, _ = c.Create(rep)
 		c = model.NewCategory("雑誌")

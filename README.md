@@ -1,6 +1,7 @@
 # go-webapp-sample
 
 [![license](https://img.shields.io/github/license/ybkuroki/go-webapp-sample?style=for-the-badge)](https://github.com/ybkuroki/go-webapp-sample/blob/master/LICENSE)
+[![report](https://goreportcard.com/badge/github.com/ybkuroki/go-webapp-sample?style=for-the-badge)](https://goreportcard.com/report/github.com/ybkuroki/go-webapp-sample)
 [![workflow](https://img.shields.io/github/workflow/status/ybkuroki/go-webapp-sample/check?label=check&style=for-the-badge&logo=github)](https://github.com/ybkuroki/go-webapp-sample/actions?query=workflow%3Acheck)
 [![release](https://img.shields.io/github/release/ybkuroki/go-webapp-sample?style=for-the-badge&logo=github)](https://github.com/ybkuroki/go-webapp-sample/releases)
 
@@ -51,6 +52,8 @@ The follwing figure is the map of this sample project.
   + model                   … Define models.
   + repository              … Provide a service of database access.
   + service                 … Provide a service of book management.
+  + session                 … Provide session management.
+  + test                    … for unit test
   - main.go                 … Entry Point.
 ```
 
@@ -73,6 +76,8 @@ There are the following services in the Account management.
 
 |Service Name|HTTP Method|URL|Parameter|Summary|
 |:---|:---:|:---|:---|:---|
+|Login Service|POST|``/api/account/login``|Session ID, User Name, Password|Session authentication with username and password.|
+|Logout Service|POST|``/api/account/logout``|Session ID|Logout a user.|
 |Login Status Check Service|GET|``/api/account/loginStatus``|Session ID|Check if the user is logged in.|
 |Login Username Service|GET|``/api/account/loginAccount``|Session ID|Get the login user's username.|
 

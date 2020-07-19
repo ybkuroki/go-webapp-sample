@@ -8,6 +8,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/migration"
 	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
 // Prepare func is to prepare for unit test.
@@ -19,6 +20,7 @@ func Prepare() *echo.Echo {
 	conf.Database.Host = "file::memory:?cache=shared"
 	conf.Database.Migration = true
 	conf.Extension.MasterGenerator = true
+	conf.Extension.SecurityEnabled = false
 	conf.Log.Format = "${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}"
 	conf.Log.Level = 1
 	config.SetConfig(conf)
@@ -30,6 +32,7 @@ func Prepare() *echo.Echo {
 	migration.CreateDatabase(config.GetConfig())
 	migration.InitMasterData(config.GetConfig())
 
+	session.Init(e, config.GetConfig())
 	return e
 }
 

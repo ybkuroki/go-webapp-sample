@@ -1,0 +1,131 @@
+package session
+
+import (
+	"encoding/json"
+	"net/http"
+	"regexp"
+
+	"github.com/gorilla/sessions"
+	"github.com/labstack/echo-contrib/session"
+	"github.com/labstack/echo/v4"
+	"github.com/ybkuroki/go-webapp-sample/config"
+	"github.com/ybkuroki/go-webapp-sample/model"
+)
+
+const (
+	// sessionStr represents a string of session key.
+	sessionStr = "GSESSION"
+	// Account is the key of account data in the session.
+	Account = "Account"
+)
+
+// Init initalize session authentication.
+func Init(e *echo.Echo, conf *config.Config) {
+	if conf.Extension.SecurityEnabled {
+		e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+		e.Use(AuthenticationMiddleware(conf))
+	}
+}
+
+// AuthenticationMiddleware is the middleware of session authentication for echo.
+func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			if !hasAuthorization(c, conf) {
+				return c.JSON(http.StatusUnauthorized, false)
+			}
+			if err := next(c); err != nil {
+				c.Error(err)
+			}
+			return nil
+		}
+	}
+}
+
+// hasAuthorization judges whether the user has the right to access the path.
+func hasAuthorization(c echo.Context, conf *config.Config) bool {
+	currentPath := c.Path()
+	if equalPath(currentPath, conf.Security.ExculdePath) {
+		return true
+	}
+	account := GetAccount(c)
+	if account == nil {
+		return false
+	}
+	if account.Authority.Name == "Admin" && equalPath(currentPath, conf.Security.AdminPath) {
+		_ = Save(c)
+		return true
+	}
+	if account.Authority.Name == "User" && equalPath(currentPath, conf.Security.UserPath) {
+		_ = Save(c)
+		return true
+	}
+	return false
+}
+
+// equalPath judges whether a given path contains in the path list.
+func equalPath(cpath string, paths []string) bool {
+	for i := range paths {
+		if regexp.MustCompile(paths[i]).Match([]byte(cpath)) {
+			return true
+		}
+	}
+	return false
+}
+
+// Get returns a session for the current request.
+func Get(c echo.Context) *sessions.Session {
+	sess, _ := session.Get(sessionStr, c)
+	return sess
+}
+
+// Save saves the current session.
+func Save(c echo.Context) error {
+	sess := Get(c)
+	sess.Options = &sessions.Options{
+		Path:     "/",
+		HttpOnly: true,
+	}
+	if err := sess.Save(c.Request(), c.Response()); err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	return nil
+}
+
+// SetValue sets a key and a value.
+func SetValue(c echo.Context, key string, value interface{}) error {
+	sess := Get(c)
+	bytes, err := json.Marshal(value)
+	if err != nil {
+		return c.NoContent(http.StatusInternalServerError)
+	}
+	sess.Values[key] = string(bytes)
+	return nil
+}
+
+// GetValue returns value of session.
+func GetValue(c echo.Context, key string) string {
+	sess := Get(c)
+	v := sess.Values[key]
+	data, result := v.(string)
+	if result && data != "null" {
+		return data
+	}
+	return ""
+}
+
+// SetAccount sets account data in session.
+func SetAccount(c echo.Context, account *model.Account) error {
+	return SetValue(c, Account, account)
+}
+
+// GetAccount returns account object of session.
+func GetAccount(c echo.Context) *model.Account {
+	v := GetValue(c, Account)
+	if v != "" {
+		a := &model.Account{}
+		_ = json.Unmarshal([]byte(v), a)
+		return a
+	}
+	return nil
+}
