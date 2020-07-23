@@ -9,7 +9,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/controller"
 )
 
-// Init is
+// Init initialize the routing of this application.
 func Init(e *echo.Echo, conf *config.Config) {
 	if conf.Extension.CorsEnabled {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{

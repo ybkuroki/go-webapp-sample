@@ -7,14 +7,14 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/service"
 )
 
-// GetCategoryList is
+// GetCategoryList returns the list of all categories.
 func GetCategoryList() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		return c.JSON(http.StatusOK, service.FindAllCategories())
 	}
 }
 
-// GetFormatList is
+// GetFormatList returns the list of all formats.
 func GetFormatList() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		return c.JSON(http.StatusOK, service.FindAllFormats())

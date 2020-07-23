@@ -9,7 +9,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/service"
 )
 
-// GetBookList is
+// GetBookList returns the list of all books.
 func GetBookList() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		page, _ := strconv.Atoi(c.QueryParam("page"))
@@ -19,7 +19,7 @@ func GetBookList() echo.HandlerFunc {
 	}
 }
 
-// GetBookSearch is
+// GetBookSearch returns the list of matched books by searching.
 func GetBookSearch() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		title := c.QueryParam("query")
@@ -30,7 +30,7 @@ func GetBookSearch() echo.HandlerFunc {
 	}
 }
 
-// PostBookRegist is
+// PostBookRegist register a new book by http post.
 func PostBookRegist() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		dto := dto.NewRegBookDto()
@@ -45,7 +45,7 @@ func PostBookRegist() echo.HandlerFunc {
 	}
 }
 
-// PostBookEdit is
+// PostBookEdit edit the existing book by http post.
 func PostBookEdit() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		dto := dto.NewChgBookDto()
@@ -60,7 +60,7 @@ func PostBookEdit() echo.HandlerFunc {
 	}
 }
 
-// PostBookDelete is
+// PostBookDelete deletes the existing book by http post.
 func PostBookDelete() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		dto := dto.NewChgBookDto()

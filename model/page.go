@@ -1,6 +1,6 @@
 package model
 
-// Page is
+// Page defines struct of pagination data.
 type Page struct {
 	Content          *[]Book `json:"content"`
 	Last             bool    `json:"last"`

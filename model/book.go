@@ -7,7 +7,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
-// Book is struct
+// Book defines struct of book data.
 type Book struct {
 	ID         uint      `gorm:"primary_key" json:"id"`
 	Title      string    `json:"title"`
@@ -18,7 +18,7 @@ type Book struct {
 	Format     *Format   `json:"format"`
 }
 
-// TableName is
+// TableName returns the table name of book struct and it is used by gorm.
 func (Book) TableName() string {
 	return "book"
 }
@@ -28,7 +28,7 @@ func NewBook(title string, isbn string, category *Category, format *Format) *Boo
 	return &Book{Title: title, Isbn: isbn, Category: category, Format: format}
 }
 
-// FindByID is
+// FindByID returns a book full matched given book's ID.
 func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
 	var book Book
 	if error := rep.Preload("Category").Preload("Format").Where("id = ?", id).Find(&book).Error; error != nil {
@@ -37,7 +37,7 @@ func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
 	return &book, nil
 }
 
-// FindAll is
+// FindAll returns all books of the book table.
 func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 	var books []Book
 	if error := rep.Preload("Category").Preload("Format").Find(&books).Error; error != nil {
@@ -46,7 +46,7 @@ func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 	return &books, nil
 }
 
-// FindAllByPage is
+// FindAllByPage returns the page object of all books.
 func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*Page, error) {
 	var books []Book
 	p := createPage(rep, &books, page, size)
@@ -59,7 +59,7 @@ func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*P
 	return p, nil
 }
 
-// FindByTitle is
+// FindByTitle returns the page object of books partially matched given book title.
 func (b *Book) FindByTitle(rep *repository.Repository, title string, page int, size int) (*Page, error) {
 	var books []Book
 	p := createPage(rep, &books, page, size)
@@ -84,7 +84,7 @@ func createPage(rep *repository.Repository, books *[]Book, page int, size int) *
 	return p
 }
 
-// Save is
+// Save persists this book data.
 func (b *Book) Save(rep *repository.Repository) (*Book, error) {
 	if error := rep.Save(b).Error; error != nil {
 		return nil, error
@@ -92,7 +92,7 @@ func (b *Book) Save(rep *repository.Repository) (*Book, error) {
 	return b, nil
 }
 
-// Update is
+// Update updates this book data.
 func (b *Book) Update(rep *repository.Repository) (*Book, error) {
 	if error := rep.Update(b).Error; error != nil {
 		return nil, error
@@ -100,7 +100,7 @@ func (b *Book) Update(rep *repository.Repository) (*Book, error) {
 	return b, nil
 }
 
-// Create is
+// Create persists this book data.
 func (b *Book) Create(rep *repository.Repository) (*Book, error) {
 	if error := rep.Create(b).Error; error != nil {
 		return nil, error
@@ -108,7 +108,7 @@ func (b *Book) Create(rep *repository.Repository) (*Book, error) {
 	return b, nil
 }
 
-// Delete is
+// Delete deletes this book data.
 func (b *Book) Delete(rep *repository.Repository) (*Book, error) {
 	if error := rep.Delete(b).Error; error != nil {
 		return nil, error

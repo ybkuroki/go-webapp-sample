@@ -6,7 +6,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
-// InitMasterData is
+// InitMasterData creates the master data used in this application.
 func InitMasterData(config *config.Config) {
 	if config.Extension.MasterGenerator {
 		rep := repository.GetRepository()

@@ -7,7 +7,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
-// FindAllBooks is
+// FindAllBooks returns the list of all books.
 func FindAllBooks() *[]model.Book {
 	rep := repository.GetRepository()
 	book := model.Book{}
@@ -19,7 +19,7 @@ func FindAllBooks() *[]model.Book {
 	return result
 }
 
-// FindAllBooksByPage is
+// FindAllBooksByPage returns the page object of all books.
 func FindAllBooksByPage(page int, size int) *model.Page {
 	rep := repository.GetRepository()
 	book := model.Book{}
@@ -31,7 +31,7 @@ func FindAllBooksByPage(page int, size int) *model.Page {
 	return result
 }
 
-// FindBooksByTitle is
+// FindBooksByTitle returns the page object of books matched given book title.
 func FindBooksByTitle(title string, page int, size int) *model.Page {
 	rep := repository.GetRepository()
 	book := model.Book{}
@@ -43,7 +43,7 @@ func FindBooksByTitle(title string, page int, size int) *model.Page {
 	return result
 }
 
-// RegisterBook is
+// RegisterBook register the given book data.
 func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
@@ -83,7 +83,7 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 	return nil, errors
 }
 
-// EditBook is
+// EditBook updates the given book data.
 func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
@@ -131,7 +131,7 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 	return nil, errors
 }
 
-// DeleteBook is
+// DeleteBook deletes the given book data.
 func DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
