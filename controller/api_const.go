@@ -5,41 +5,41 @@ const (
 	API = "/api"
 	// APIBook represents the group of book management API.
 	APIBook = API + "/book"
-	// APIBookList is
+	// APIBookList represents the API to get book's list.
 	APIBookList = APIBook + "/list"
-	// APIBookSearch is
+	// APIBookSearch represents the API to search book's list.
 	APIBookSearch = APIBook + "/search"
-	// APIBookRegist is
+	// APIBookRegist represents the API to register a new book.
 	APIBookRegist = APIBook + "/new"
-	// APIBookEdit is
+	// APIBookEdit represents the API to edit the existing book.
 	APIBookEdit = APIBook + "/edit"
-	// APIBookDelete is
+	// APIBookDelete represents the API to delete the existing book.
 	APIBookDelete = APIBook + "/delete"
 )
 
 const (
 	// APIMaster represents the group of master management API.
 	APIMaster = API + "/master"
-	// APIMasterCategory is
+	// APIMasterCategory represents the API to get category's list.
 	APIMasterCategory = APIMaster + "/category"
-	// APIMasterFormat is
+	// APIMasterFormat represents the API to get format's list.
 	APIMasterFormat = APIMaster + "/format"
 )
 
 const (
 	// APIAccount represents the group of account management API.
 	APIAccount = API + "/account"
-	// APIAccountLoginStatus is
+	// APIAccountLoginStatus represents the API to get the status of logged in account.
 	APIAccountLoginStatus = APIAccount + "/loginStatus"
-	// APIAccountLoginAccount is
+	// APIAccountLoginAccount represents the API to get the logged in account.
 	APIAccountLoginAccount = APIAccount + "/loginAccount"
-	// APIAccountLogin is
+	// APIAccountLogin represents the API to login by session authentication.
 	APIAccountLogin = APIAccount + "/login"
-	// APIAccountLogout is
+	// APIAccountLogout represents the API to logout.
 	APIAccountLogout = APIAccount + "/logout"
 )
 
 const (
-	// APIHealth is
+	// APIHealth represents the API to get the status of this application.
 	APIHealth = API + "/health"
 )

@@ -6,13 +6,13 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
-// Format is struct
+// Format defines struct of format data.
 type Format struct {
 	ID   uint   `gorm:"primary_key" json:"id"`
 	Name string `validate:"required" json:"name"`
 }
 
-// TableName is
+// TableName returns the table name of format struct and it is used by gorm.
 func (Format) TableName() string {
 	return "format_master"
 }
@@ -22,7 +22,7 @@ func NewFormat(name string) *Format {
 	return &Format{Name: name}
 }
 
-// FindByID is
+// FindByID returns a format full matched given format's ID.
 func (f *Format) FindByID(rep *repository.Repository, id uint) (*Format, error) {
 	var format Format
 	if error := rep.Where("id = ?", id).Find(&format).Error; error != nil {
@@ -31,7 +31,7 @@ func (f *Format) FindByID(rep *repository.Repository, id uint) (*Format, error) 
 	return &format, nil
 }
 
-// FindAll is
+// FindAll returns all formats of the format table.
 func (f *Format) FindAll(rep *repository.Repository) (*[]Format, error) {
 	var formats []Format
 	if error := rep.Find(&formats).Error; error != nil {
@@ -40,7 +40,7 @@ func (f *Format) FindAll(rep *repository.Repository) (*[]Format, error) {
 	return &formats, nil
 }
 
-// Create is
+// Create persists this category data.
 func (f *Format) Create(rep *repository.Repository) (*Format, error) {
 	if error := rep.Create(f).Error; error != nil {
 		return nil, error

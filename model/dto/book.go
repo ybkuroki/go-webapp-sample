@@ -7,7 +7,7 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
-// RegBookDto is struct
+// RegBookDto defines a data transfer object for register.
 type RegBookDto struct {
 	Title      string `validate:"required,gte=3,lt=50" json:"title"`
 	Isbn       string `validate:"required,gte=10,lt=20" json:"isbn"`
@@ -15,19 +15,19 @@ type RegBookDto struct {
 	FormatID   uint   `json:"formatId"`
 }
 
-// NewRegBookDto is
+// NewRegBookDto is constructor.
 func NewRegBookDto() *RegBookDto {
 	return &RegBookDto{}
 }
 
-// Create is
+// Create creates a book model from this DTO.
 func (b *RegBookDto) Create() *model.Book {
 	c := model.NewCategory("")
 	f := model.NewFormat("")
 	return model.NewBook(b.Title, b.Isbn, c, f)
 }
 
-// Validate is
+// Validate performs validation check for the each item.
 func (b *RegBookDto) Validate() map[string]string {
 	return validateDto(b)
 }
@@ -70,7 +70,7 @@ func (b *RegBookDto) ToString() (string, error) {
 	return string(bytes), error
 }
 
-// ChgBookDto is struct
+// ChgBookDto defines a data transfer object for changes or updates.
 type ChgBookDto struct {
 	ID         uint   `validate:"required" json:"id"`
 	Title      string `validate:"required,gte=3,lt=50" json:"title"`
@@ -79,12 +79,12 @@ type ChgBookDto struct {
 	FormatID   uint   `json:"formatId"`
 }
 
-// NewChgBookDto is
+// NewChgBookDto is constructor.
 func NewChgBookDto() *ChgBookDto {
 	return &ChgBookDto{}
 }
 
-// Validate is
+// Validate performs validation check for the each item.
 func (b *ChgBookDto) Validate() map[string]string {
 	return validateDto(b)
 }

@@ -6,13 +6,13 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
-// Category is struct
+// Category defines struct of category data.
 type Category struct {
 	ID   uint   `gorm:"primary_key" json:"id"`
 	Name string `validate:"required" json:"name"`
 }
 
-// TableName is
+// TableName returns the table name of category struct and it is used by gorm.
 func (Category) TableName() string {
 	return "category_master"
 }
@@ -22,7 +22,7 @@ func NewCategory(name string) *Category {
 	return &Category{Name: name}
 }
 
-// FindByID is
+// FindByID returns a category full matched given category's ID.
 func (c *Category) FindByID(rep *repository.Repository, id uint) (*Category, error) {
 	var category Category
 	if error := rep.Where("id = ?", id).Find(&category).Error; error != nil {
@@ -31,7 +31,7 @@ func (c *Category) FindByID(rep *repository.Repository, id uint) (*Category, err
 	return &category, nil
 }
 
-// FindAll is
+// FindAll returns all categories of the category table.
 func (c *Category) FindAll(rep *repository.Repository) (*[]Category, error) {
 	var categories []Category
 	if error := rep.Find(&categories).Error; error != nil {
@@ -40,7 +40,7 @@ func (c *Category) FindAll(rep *repository.Repository) (*[]Category, error) {
 	return &categories, nil
 }
 
-// Create is
+// Create persists this category data.
 func (c *Category) Create(rep *repository.Repository) (*Category, error) {
 	if error := rep.Create(c).Error; error != nil {
 		return nil, error

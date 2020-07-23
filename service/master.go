@@ -6,7 +6,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
-// FindAllCategories is
+// FindAllCategories returns the list of all categories.
 func FindAllCategories() *[]model.Category {
 	rep := repository.GetRepository()
 	category := model.Category{}
@@ -18,7 +18,7 @@ func FindAllCategories() *[]model.Category {
 	return result
 }
 
-// FindAllFormats is
+// FindAllFormats returns the list of all formats.
 func FindAllFormats() *[]model.Format {
 	rep := repository.GetRepository()
 	format := model.Format{}

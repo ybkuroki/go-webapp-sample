@@ -6,7 +6,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
-// CreateDatabase is
+// CreateDatabase creates the tables used in this application.
 func CreateDatabase(config *config.Config) {
 	if config.Database.Migration {
 		db := repository.GetDB()
