@@ -37,10 +37,13 @@ func getConnection(config *config.Config) string {
 
 // InitDB initialize a database connection.
 func InitDB() {
-	db, err := gorm.Open(config.GetConfig().Database.Dialect, getConnection(config.GetConfig()))
+	logger.GetEchoLogger().Info("Try database connection")
+	conf := config.GetConfig()
+	db, err := gorm.Open(conf.Database.Dialect, getConnection(conf))
 	if err != nil {
-		panic(fmt.Sprintf("[Error]: %s", err))
+		logger.GetEchoLogger().Error("Failure database connection")
 	}
+	logger.GetEchoLogger().Info(fmt.Sprintf("Success database connection, %s:%s", conf.Database.Host, conf.Database.Port))
 	db.LogMode(true)
 	db.SetLogger(logger.GetLogger())
 	rep = &Repository{}
