@@ -3,6 +3,7 @@ module github.com/ybkuroki/go-webapp-sample
 go 1.14
 
 require (
+	github.com/garyburd/redigo v1.6.2 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/gorilla/sessions v1.2.0
 	github.com/jinzhu/configor v1.2.0
@@ -20,6 +21,7 @@ require (
 	golang.org/x/net v0.0.0-20200625001655-4c5254603344 // indirect
 	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
 	golang.org/x/text v0.3.3 // indirect
+	gopkg.in/boj/redistore.v1 v1.0.0-20160128113310-fc113767cd6b
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/yaml.v2 v2.2.8 // indirect

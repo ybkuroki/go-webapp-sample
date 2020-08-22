@@ -1,0 +1,37 @@
+database:
+  dialect: postgres
+  host: dbserver-k8s-service
+  port: 5432
+  dbname: testdb
+  username: testusr
+  password: testusr
+  migration: false
+
+redis:
+  enabled: true
+  connection_pool_size: 10
+  host: redis-k8s-service
+  port: 6379
+
+extension:
+  master_generator: false
+  cors_enabled: false
+  security_enabled: true
+
+log:
+  format: ${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}
+  level: 2
+  file_path: ./application.log
+
+security:
+  exclude_path:
+    - /api/account/login$
+    - /api/account/logout$
+    - /api/health$
+  user_path:
+    - /api/account/.*
+    - /api/master/.*
+    - /api/book/list
+    - /api/book/search.*
+  admin_path:
+    - /api/.*

@@ -19,6 +19,12 @@ type Config struct {
 		Password  string
 		Migration bool `default:"false"`
 	}
+	Redis struct {
+		Enabled            bool `default:"false"`
+		ConnectionPoolSize int  `yaml:"connection_pool_size" default:"10"`
+		Host               string
+		Port               string
+	}
 	Extension struct {
 		MasterGenerator bool `yaml:"master_generator" default:"false"`
 		CorsEnabled     bool `yaml:"cors_enabled" default:"false"`

@@ -2,6 +2,7 @@ package session
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"regexp"
 
@@ -10,6 +11,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/model"
+	"gopkg.in/boj/redistore.v1"
 )
 
 const (
@@ -22,7 +24,18 @@ const (
 // Init initalize session authentication.
 func Init(e *echo.Echo, conf *config.Config) {
 	if conf.Extension.SecurityEnabled {
-		e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+		if conf.Redis.Enabled {
+			e.Logger.Info("Try redis connection")
+			address := fmt.Sprintf("%s:%s", conf.Redis.Host, conf.Redis.Port)
+			store, err := redistore.NewRediStore(conf.Redis.ConnectionPoolSize, "tcp", address, "", []byte("secret"))
+			if err != nil {
+				e.Logger.Error("Failure redis connection")
+			}
+			e.Use(session.Middleware(store))
+			e.Logger.Info(fmt.Sprintf("Success redis connection, %s", address))
+		} else {
+			e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
+		}
 		e.Use(AuthenticationMiddleware(conf))
 	}
 }
@@ -86,6 +99,21 @@ func Save(c echo.Context) error {
 		Path:     "/",
 		HttpOnly: true,
 	}
+	return saveSession(c, sess)
+}
+
+// Delete the current session.
+func Delete(c echo.Context) error {
+	sess := Get(c)
+	sess.Options = &sessions.Options{
+		Path:     "/",
+		HttpOnly: true,
+		MaxAge:   -1,
+	}
+	return saveSession(c, sess)
+}
+
+func saveSession(c echo.Context, sess *sessions.Session) error {
 	if err := sess.Save(c.Request(), c.Response()); err != nil {
 		return c.NoContent(http.StatusInternalServerError)
 	}

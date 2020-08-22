@@ -53,7 +53,7 @@ func PostLogin() echo.HandlerFunc {
 func PostLogout() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		_ = session.SetAccount(c, nil)
-		_ = session.Save(c)
+		_ = session.Delete(c)
 		return c.NoContent(http.StatusOK)
 	}
 }
