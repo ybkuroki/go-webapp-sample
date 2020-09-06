@@ -32,6 +32,9 @@ Perform the following steps:
     ```
     healthy
     ```
+1. Login with the following username and password.
+    - username : ``test``
+    - password : ``test``
 
 ## Build executable file
 Build this source code by the following command.
