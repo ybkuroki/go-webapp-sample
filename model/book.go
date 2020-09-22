@@ -18,20 +18,34 @@ type Book struct {
 	Format     *Format   `json:"format"`
 }
 
+// RecordBook defines struct represents the record of the database.
+type RecordBook struct {
+	ID           uint
+	Title        string
+	Isbn         string
+	CategoryID   uint
+	CategoryName string
+	FormatID     uint
+	FormatName   string
+}
+
+const selectBook = "select b.*, c.id as category_id, c.name as category_name, f.id as format_id, f.name as format_name " +
+	"from book b inner join category_master c on c.id = b.category_id inner join format_master f on f.id = b.format_id "
+
 // TableName returns the table name of book struct and it is used by gorm.
 func (Book) TableName() string {
 	return "book"
 }
 
 // NewBook is constructor
-func NewBook(title string, isbn string, category *Category, format *Format) *Book {
-	return &Book{Title: title, Isbn: isbn, Category: category, Format: format}
+func NewBook(title string, isbn string, categoryID uint, formatID uint) *Book {
+	return &Book{Title: title, Isbn: isbn, CategoryID: categoryID, FormatID: formatID}
 }
 
 // FindByID returns a book full matched given book's ID.
 func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
 	var book Book
-	if error := rep.Preload("Category").Preload("Format").Where("id = ?", id).Find(&book).Error; error != nil {
+	if error := rep.Where("id = ?", id).Find(&book).Error; error != nil {
 		return nil, error
 	}
 	return &book, nil
@@ -40,7 +54,7 @@ func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
 // FindAll returns all books of the book table.
 func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 	var books []Book
-	if error := rep.Preload("Category").Preload("Format").Find(&books).Error; error != nil {
+	if error := rep.Find(&books).Error; error != nil {
 		return nil, error
 	}
 	return &books, nil
@@ -49,26 +63,38 @@ func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 // FindAllByPage returns the page object of all books.
 func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*Page, error) {
 	var books []Book
-	p := createPage(rep, &books, page, size)
 
-	if error := rep.Preload("Category").Preload("Format").Offset(page * p.Size).Limit(size).Find(&books).Error; error != nil {
-		return nil, error
+	var rec RecordBook
+	rows, err := rep.Raw(selectBook+" limit ? offset ? ", size, page*size).Rows()
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		rep.ScanRows(rows, &rec)
+		book := converToEntity(&rec)
+		books = append(books, *book)
 	}
 
-	p.Content = &books
+	p := createPage(rep, &books, page, size)
 	return p, nil
 }
 
 // FindByTitle returns the page object of books partially matched given book title.
 func (b *Book) FindByTitle(rep *repository.Repository, title string, page int, size int) (*Page, error) {
 	var books []Book
-	p := createPage(rep, &books, page, size)
 
-	if error := rep.Preload("Category").Preload("Format").Where("title LIKE ?", "%"+title+"%").Offset(page * p.Size).Limit(size).Find(&books).Error; error != nil {
-		return nil, error
+	var rec RecordBook
+	rows, err := rep.Raw(selectBook+" where title like ? limit ? offset ? ", "%"+title+"%", size, page*size).Rows()
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		rep.ScanRows(rows, &rec)
+		book := converToEntity(&rec)
+		books = append(books, *book)
 	}
 
-	p.Content = &books
+	p := createPage(rep, &books, page, size)
 	return p, nil
 }
 
@@ -77,9 +103,9 @@ func createPage(rep *repository.Repository, books *[]Book, page int, size int) *
 	p.Page = page
 	p.Size = size
 	p.NumberOfElements = p.Size
-
-	rep.Preload("Category").Preload("Format").Find(&books).Count(&p.TotalElements)
+	p.TotalElements = len(*books)
 	p.TotalPages = int(math.Ceil(float64(p.TotalElements) / float64(p.Size)))
+	p.Content = books
 
 	return p
 }
@@ -114,6 +140,12 @@ func (b *Book) Delete(rep *repository.Repository) (*Book, error) {
 		return nil, error
 	}
 	return b, nil
+}
+
+func converToEntity(rec *RecordBook) *Book {
+	c := &Category{ID: rec.CategoryID, Name: rec.CategoryName}
+	f := &Format{ID: rec.FormatID, Name: rec.FormatName}
+	return &Book{ID: rec.ID, Title: rec.Title, Isbn: rec.Isbn, CategoryID: rec.CategoryID, Category: c, FormatID: rec.FormatID, Format: f}
 }
 
 // ToString is return string of object

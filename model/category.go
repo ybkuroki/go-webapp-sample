@@ -31,6 +31,15 @@ func (c *Category) FindByID(rep *repository.Repository, id uint) (*Category, err
 	return &category, nil
 }
 
+// CountByID returns a size of categories full matched given category's ID.
+func (c *Category) CountByID(rep *repository.Repository, id uint) (int, error) {
+	var count int
+	if error := rep.Model(&Category{}).Where("id = ?", id).Count(&count).Error; error != nil {
+		return 0, error
+	}
+	return count, nil
+}
+
 // FindAll returns all categories of the category table.
 func (c *Category) FindAll(rep *repository.Repository) (*[]Category, error) {
 	var categories []Category

@@ -31,6 +31,15 @@ func (f *Format) FindByID(rep *repository.Repository, id uint) (*Format, error) 
 	return &format, nil
 }
 
+// CountByID returns a size of formats full matched given format's ID.
+func (f *Format) CountByID(rep *repository.Repository, id uint) (int, error) {
+	var count int
+	if error := rep.Model(&Format{}).Where("id = ?", id).Count(&count).Error; error != nil {
+		return 0, error
+	}
+	return count, nil
+}
+
 // FindAll returns all formats of the format table.
 func (f *Format) FindAll(rep *repository.Repository) (*[]Format, error) {
 	var formats []Format

@@ -22,9 +22,7 @@ func NewRegBookDto() *RegBookDto {
 
 // Create creates a book model from this DTO.
 func (b *RegBookDto) Create() *model.Book {
-	c := model.NewCategory("")
-	f := model.NewFormat("")
-	return model.NewBook(b.Title, b.Isbn, c, f)
+	return model.NewBook(b.Title, b.Isbn, b.CategoryID, b.FormatID)
 }
 
 // Validate performs validation check for the each item.

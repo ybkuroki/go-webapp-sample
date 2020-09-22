@@ -1,6 +1,8 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
@@ -53,16 +55,17 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 
 		err := rep.Transaction(func(txrep *repository.Repository) error {
 			var err error
+			var count int
 			book := dto.Create()
 
 			category := model.Category{}
-			if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
-				return err
+			if count, err = category.CountByID(txrep, dto.CategoryID); err != nil || count == 0 {
+				return fmt.Errorf("Not found category entity")
 			}
 
 			format := model.Format{}
-			if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
-				return err
+			if count, err = format.CountByID(txrep, dto.FormatID); err != nil || count == 0 {
+				return fmt.Errorf("Not found format entity")
 			}
 
 			if result, err = book.Create(txrep); err != nil {
@@ -73,7 +76,7 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetEchoLogger().Error(err.Error)
+			logger.GetEchoLogger().Error(err)
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
@@ -93,6 +96,7 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 
 		err := rep.Transaction(func(txrep *repository.Repository) error {
 			var err error
+			var count int
 			var book *model.Book
 
 			b := model.Book{}
@@ -102,15 +106,17 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 
 			book.Title = dto.Title
 			book.Isbn = dto.Isbn
+			book.CategoryID = dto.CategoryID
+			book.FormatID = dto.FormatID
 
 			category := model.Category{}
-			if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
-				return err
+			if count, err = category.CountByID(txrep, dto.CategoryID); err != nil || count == 0 {
+				return fmt.Errorf("Not found category entity")
 			}
 
 			format := model.Format{}
-			if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
-				return err
+			if count, err = format.CountByID(txrep, dto.FormatID); err != nil || count == 0 {
+				return fmt.Errorf("Not found format entity")
 			}
 
 			if result, err = book.Save(txrep); err != nil {
@@ -121,7 +127,7 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetEchoLogger().Error(err.Error)
+			logger.GetEchoLogger().Error(err)
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
@@ -156,7 +162,7 @@ func DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetEchoLogger().Error(err.Error)
+			logger.GetEchoLogger().Error(err)
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
