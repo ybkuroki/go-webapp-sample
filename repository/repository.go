@@ -66,6 +66,11 @@ func (rep *Repository) Model(value interface{}) *gorm.DB {
 	return rep.db.Model(value)
 }
 
+// Select specify fields that you want to retrieve from database when querying, by default, will select all fields;
+func (rep *Repository) Select(query interface{}, args ...interface{}) *gorm.DB {
+	return rep.db.Select(query, args...)
+}
+
 // Find find records that match given conditions.
 func (rep *Repository) Find(out interface{}, where ...interface{}) *gorm.DB {
 	return rep.db.Find(out, where...)

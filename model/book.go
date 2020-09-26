@@ -44,19 +44,30 @@ func NewBook(title string, isbn string, categoryID uint, formatID uint) *Book {
 
 // FindByID returns a book full matched given book's ID.
 func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
-	var book Book
-	if error := rep.Where("id = ?", id).Find(&book).Error; error != nil {
-		return nil, error
-	}
-	return &book, nil
+	var book *Book
+
+	var rec RecordBook
+	rep.Raw(selectBook+" where b.id = ?", id).Scan(&rec)
+	book = converToEntity(&rec)
+
+	return book, nil
 }
 
 // FindAll returns all books of the book table.
 func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 	var books []Book
-	if error := rep.Find(&books).Error; error != nil {
-		return nil, error
+
+	var rec RecordBook
+	rows, err := rep.Raw(selectBook).Rows()
+	if err != nil {
+		return nil, err
 	}
+	for rows.Next() {
+		rep.ScanRows(rows, &rec)
+		book := converToEntity(&rec)
+		books = append(books, *book)
+	}
+
 	return &books, nil
 }
 
@@ -120,7 +131,7 @@ func (b *Book) Save(rep *repository.Repository) (*Book, error) {
 
 // Update updates this book data.
 func (b *Book) Update(rep *repository.Repository) (*Book, error) {
-	if error := rep.Update(b).Error; error != nil {
+	if error := rep.Model(Book{}).Where("id = ?", b.ID).Select("title", "isbn", "category_id", "format_id").Updates(b).Error; error != nil {
 		return nil, error
 	}
 	return b, nil
@@ -128,7 +139,7 @@ func (b *Book) Update(rep *repository.Repository) (*Book, error) {
 
 // Create persists this book data.
 func (b *Book) Create(rep *repository.Repository) (*Book, error) {
-	if error := rep.Create(b).Error; error != nil {
+	if error := rep.Select("title", "isbn", "category_id", "format_id").Create(b).Error; error != nil {
 		return nil, error
 	}
 	return b, nil
