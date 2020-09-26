@@ -48,7 +48,7 @@ func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
 
 	var rec RecordBook
 	rep.Raw(selectBook+" where b.id = ?", id).Scan(&rec)
-	book = converToEntity(&rec)
+	book = converToBook(&rec)
 
 	return book, nil
 }
@@ -64,7 +64,7 @@ func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 	}
 	for rows.Next() {
 		rep.ScanRows(rows, &rec)
-		book := converToEntity(&rec)
+		book := converToBook(&rec)
 		books = append(books, *book)
 	}
 
@@ -82,7 +82,7 @@ func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*P
 	}
 	for rows.Next() {
 		rep.ScanRows(rows, &rec)
-		book := converToEntity(&rec)
+		book := converToBook(&rec)
 		books = append(books, *book)
 	}
 
@@ -101,7 +101,7 @@ func (b *Book) FindByTitle(rep *repository.Repository, title string, page int, s
 	}
 	for rows.Next() {
 		rep.ScanRows(rows, &rec)
-		book := converToEntity(&rec)
+		book := converToBook(&rec)
 		books = append(books, *book)
 	}
 
@@ -153,7 +153,7 @@ func (b *Book) Delete(rep *repository.Repository) (*Book, error) {
 	return b, nil
 }
 
-func converToEntity(rec *RecordBook) *Book {
+func converToBook(rec *RecordBook) *Book {
 	c := &Category{ID: rec.CategoryID, Name: rec.CategoryName}
 	f := &Format{ID: rec.FormatID, Name: rec.FormatName}
 	return &Book{ID: rec.ID, Title: rec.Title, Isbn: rec.Isbn, CategoryID: rec.CategoryID, Category: c, FormatID: rec.FormatID, Format: f}
