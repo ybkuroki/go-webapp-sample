@@ -32,7 +32,7 @@ func TestGetLoginAccount(t *testing.T) {
 
 	router.ServeHTTP(rec, req)
 
-	account := model.NewAccountWithPlainPassword("test", "test", model.NewAuthority("Admin"))
+	account := model.NewAccountWithPlainPassword("test", "test", 1)
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(account), rec.Body.String())
 }

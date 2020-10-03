@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"database/sql"
 	"fmt"
 
 	"github.com/jinzhu/gorm"
@@ -60,6 +61,16 @@ func GetDB() *gorm.DB {
 	return rep.db
 }
 
+// Model specify the model you would like to run db operations
+func (rep *Repository) Model(value interface{}) *gorm.DB {
+	return rep.db.Model(value)
+}
+
+// Select specify fields that you want to retrieve from database when querying, by default, will select all fields;
+func (rep *Repository) Select(query interface{}, args ...interface{}) *gorm.DB {
+	return rep.db.Select(query, args...)
+}
+
 // Find find records that match given conditions.
 func (rep *Repository) Find(out interface{}, where ...interface{}) *gorm.DB {
 	return rep.db.Find(out, where...)
@@ -113,6 +124,11 @@ func (rep *Repository) Preload(column string, conditions ...interface{}) *gorm.D
 // Scopes pass current database connection to arguments `func(*DB) *DB`, which could be used to add conditions dynamically
 func (rep *Repository) Scopes(funcs ...func(*gorm.DB) *gorm.DB) *gorm.DB {
 	return rep.db.Scopes(funcs...)
+}
+
+// ScanRows scan `*sql.Rows` to give struct
+func (rep *Repository) ScanRows(rows *sql.Rows, result interface{}) error {
+	return rep.db.ScanRows(rows, result)
 }
 
 // Transaction start a transaction as a block.

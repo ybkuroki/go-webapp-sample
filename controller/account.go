@@ -10,7 +10,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
-var dummyAccount = model.NewAccountWithPlainPassword("test", "test", model.NewAuthority("Admin"))
+var dummyAccount = model.NewAccountWithPlainPassword("test", "test", 1)
 
 // GetLoginStatus returns the status of login.
 func GetLoginStatus() echo.HandlerFunc {

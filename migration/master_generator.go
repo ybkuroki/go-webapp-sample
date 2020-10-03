@@ -13,7 +13,7 @@ func InitMasterData(config *config.Config) {
 
 		r := model.NewAuthority("Admin")
 		_, _ = r.Create(rep)
-		a := model.NewAccountWithPlainPassword("test", "test", r)
+		a := model.NewAccountWithPlainPassword("test", "test", r.ID)
 		_, _ = a.Create(rep)
 
 		c := model.NewCategory("技術書")
