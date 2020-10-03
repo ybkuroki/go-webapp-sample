@@ -1,6 +1,7 @@
 package model
 
 import (
+	"database/sql"
 	"encoding/json"
 	"math"
 
@@ -58,12 +59,15 @@ func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 	var books []Book
 
 	var rec RecordBook
-	rows, err := rep.Raw(selectBook).Rows()
-	if err != nil {
+	var rows *sql.Rows
+	var err error
+	if rows, err = rep.Raw(selectBook).Rows(); err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		rep.ScanRows(rows, &rec)
+		if err = rep.ScanRows(rows, &rec); err != nil {
+			return nil, err
+		}
 		book := converToBook(&rec)
 		books = append(books, *book)
 	}
@@ -76,12 +80,15 @@ func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*P
 	var books []Book
 
 	var rec RecordBook
-	rows, err := rep.Raw(selectBook+" limit ? offset ? ", size, page*size).Rows()
-	if err != nil {
+	var rows *sql.Rows
+	var err error
+	if rows, err = rep.Raw(selectBook+" limit ? offset ? ", size, page*size).Rows(); err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		rep.ScanRows(rows, &rec)
+		if err = rep.ScanRows(rows, &rec); err != nil {
+			return nil, err
+		}
 		book := converToBook(&rec)
 		books = append(books, *book)
 	}
@@ -95,12 +102,15 @@ func (b *Book) FindByTitle(rep *repository.Repository, title string, page int, s
 	var books []Book
 
 	var rec RecordBook
-	rows, err := rep.Raw(selectBook+" where title like ? limit ? offset ? ", "%"+title+"%", size, page*size).Rows()
-	if err != nil {
+	var rows *sql.Rows
+	var err error
+	if rows, err = rep.Raw(selectBook+" where title like ? limit ? offset ? ", "%"+title+"%", size, page*size).Rows(); err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		rep.ScanRows(rows, &rec)
+		if err = rep.ScanRows(rows, &rec); err != nil {
+			return nil, err
+		}
 		book := converToBook(&rec)
 		books = append(books, *book)
 	}

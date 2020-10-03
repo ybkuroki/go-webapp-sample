@@ -34,14 +34,14 @@ func (Account) TableName() string {
 }
 
 // NewAccount is constructor.
-func NewAccount(name string, password string, authority *Authority) *Account {
-	return &Account{Name: name, Password: password, AuthorityID: authority.ID, Authority: authority}
+func NewAccount(name string, password string, authorityID uint) *Account {
+	return &Account{Name: name, Password: password, AuthorityID: authorityID}
 }
 
 // NewAccountWithPlainPassword is constructor. And it is encoded plain text password by using bcrypt.
-func NewAccountWithPlainPassword(name string, password string, authority *Authority) *Account {
+func NewAccountWithPlainPassword(name string, password string, authorityID uint) *Account {
 	hashed, _ := bcrypt.GenerateFromPassword([]byte(password), 10)
-	return &Account{Name: name, Password: string(hashed), AuthorityID: authority.ID, Authority: authority}
+	return &Account{Name: name, Password: string(hashed), AuthorityID: authorityID}
 }
 
 // FindByName returns accounts full matched given account name.
