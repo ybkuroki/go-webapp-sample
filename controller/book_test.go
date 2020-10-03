@@ -113,17 +113,9 @@ func TestPostBookDelete(t *testing.T) {
 }
 
 func setUpTestData() {
-	model := &model.Book{
-		ID:         1,
-		Title:      "Test1",
-		Isbn:       "123-123-123-1",
-		CategoryID: 1,
-		Category:   &model.Category{ID: 1, Name: "技術書"},
-		FormatID:   1,
-		Format:     &model.Format{ID: 1, Name: "書籍"},
-	}
+	model := model.NewBook("Test1", "123-123-123-1", 1, 1)
 	repo := repository.GetRepository()
-	_, _ = model.Save(repo)
+	_, _ = model.Create(repo)
 }
 
 func createRegDto() *dto.RegBookDto {
