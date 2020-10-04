@@ -38,13 +38,13 @@ func getConnection(config *config.Config) string {
 
 // InitDB initialize a database connection.
 func InitDB() {
-	logger.GetEchoLogger().Info("Try database connection")
+	logger.GetZapLogger().Infof("Try database connection")
 	conf := config.GetConfig()
 	db, err := gorm.Open(conf.Database.Dialect, getConnection(conf))
 	if err != nil {
-		logger.GetEchoLogger().Error("Failure database connection")
+		logger.GetZapLogger().Errorf("Failure database connection")
 	}
-	logger.GetEchoLogger().Info(fmt.Sprintf("Success database connection, %s:%s", conf.Database.Host, conf.Database.Port))
+	logger.GetZapLogger().Infof("Success database connection, %s:%s", conf.Database.Host, conf.Database.Port)
 	db.LogMode(true)
 	db.SetLogger(logger.GetLogger())
 	rep = &Repository{}

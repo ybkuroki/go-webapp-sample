@@ -12,7 +12,7 @@ func FindAllCategories() *[]model.Category {
 	category := model.Category{}
 	result, err := category.FindAll(rep)
 	if err != nil {
-		logger.GetEchoLogger().Error(err.Error)
+		logger.GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
@@ -24,7 +24,7 @@ func FindAllFormats() *[]model.Format {
 	format := model.Format{}
 	result, err := format.FindAll(rep)
 	if err != nil {
-		logger.GetEchoLogger().Error(err.Error)
+		logger.GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result

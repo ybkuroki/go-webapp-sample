@@ -3,24 +3,21 @@ package logger
 import (
 	"database/sql/driver"
 	"fmt"
-	"io"
-	"os"
 	"reflect"
 	"regexp"
-	"strings"
 	"time"
 	"unicode"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"github.com/ybkuroki/go-webapp-sample/config"
+	"go.uber.org/zap"
 )
 
 var logger *Logger
 
 // Logger is an alternative implementation of *gorm.Logger
 type Logger struct {
-	elogger echo.Logger
+	zap *zap.SugaredLogger
 }
 
 // GetLogger is return Logger
@@ -28,53 +25,56 @@ func GetLogger() *Logger {
 	return logger
 }
 
-// GetEchoLogger is return echo's logger
-func GetEchoLogger() echo.Logger {
-	return logger.elogger
+// GetZapLogger returns zapSugaredLogger
+func GetZapLogger() *zap.SugaredLogger {
+	return logger.zap
 }
 
-// NewLogger create logger object for *gorm.DB from *echo.Logger
-func newLogger(elog echo.Logger) *Logger {
-	return &Logger{elogger: elog}
+// newLogger create logger object for *gorm.DB from *echo.Logger
+func newLogger(zap *zap.SugaredLogger) *Logger {
+	return &Logger{zap: zap}
 }
 
 // InitLogger initialize logger.
 func InitLogger(e *echo.Echo, config *config.Config) {
-	// logging for each request.
-	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Format: strings.Replace(config.Log.Format, "${level}", "INFO", 1) + "\n",
-	}))
+	zap, err := zap.NewDevelopment()
+	if err != nil {
+		fmt.Printf("Error")
+	}
+	defer zap.Sync()
+	sugar := zap.Sugar()
+	// set package varriable logger.
+	logger = newLogger(sugar)
+
+	e.Use(RequestLoggerMiddleware)
+
 	// logging for the start and end of controller processes.
 	// ref: https://echo.labstack.com/guide/customization
-	e.Use(MyLoggerMiddleware)
-
-	// set logformat for echo logger.
-	e.Logger.SetHeader(config.Log.Format)
-	e.Logger.SetLevel(config.Log.Level)
-
-	// if the log file exists, write both console and the log file.
-	if config.Log.FilePath != "" {
-		logfile, err := os.OpenFile(config.Log.FilePath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 066)
-		if err != nil {
-			panic("Cannot open the log file. Please check this file path. Path: " + config.Log.FilePath + ", Error: " + err.Error())
-		}
-
-		e.Logger.SetOutput(io.MultiWriter(logfile, os.Stdout))
-	}
-
-	// set package varriable logger.
-	logger = newLogger(e.Logger)
+	e.Use(ActionLoggerMiddleware)
 }
 
-// MyLoggerMiddleware is middleware for logging the start and end of controller processes.
-// ref: https://echo.labstack.com/cookbook/middleware
-func MyLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+// RequestLoggerMiddleware is middleware for logging the contents of requests.
+func RequestLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		c.Logger().Debug(c.Path() + " Action Start")
+		req := c.Request()
+		res := c.Response()
 		if err := next(c); err != nil {
 			c.Error(err)
 		}
-		c.Logger().Debug(c.Path() + " Action End")
+		GetZapLogger().Infof("Uri: %s, Method: %s, Status: %d", req.RequestURI, req.Method, res.Status)
+		return nil
+	}
+}
+
+// ActionLoggerMiddleware is middleware for logging the start and end of controller processes.
+// ref: https://echo.labstack.com/cookbook/middleware
+func ActionLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		GetZapLogger().Debug(c.Path() + " Action Start")
+		if err := next(c); err != nil {
+			c.Error(err)
+		}
+		GetZapLogger().Debugf(c.Path() + " Action End")
 		return nil
 	}
 }
@@ -94,7 +94,7 @@ func (l *Logger) Print(values ...interface{}) {
 func (l *Logger) Println(values []interface{}) {
 	sql := createLog(values)
 	if sql != "" {
-		l.elogger.Debug(sql)
+		l.zap.Debugf(sql)
 	}
 }
 

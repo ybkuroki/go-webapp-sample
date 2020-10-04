@@ -13,7 +13,7 @@ func FindAllBooks() *[]model.Book {
 	book := model.Book{}
 	result, err := book.FindAll(rep)
 	if err != nil {
-		logger.GetEchoLogger().Error(err.Error)
+		logger.GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
@@ -25,7 +25,7 @@ func FindAllBooksByPage(page int, size int) *model.Page {
 	book := model.Book{}
 	result, err := book.FindAllByPage(rep, page, size)
 	if err != nil {
-		logger.GetEchoLogger().Error(err.Error)
+		logger.GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
@@ -37,7 +37,7 @@ func FindBooksByTitle(title string, page int, size int) *model.Page {
 	book := model.Book{}
 	result, err := book.FindByTitle(rep, title, page, size)
 	if err != nil {
-		logger.GetEchoLogger().Error(err.Error)
+		logger.GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
@@ -73,7 +73,7 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetEchoLogger().Error(err)
+			logger.GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
@@ -123,7 +123,7 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetEchoLogger().Error(err)
+			logger.GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
@@ -158,7 +158,7 @@ func DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetEchoLogger().Error(err)
+			logger.GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
