@@ -21,7 +21,7 @@ const (
 	Account = "Account"
 )
 
-// Init initalize session authentication.
+// Init initialize session authentication.
 func Init(e *echo.Echo, conf *config.Config) {
 	if conf.Extension.SecurityEnabled {
 		if conf.Redis.Enabled {
