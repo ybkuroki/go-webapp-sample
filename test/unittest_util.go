@@ -6,9 +6,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/logger"
+	"github.com/ybkuroki/go-webapp-sample/middleware"
 	"github.com/ybkuroki/go-webapp-sample/migration"
 	"github.com/ybkuroki/go-webapp-sample/repository"
-	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
 // Prepare func is to prepare for unit test.
@@ -25,14 +25,15 @@ func Prepare() *echo.Echo {
 	conf.Log.Level = 1
 	config.SetConfig(conf)
 
-	logger.InitLogger(e, config.GetConfig())
+	logger.InitLogger(config.GetConfig())
+	middleware.InitLoggerMiddleware(e)
 
 	repository.InitDB()
 
 	migration.CreateDatabase(config.GetConfig())
 	migration.InitMasterData(config.GetConfig())
 
-	session.Init(e, config.GetConfig())
+	middleware.InitSessionMiddleware(e, config.GetConfig())
 	return e
 }
 

@@ -8,7 +8,6 @@ import (
 	"time"
 	"unicode"
 
-	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"go.uber.org/zap"
 )
@@ -36,7 +35,7 @@ func newLogger(zap *zap.SugaredLogger) *Logger {
 }
 
 // InitLogger initialize logger.
-func InitLogger(e *echo.Echo, config *config.Config) {
+func InitLogger(config *config.Config) {
 	zap, err := zap.NewDevelopment()
 	if err != nil {
 		fmt.Printf("Error")
@@ -45,38 +44,6 @@ func InitLogger(e *echo.Echo, config *config.Config) {
 	sugar := zap.Sugar()
 	// set package varriable logger.
 	logger = newLogger(sugar)
-
-	e.Use(RequestLoggerMiddleware)
-
-	// logging for the start and end of controller processes.
-	// ref: https://echo.labstack.com/guide/customization
-	e.Use(ActionLoggerMiddleware)
-}
-
-// RequestLoggerMiddleware is middleware for logging the contents of requests.
-func RequestLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		req := c.Request()
-		res := c.Response()
-		if err := next(c); err != nil {
-			c.Error(err)
-		}
-		GetZapLogger().Infof("Uri: %s, Method: %s, Status: %d", req.RequestURI, req.Method, res.Status)
-		return nil
-	}
-}
-
-// ActionLoggerMiddleware is middleware for logging the start and end of controller processes.
-// ref: https://echo.labstack.com/cookbook/middleware
-func ActionLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		GetZapLogger().Debug(c.Path() + " Action Start")
-		if err := next(c); err != nil {
-			c.Error(err)
-		}
-		GetZapLogger().Debugf(c.Path() + " Action End")
-		return nil
-	}
 }
 
 // ==============================================================
