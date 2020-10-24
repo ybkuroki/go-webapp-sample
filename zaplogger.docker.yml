@@ -1,0 +1,20 @@
+level: "info"
+encoding: "console"
+development: true
+encoderConfig:
+  messageKey: "Msg"
+  levelKey: "Level"
+  timeKey: "Time"
+  nameKey: "Name"
+  callerKey: "Caller"
+  stacktraceKey: "St"
+  levelEncoder: "capital"
+  timeEncoder: "iso8601"
+  durationEncoder: "string"
+  callerEncoder: "short"
+outputPaths:
+  - "stdout"
+  - "./application.log"
+errorOutputPaths:
+  - "stderr"
+  - "./error.log"

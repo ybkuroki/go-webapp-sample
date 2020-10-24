@@ -14,7 +14,7 @@ func main() {
 	e := echo.New()
 
 	config.Load()
-	logger.InitLogger(config.GetConfig())
+	logger.InitLogger()
 	middleware.InitLoggerMiddleware(e)
 	e.Logger.Info("Loaded this configuration : application." + *config.GetEnv() + ".yml")
 

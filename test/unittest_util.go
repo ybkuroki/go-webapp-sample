@@ -25,7 +25,7 @@ func Prepare() *echo.Echo {
 	conf.Log.Level = 1
 	config.SetConfig(conf)
 
-	logger.InitLogger(config.GetConfig())
+	logger.InitLogger()
 	middleware.InitLoggerMiddleware(e)
 
 	repository.InitDB()

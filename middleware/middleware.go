@@ -48,9 +48,9 @@ func RequestLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			c.Error(err)
 		}
 		if account := mySession.GetAccount(c); account != nil {
-			logger.GetZapLogger().Infof("Uri: %s, Method: %s, Status: %d, AccountName: %s", req.RequestURI, req.Method, res.Status, account.Name)
+			logger.GetZapLogger().Infof("%s %s %s %d", account.Name, req.RequestURI, req.Method, res.Status)
 		} else {
-			logger.GetZapLogger().Infof("Uri: %s, Method: %s, Status: %d, AccountName: %s", req.RequestURI, req.Method, res.Status, "None")
+			logger.GetZapLogger().Infof("%s %s %s %d", "None", req.RequestURI, req.Method, res.Status)
 		}
 		return nil
 	}
