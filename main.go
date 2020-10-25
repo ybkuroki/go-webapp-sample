@@ -16,7 +16,7 @@ func main() {
 	config.Load()
 	logger.InitLogger()
 	middleware.InitLoggerMiddleware(e)
-	e.Logger.Info("Loaded this configuration : application." + *config.GetEnv() + ".yml")
+	logger.GetZapLogger().Infof("Loaded this configuration : application." + *config.GetEnv() + ".yml")
 
 	repository.InitDB()
 	db := repository.GetDB()
@@ -27,7 +27,7 @@ func main() {
 	router.Init(e, config.GetConfig())
 	middleware.InitSessionMiddleware(e, config.GetConfig())
 	if err := e.Start(":8080"); err != nil {
-		e.Logger.Error(err)
+		logger.GetZapLogger().Errorf(err.Error())
 	}
 
 	defer db.Close()

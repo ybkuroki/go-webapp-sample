@@ -54,7 +54,7 @@ func InitLogger() {
 	sugar := zap.Sugar()
 	// set package varriable logger.
 	logger = newLogger(sugar)
-	logger.zap.Infof("Success to read zap logger configuration")
+	logger.zap.Infof("Success to read zap logger configuration: zaplogger." + *config.GetEnv() + ".yml")
 }
 
 // ==============================================================

@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/jinzhu/configor"
-	"github.com/labstack/gommon/log"
 )
 
 // Config represents the composition of yml settings.
@@ -31,9 +30,7 @@ type Config struct {
 		SecurityEnabled bool `yaml:"security_enabled" default:"false"`
 	}
 	Log struct {
-		Format   string  `default:"${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}"`
-		Level    log.Lvl `default:"2"`
-		FilePath string  `yaml:"file_path"`
+		RequestLogFormat string `yaml:"request_log_format" default:"${remote_ip} ${account_name} ${uri} ${method} ${status}"`
 	}
 	Security struct {
 		ExculdePath []string `yaml:"exclude_path"`

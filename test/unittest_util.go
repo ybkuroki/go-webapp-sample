@@ -21,8 +21,7 @@ func Prepare() *echo.Echo {
 	conf.Database.Migration = true
 	conf.Extension.MasterGenerator = true
 	conf.Extension.SecurityEnabled = false
-	conf.Log.Format = "${time_rfc3339} [${level}] ${remote_ip} ${method} ${uri} ${status}"
-	conf.Log.Level = 1
+	conf.Log.RequestLogFormat = "${remote_ip} ${account_name} ${uri} ${method} ${status}"
 	config.SetConfig(conf)
 
 	logger.InitLogger()

@@ -2,12 +2,15 @@ package middleware
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
+	"github.com/valyala/fasttemplate"
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/logger"
 	mySession "github.com/ybkuroki/go-webapp-sample/session"
@@ -47,11 +50,28 @@ func RequestLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		if err := next(c); err != nil {
 			c.Error(err)
 		}
-		if account := mySession.GetAccount(c); account != nil {
-			logger.GetZapLogger().Infof("%s %s %s %d", account.Name, req.RequestURI, req.Method, res.Status)
-		} else {
-			logger.GetZapLogger().Infof("%s %s %s %d", "None", req.RequestURI, req.Method, res.Status)
-		}
+
+		template := fasttemplate.New(config.GetConfig().Log.RequestLogFormat, "${", "}")
+		logstr := template.ExecuteFuncString(func(w io.Writer, tag string) (int, error) {
+			switch tag {
+			case "remote_ip":
+				return w.Write([]byte(c.RealIP()))
+			case "account_name":
+				if account := mySession.GetAccount(c); account != nil {
+					return w.Write([]byte(account.Name))
+				}
+				return w.Write([]byte("None"))
+			case "uri":
+				return w.Write([]byte(req.RequestURI))
+			case "method":
+				return w.Write([]byte(req.Method))
+			case "status":
+				return w.Write([]byte(strconv.Itoa(res.Status)))
+			default:
+				return w.Write([]byte(""))
+			}
+		})
+		logger.GetZapLogger().Debugf(logstr)
 		return nil
 	}
 }
@@ -60,7 +80,7 @@ func RequestLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 // ref: https://echo.labstack.com/cookbook/middleware
 func ActionLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		logger.GetZapLogger().Debug(c.Path() + " Action Start")
+		logger.GetZapLogger().Debugf(c.Path() + " Action Start")
 		if err := next(c); err != nil {
 			c.Error(err)
 		}
