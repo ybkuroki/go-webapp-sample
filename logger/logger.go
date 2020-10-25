@@ -50,11 +50,11 @@ func InitLogger() {
 	if err != nil {
 		fmt.Printf("Error")
 	}
-	defer zap.Sync()
 	sugar := zap.Sugar()
 	// set package varriable logger.
 	logger = newLogger(sugar)
 	logger.zap.Infof("Success to read zap logger configuration: zaplogger." + *config.GetEnv() + ".yml")
+	_ = zap.Sync()
 }
 
 // ==============================================================
