@@ -26,13 +26,18 @@ func GetLogger() *Logger {
 	return logger
 }
 
+// SetLogger sets logger
+func SetLogger(log *Logger) {
+	logger = log
+}
+
 // GetZapLogger returns zapSugaredLogger
 func GetZapLogger() *zap.SugaredLogger {
 	return logger.zap
 }
 
 // newLogger create logger object for *gorm.DB from *echo.Logger
-func newLogger(zap *zap.SugaredLogger) *Logger {
+func NewLogger(zap *zap.SugaredLogger) *Logger {
 	return &Logger{zap: zap}
 }
 
@@ -52,7 +57,7 @@ func InitLogger() {
 	}
 	sugar := zap.Sugar()
 	// set package varriable logger.
-	logger = newLogger(sugar)
+	logger = NewLogger(sugar)
 	logger.zap.Infof("Success to read zap logger configuration: zaplogger." + *config.GetEnv() + ".yml")
 	_ = zap.Sync()
 }
