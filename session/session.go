@@ -2,16 +2,12 @@ package session
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"regexp"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/model"
-	"gopkg.in/boj/redistore.v1"
 )
 
 const (
@@ -20,71 +16,6 @@ const (
 	// Account is the key of account data in the session.
 	Account = "Account"
 )
-
-// Init initialize session authentication.
-func Init(e *echo.Echo, conf *config.Config) {
-	if conf.Extension.SecurityEnabled {
-		if conf.Redis.Enabled {
-			e.Logger.Info("Try redis connection")
-			address := fmt.Sprintf("%s:%s", conf.Redis.Host, conf.Redis.Port)
-			store, err := redistore.NewRediStore(conf.Redis.ConnectionPoolSize, "tcp", address, "", []byte("secret"))
-			if err != nil {
-				e.Logger.Error("Failure redis connection")
-			}
-			e.Use(session.Middleware(store))
-			e.Logger.Info(fmt.Sprintf("Success redis connection, %s", address))
-		} else {
-			e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
-		}
-		e.Use(AuthenticationMiddleware(conf))
-	}
-}
-
-// AuthenticationMiddleware is the middleware of session authentication for echo.
-func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			if !hasAuthorization(c, conf) {
-				return c.JSON(http.StatusUnauthorized, false)
-			}
-			if err := next(c); err != nil {
-				c.Error(err)
-			}
-			return nil
-		}
-	}
-}
-
-// hasAuthorization judges whether the user has the right to access the path.
-func hasAuthorization(c echo.Context, conf *config.Config) bool {
-	currentPath := c.Path()
-	if equalPath(currentPath, conf.Security.ExculdePath) {
-		return true
-	}
-	account := GetAccount(c)
-	if account == nil {
-		return false
-	}
-	if account.Authority.Name == "Admin" && equalPath(currentPath, conf.Security.AdminPath) {
-		_ = Save(c)
-		return true
-	}
-	if account.Authority.Name == "User" && equalPath(currentPath, conf.Security.UserPath) {
-		_ = Save(c)
-		return true
-	}
-	return false
-}
-
-// equalPath judges whether a given path contains in the path list.
-func equalPath(cpath string, paths []string) bool {
-	for i := range paths {
-		if regexp.MustCompile(paths[i]).Match([]byte(cpath)) {
-			return true
-		}
-	}
-	return false
-}
 
 // Get returns a session for the current request.
 func Get(c echo.Context) *sessions.Session {
@@ -134,10 +65,13 @@ func SetValue(c echo.Context, key string, value interface{}) error {
 // GetValue returns value of session.
 func GetValue(c echo.Context, key string) string {
 	sess := Get(c)
-	v := sess.Values[key]
-	data, result := v.(string)
-	if result && data != "null" {
-		return data
+	if sess != nil {
+		if v, ok := sess.Values[key]; ok {
+			data, result := v.(string)
+			if result && data != "null" {
+				return data
+			}
+		}
 	}
 	return ""
 }

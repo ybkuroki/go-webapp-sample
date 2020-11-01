@@ -13,12 +13,12 @@ func AuthenticateByUsernameAndPassword(username string, password string) (bool, 
 	account := model.Account{}
 	result, err := account.FindByName(rep, username)
 	if err != nil {
-		logger.GetEchoLogger().Error(err)
+		logger.GetZapLogger().Errorf(err.Error())
 		return false, nil
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(result.Password), []byte(password)); err != nil {
-		logger.GetEchoLogger().Error(err)
+		logger.GetZapLogger().Errorf(err.Error())
 		return false, nil
 	}
 
