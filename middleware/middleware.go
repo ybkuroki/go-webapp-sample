@@ -71,7 +71,7 @@ func RequestLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 				return w.Write([]byte(""))
 			}
 		})
-		logger.GetZapLogger().Debugf(logstr)
+		logger.GetZapLogger().Infof(logstr)
 		return nil
 	}
 }
