@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"reflect"
 	"regexp"
 	"time"
@@ -11,10 +12,18 @@ import (
 
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v2"
 )
 
 var logger *Logger
+
+// Config is
+type Config struct {
+	ZapConfig zap.Config        `json:"zap_config" yaml:"zap_config"`
+	LogRotate lumberjack.Logger `json:"log_rotate" yaml:"log_rotate"`
+}
 
 // Logger is an alternative implementation of *gorm.Logger
 type Logger struct {
@@ -36,7 +45,7 @@ func GetZapLogger() *zap.SugaredLogger {
 	return logger.zap
 }
 
-// newLogger create logger object for *gorm.DB from *echo.Logger
+// NewLogger create logger object for *gorm.DB from *echo.Logger
 func NewLogger(zap *zap.SugaredLogger) *Logger {
 	return &Logger{zap: zap}
 }
@@ -47,11 +56,11 @@ func InitLogger() {
 	if err != nil {
 		fmt.Printf("Failed to read zap logger configuration: %s", err)
 	}
-	var myConfig zap.Config
+	var myConfig *Config
 	if err := yaml.Unmarshal(configYaml, &myConfig); err != nil {
 		fmt.Printf("Failed to read zap logger configuration: %s", err)
 	}
-	zap, err := myConfig.Build()
+	zap, err := build(myConfig)
 	if err != nil {
 		fmt.Printf("Error")
 	}
@@ -60,6 +69,78 @@ func InitLogger() {
 	logger = NewLogger(sugar)
 	logger.zap.Infof("Success to read zap logger configuration: zaplogger." + *config.GetEnv() + ".yml")
 	_ = zap.Sync()
+}
+
+func build(cfg *Config) (*zap.Logger, error) {
+	var zapCfg zap.Config = cfg.ZapConfig
+	enc, _ := newEncoder(zapCfg)
+	writer, errWriter := openWriters(cfg)
+	log := zap.New(zapcore.NewCore(enc, writer, zapCfg.Level), buildOptions(zapCfg, errWriter)...)
+	return log, nil
+}
+
+func newEncoder(cfg zap.Config) (zapcore.Encoder, error) {
+	switch cfg.Encoding {
+	case "console":
+		return zapcore.NewConsoleEncoder(cfg.EncoderConfig), nil
+	case "json":
+		return zapcore.NewJSONEncoder(cfg.EncoderConfig), nil
+	}
+	return nil, fmt.Errorf("Failed to set encoder")
+}
+
+func openWriters(cfg *Config) (zapcore.WriteSyncer, zapcore.WriteSyncer) {
+	writer := open(cfg.ZapConfig.OutputPaths, &cfg.LogRotate)
+	errWriter := open(cfg.ZapConfig.ErrorOutputPaths, &cfg.LogRotate)
+	return writer, errWriter
+}
+
+func open(paths []string, rotateCfg *lumberjack.Logger) zapcore.WriteSyncer {
+	writers := make([]zapcore.WriteSyncer, 0, len(paths))
+	for _, path := range paths {
+		writer := newWriter(path, rotateCfg)
+		writers = append(writers, writer)
+	}
+	writer := zap.CombineWriteSyncers(writers...)
+	return writer
+}
+
+func newWriter(path string, rotateCfg *lumberjack.Logger) zapcore.WriteSyncer {
+	switch path {
+	case "stdout":
+		return os.Stdout
+	case "stderr":
+		return os.Stderr
+	}
+	sink := zapcore.AddSync(
+		&lumberjack.Logger{
+			Filename:   rotateCfg.Filename,
+			MaxSize:    rotateCfg.MaxSize,
+			MaxBackups: rotateCfg.MaxBackups,
+			MaxAge:     rotateCfg.MaxAge,
+		},
+	)
+	return sink
+}
+
+func buildOptions(cfg zap.Config, errWriter zapcore.WriteSyncer) []zap.Option {
+	opts := []zap.Option{zap.ErrorOutput(errWriter)}
+	if cfg.Development {
+		opts = append(opts, zap.Development())
+	}
+
+	if !cfg.DisableCaller {
+		opts = append(opts, zap.AddCaller())
+	}
+
+	stackLevel := zap.ErrorLevel
+	if cfg.Development {
+		stackLevel = zap.WarnLevel
+	}
+	if !cfg.DisableStacktrace {
+		opts = append(opts, zap.AddStacktrace(stackLevel))
+	}
+	return opts
 }
 
 // ==============================================================
