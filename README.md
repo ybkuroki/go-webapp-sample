@@ -49,6 +49,7 @@ The follwing figure is the map of this sample project.
 - go-webapp-sample
   + config                  … Define configurations of this system.
   + logger                  … Provide loggers.
+  + middleware              … Define custom middleware.
   + migration               … Provide database migration service for development.
   + router                  … Define routing.
   + controller              … Define controllers.
@@ -100,6 +101,7 @@ This sample uses the following libraries.
 |Echo|4.1.16|
 |Gorm|1.9.12|
 |go-playground/validator.v9|9.31.0|
+|Zap/logger|1.16.0|
 
 ## License
 The License of this sample is *MIT License*.
