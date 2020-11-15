@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"os"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // indirect
@@ -43,6 +44,7 @@ func InitDB() {
 	db, err := gorm.Open(conf.Database.Dialect, getConnection(conf))
 	if err != nil {
 		logger.GetZapLogger().Errorf("Failure database connection")
+		os.Exit(2)
 	}
 	logger.GetZapLogger().Infof("Success database connection, %s:%s", conf.Database.Host, conf.Database.Port)
 	db.LogMode(true)
