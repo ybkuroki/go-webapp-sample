@@ -3,6 +3,7 @@ package logger
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"go.uber.org/zap"
@@ -47,15 +48,18 @@ func NewLogger(zap *zap.SugaredLogger) *Logger {
 func InitLogger() {
 	configYaml, err := ioutil.ReadFile("./zaplogger." + *config.GetEnv() + ".yml")
 	if err != nil {
-		fmt.Printf("Failed to read zap logger configuration: %s", err)
+		fmt.Printf("Failed to read logger configuration: %s", err)
+		os.Exit(2)
 	}
 	var myConfig *Config
 	if err := yaml.Unmarshal(configYaml, &myConfig); err != nil {
 		fmt.Printf("Failed to read zap logger configuration: %s", err)
+		os.Exit(2)
 	}
 	zap, err := build(myConfig)
 	if err != nil {
-		fmt.Printf("Error")
+		fmt.Printf("Failed to compose zap logger : %s", err)
+		os.Exit(2)
 	}
 	sugar := zap.Sugar()
 	// set package varriable logger.

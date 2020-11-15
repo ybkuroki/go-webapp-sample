@@ -3,6 +3,7 @@ package config
 import (
 	"flag"
 	"fmt"
+	"os"
 
 	"github.com/jinzhu/configor"
 )
@@ -57,7 +58,8 @@ func Load() {
 	flag.Parse()
 	config = &Config{}
 	if err := configor.Load(config, "application."+*env+".yml"); err != nil {
-		fmt.Println(err)
+		fmt.Printf("Failed to read application.%s.yml: %s", *env, err)
+		os.Exit(2)
 	}
 }
 
