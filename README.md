@@ -6,7 +6,12 @@
 [![release](https://img.shields.io/github/release/ybkuroki/go-webapp-sample?style=for-the-badge&logo=github)](https://github.com/ybkuroki/go-webapp-sample/releases)
 
 ## Preface
-This sample project uses [Echo](https://echo.labstack.com/) and [Gorm](https://gorm.io/) written by [Golang](https://golang.org/). It provides only Web API. So, I recommend using a [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project as Web UI.
+This repository is the sample of web application using golang.
+This sample uses [Echo](https://echo.labstack.com/), [Gorm](https://gorm.io/) and [Zap logger](https://pkg.go.dev/go.uber.org/zap).
+This sample application provides only functions via Web APIs.
+So, if you would like to use web UI, I will recommend using [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) with this application. 
+
+If you would like to develop a web application using golang, please feel free to use this sample.
 
 ## Install
 Perform the following steps:
