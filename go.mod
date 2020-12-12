@@ -5,7 +5,7 @@ go 1.14
 require (
 	github.com/garyburd/redigo v1.6.2 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
-	github.com/gorilla/sessions v1.2.0
+	github.com/gorilla/sessions v1.2.1
 	github.com/jinzhu/configor v1.2.1
 	github.com/jinzhu/gorm v1.9.16
 	github.com/labstack/echo-contrib v0.9.0
