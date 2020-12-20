@@ -93,7 +93,7 @@ func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*P
 		books = append(books, *book)
 	}
 
-	p := createPage(rep, &books, page, size)
+	p := createPage(&books, page, size)
 	return p, nil
 }
 
@@ -115,11 +115,11 @@ func (b *Book) FindByTitle(rep *repository.Repository, title string, page int, s
 		books = append(books, *book)
 	}
 
-	p := createPage(rep, &books, page, size)
+	p := createPage(&books, page, size)
 	return p, nil
 }
 
-func createPage(rep *repository.Repository, books *[]Book, page int, size int) *Page {
+func createPage(books *[]Book, page int, size int) *Page {
 	p := NewPage()
 	p.Page = page
 	p.Size = size

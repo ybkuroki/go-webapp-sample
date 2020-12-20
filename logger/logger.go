@@ -52,11 +52,12 @@ func InitLogger() {
 		os.Exit(2)
 	}
 	var myConfig *Config
-	if err := yaml.Unmarshal(configYaml, &myConfig); err != nil {
+	if err = yaml.Unmarshal(configYaml, &myConfig); err != nil {
 		fmt.Printf("Failed to read zap logger configuration: %s", err)
 		os.Exit(2)
 	}
-	zap, err := build(myConfig)
+	var zap *zap.Logger
+	zap, err = build(myConfig)
 	if err != nil {
 		fmt.Printf("Failed to compose zap logger : %s", err)
 		os.Exit(2)
