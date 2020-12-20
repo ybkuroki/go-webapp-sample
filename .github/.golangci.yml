@@ -1,0 +1,58 @@
+# ref: https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+# all available settings of specific linters
+linters-settings:
+  dupl:
+    # tokens count to trigger issue, 150 by default
+    threshold: 150
+  goconst:
+    # minimal length of string constant, 3 by default
+    min-len: 3
+    # minimal occurrences count to trigger, 3 by default
+    min-occurrences: 2
+  gocyclo:
+    # minimal code complexity to report, 30 by default (but we recommend 10-20)
+    min-complexity: 15
+  gofmt:
+    # simplify code: gofmt with `-s` option, true by default
+    simplify: true
+  golint:
+    # minimal confidence for issues, default is 0.8
+    min-confidence: 0.8
+  govet:
+    # report about shadowed variables
+    check-shadowing: true
+  misspell:
+    # Correct spellings using locale preferences for US or UK.
+    # Default is to use a neutral variety of English.
+    # Setting locale to US will correct the British spelling of 'colour' to 'color'.
+    locale: US
+
+linters:
+  disable-all: true
+  enable:
+    # default
+    # ref: https://golangci-lint.run/usage/linters/
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - typecheck
+    - unused
+    - varcheck
+    # add
+    - dupl
+    - goconst
+    - golint
+    - govet
+    - gofmt
+    - goimports
+    - misspell
+    - unconvert
+    - unparam
+
+# https://github.com/golangci/golangci/wiki/Configuration
+# latest version: https://github.com/golangci/golangci-lint
+service:
+  golangci-lint-version: 1.33.0

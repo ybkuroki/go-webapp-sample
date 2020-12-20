@@ -7,10 +7,16 @@ import (
 	"gopkg.in/go-playground/validator.v9"
 )
 
+const (
+	required string = "required"
+	max      string = "max"
+	min      string = "min"
+)
+
 // RegBookDto defines a data transfer object for register.
 type RegBookDto struct {
-	Title      string `validate:"required,gte=3,lt=50" json:"title"`
-	Isbn       string `validate:"required,gte=10,lt=20" json:"isbn"`
+	Title      string `validate:"required,min=3,max=50" json:"title"`
+	Isbn       string `validate:"required,min=10,max=20" json:"isbn"`
 	CategoryID uint   `json:"categoryId"`
 	FormatID   uint   `json:"formatId"`
 }
@@ -41,17 +47,17 @@ func validateDto(b interface{}) map[string]string {
 				switch errors[i].StructField() {
 				case "ID":
 					switch errors[i].Tag() {
-					case "required":
+					case required:
 						result["id"] = "書籍IDが存在しません"
 					}
 				case "Title":
 					switch errors[i].Tag() {
-					case "required", "min", "max":
+					case required, min, max:
 						result["title"] = "書籍タイトルは、3文字以上50文字以下で入力してください"
 					}
 				case "Isbn":
 					switch errors[i].Tag() {
-					case "required", "min", "max":
+					case required, min, max:
 						result["isbn"] = "ISBNは、10文字以上20文字以下で入力してください"
 					}
 				}

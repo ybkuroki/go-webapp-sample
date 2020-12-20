@@ -31,8 +31,8 @@ func JSONErrorHandler(err error, c echo.Context) {
 	apierr.Message = msg
 
 	if !c.Response().Committed {
-		if err := c.JSON(code, apierr); err != nil {
-			logger.GetZapLogger().Errorf(err.Error())
+		if reserr := c.JSON(code, apierr); reserr != nil {
+			logger.GetZapLogger().Errorf(reserr.Error())
 		}
 	}
 	logger.GetZapLogger().Debugf(err.Error())

@@ -1,8 +1,6 @@
 name: check
 
 on:
-  push:
-    branches: [ master ]
   pull_request:
     branches: [ master ]
 
@@ -11,13 +9,16 @@ jobs:
     name: check
     runs-on: ubuntu-latest
     steps:
+      # Set up GOPATH
       - name: set up
         uses: actions/setup-go@v2
         with:
           go-version: 1.14
         id: go
+      # Check out this repository
       - name: checkout
         uses: actions/checkout@v2
+      # Store cache
       - name: cache
         uses: actions/cache@v2
         with:
@@ -25,9 +26,14 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: install lint
-        run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.32.2
-      - name: lint
-        run: golangci-lint run
+      # Run golangci-lint using reviewdog
+      - name: golangci-lint
+        uses: reviewdog/action-golangci-lint@v1
+        with:
+          github_token: ${{ secrets.github_token }}
+          level: warning
+          golangci_lint_flags: "--config=.github/.golangci.yml"
+          reporter: github-pr-review
+      # Run test
       - name: test
         run: go test ./... -v
