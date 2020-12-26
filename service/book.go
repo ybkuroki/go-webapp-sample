@@ -1,57 +1,57 @@
 package service
 
 import (
-	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
 // FindAllBooks returns the list of all books.
-func FindAllBooks() *[]model.Book {
-	rep := repository.GetRepository()
+func FindAllBooks(context mycontext.Context) *[]model.Book {
+	rep := context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAll(rep)
 	if err != nil {
-		logger.GetZapLogger().Errorf(err.Error())
+		context.GetLogger().GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
 }
 
 // FindAllBooksByPage returns the page object of all books.
-func FindAllBooksByPage(page int, size int) *model.Page {
-	rep := repository.GetRepository()
+func FindAllBooksByPage(context mycontext.Context, page int, size int) *model.Page {
+	rep := context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAllByPage(rep, page, size)
 	if err != nil {
-		logger.GetZapLogger().Errorf(err.Error())
+		context.GetLogger().GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
 }
 
 // FindBooksByTitle returns the page object of books matched given book title.
-func FindBooksByTitle(title string, page int, size int) *model.Page {
-	rep := repository.GetRepository()
+func FindBooksByTitle(context mycontext.Context, title string, page int, size int) *model.Page {
+	rep := context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindByTitle(rep, title, page, size)
 	if err != nil {
-		logger.GetZapLogger().Errorf(err.Error())
+		context.GetLogger().GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
 }
 
 // RegisterBook register the given book data.
-func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
+func RegisterBook(context mycontext.Context, dto *dto.RegBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
-		rep := repository.GetRepository()
+		rep := context.GetRepository()
 		var result *model.Book
 
-		err := rep.Transaction(func(txrep *repository.Repository) error {
+		err := rep.Transaction(func(txrep repository.Repository) error {
 			var err error
 			book := dto.Create()
 
@@ -73,7 +73,7 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetZapLogger().Errorf(err.Error())
+			context.GetLogger().GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
@@ -84,14 +84,14 @@ func RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 }
 
 // EditBook updates the given book data.
-func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
+func EditBook(context mycontext.Context, dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
-		rep := repository.GetRepository()
+		rep := context.GetRepository()
 		var result *model.Book
 
-		err := rep.Transaction(func(txrep *repository.Repository) error {
+		err := rep.Transaction(func(txrep repository.Repository) error {
 			var err error
 			var book *model.Book
 
@@ -123,7 +123,7 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetZapLogger().Errorf(err.Error())
+			context.GetLogger().GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
@@ -134,14 +134,14 @@ func EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 }
 
 // DeleteBook deletes the given book data.
-func DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
+func DeleteBook(context mycontext.Context, dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
-		rep := repository.GetRepository()
+		rep := context.GetRepository()
 		var result *model.Book
 
-		err := rep.Transaction(func(txrep *repository.Repository) error {
+		err := rep.Transaction(func(txrep repository.Repository) error {
 			var err error
 			var book *model.Book
 
@@ -158,7 +158,7 @@ func DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 		})
 
 		if err != nil {
-			logger.GetZapLogger().Errorf(err.Error())
+			context.GetLogger().GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 

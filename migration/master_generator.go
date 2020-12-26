@@ -1,15 +1,14 @@
 package migration
 
 import (
-	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 )
 
 // InitMasterData creates the master data used in this application.
-func InitMasterData(config *config.Config) {
-	if config.Extension.MasterGenerator {
-		rep := repository.GetRepository()
+func InitMasterData(context mycontext.Context) {
+	if context.GetConfig().Extension.MasterGenerator {
+		rep := context.GetRepository()
 
 		r := model.NewAuthority("Admin")
 		_, _ = r.Create(rep)

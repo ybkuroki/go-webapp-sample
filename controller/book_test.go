@@ -9,15 +9,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
-	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
 func TestGetBookList(t *testing.T) {
-	router := test.Prepare()
-	router.GET(APIBookList, GetBookList())
+	router, context := test.Prepare()
+	router.GET(APIBookList, GetBookList(context))
 
-	setUpTestData()
+	setUpTestData(context)
 
 	uri := test.NewRequestBuilder().URL(APIBookList).Params("page", "0").Params("size", "5").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
@@ -26,17 +26,17 @@ func TestGetBookList(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	book := &model.Book{}
-	data, _ := book.FindAllByPage(repository.GetRepository(), 0, 5)
+	data, _ := book.FindAllByPage(context.GetRepository(), 0, 5)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
 func TestGetBookSearch(t *testing.T) {
-	router := test.Prepare()
-	router.GET(APIBookSearch, GetBookSearch())
+	router, context := test.Prepare()
+	router.GET(APIBookSearch, GetBookSearch(context))
 
-	setUpTestData()
+	setUpTestData(context)
 
 	uri := test.NewRequestBuilder().URL(APIBookSearch).Params("query", "Test").Params("page", "0").Params("size", "5").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
@@ -45,15 +45,15 @@ func TestGetBookSearch(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	book := &model.Book{}
-	data, _ := book.FindByTitle(repository.GetRepository(), "Test", 0, 5)
+	data, _ := book.FindByTitle(context.GetRepository(), "Test", 0, 5)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
 func TestPostBookRegist(t *testing.T) {
-	router := test.Prepare()
-	router.POST(APIBookRegist, PostBookRegist())
+	router, context := test.Prepare()
+	router.POST(APIBookRegist, PostBookRegist(context))
 
 	param := createRegDto()
 	req := httptest.NewRequest("POST", APIBookRegist, strings.NewReader(test.ConvertToString(param)))
@@ -64,17 +64,17 @@ func TestPostBookRegist(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	book := &model.Book{}
-	data, _ := book.FindByID(repository.GetRepository(), 1)
+	data, _ := book.FindByID(context.GetRepository(), 1)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
 func TestPostBookEdit(t *testing.T) {
-	router := test.Prepare()
-	router.POST(APIBookEdit, PostBookEdit())
+	router, context := test.Prepare()
+	router.POST(APIBookEdit, PostBookEdit(context))
 
-	setUpTestData()
+	setUpTestData(context)
 
 	param := createChgDto()
 	req := httptest.NewRequest("POST", APIBookEdit, strings.NewReader(test.ConvertToString(param)))
@@ -85,20 +85,20 @@ func TestPostBookEdit(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	book := &model.Book{}
-	data, _ := book.FindByID(repository.GetRepository(), 1)
+	data, _ := book.FindByID(context.GetRepository(), 1)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
 func TestPostBookDelete(t *testing.T) {
-	router := test.Prepare()
-	router.POST(APIBookDelete, PostBookDelete())
+	router, context := test.Prepare()
+	router.POST(APIBookDelete, PostBookDelete(context))
 
-	setUpTestData()
+	setUpTestData(context)
 
 	book := &model.Book{}
-	data, _ := book.FindByID(repository.GetRepository(), 1)
+	data, _ := book.FindByID(context.GetRepository(), 1)
 
 	param := createChgDto()
 	req := httptest.NewRequest("POST", APIBookDelete, strings.NewReader(test.ConvertToString(param)))
@@ -112,9 +112,9 @@ func TestPostBookDelete(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func setUpTestData() {
+func setUpTestData(context mycontext.Context) {
 	model := model.NewBook("Test1", "123-123-123-1", 1, 1)
-	repo := repository.GetRepository()
+	repo := context.GetRepository()
 	_, _ = model.Create(repo)
 }
 

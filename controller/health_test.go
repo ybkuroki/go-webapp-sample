@@ -10,7 +10,7 @@ import (
 )
 
 func TestGetHealthCheck(t *testing.T) {
-	router := test.Prepare()
+	router, _ := test.Prepare()
 	router.GET(APIHealth, GetHealthCheck())
 
 	req := httptest.NewRequest("GET", APIHealth, nil)

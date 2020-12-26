@@ -49,31 +49,14 @@ const (
 	DOC = "docker"
 )
 
-var config *Config
-var env *string
-
 // Load reads the settings written to the yml file
-func Load() {
-	env = flag.String("env", "develop", "To switch configurations.")
+func Load() (*Config, string) {
+	env := flag.String("env", "develop", "To switch configurations.")
 	flag.Parse()
-	config = &Config{}
+	config := &Config{}
 	if err := configor.Load(config, "application."+*env+".yml"); err != nil {
 		fmt.Printf("Failed to read application.%s.yml: %s", *env, err)
 		os.Exit(2)
 	}
-}
-
-// GetConfig returns the configuration data.
-func GetConfig() *Config {
-	return config
-}
-
-// SetConfig sets configuration data.
-func SetConfig(conf *Config) {
-	config = conf
-}
-
-// GetEnv returns the environment variable.
-func GetEnv() *string {
-	return env
+	return config, *env
 }

@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/logger"
 )
 
 // APIError represents
@@ -32,8 +31,8 @@ func JSONErrorHandler(err error, c echo.Context) {
 
 	if !c.Response().Committed {
 		if reserr := c.JSON(code, apierr); reserr != nil {
-			logger.GetZapLogger().Errorf(reserr.Error())
+			//logger.GetZapLogger().Errorf(reserr.Error())
 		}
 	}
-	logger.GetZapLogger().Debugf(err.Error())
+	//logger.GetZapLogger().Debugf(err.Error())
 }

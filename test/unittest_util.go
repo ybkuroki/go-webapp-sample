@@ -9,13 +9,14 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/middleware"
 	"github.com/ybkuroki/go-webapp-sample/migration"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 // Prepare func is to prepare for unit test.
-func Prepare() *echo.Echo {
+func Prepare() (*echo.Echo, mycontext.Context) {
 	e := echo.New()
 
 	conf := &config.Config{}
@@ -25,21 +26,21 @@ func Prepare() *echo.Echo {
 	conf.Extension.MasterGenerator = true
 	conf.Extension.SecurityEnabled = false
 	conf.Log.RequestLogFormat = "${remote_ip} ${account_name} ${uri} ${method} ${status}"
-	config.SetConfig(conf)
 
-	initTestLogger()
-	middleware.InitLoggerMiddleware(e)
+	logger := initTestLogger()
+	rep := repository.NewBookRepository(logger, conf)
+	context := mycontext.NewContext(rep, conf, logger)
 
-	repository.InitDB()
+	middleware.InitLoggerMiddleware(e, context)
 
-	migration.CreateDatabase(config.GetConfig())
-	migration.InitMasterData(config.GetConfig())
+	migration.CreateDatabase(context)
+	migration.InitMasterData(context)
 
-	middleware.InitSessionMiddleware(e, config.GetConfig())
-	return e
+	middleware.InitSessionMiddleware(e, context)
+	return e, context
 }
 
-func initTestLogger() {
+func initTestLogger() *logger.Logger {
 	level := zap.NewAtomicLevel()
 	level.SetLevel(zapcore.DebugLevel)
 
@@ -67,10 +68,11 @@ func initTestLogger() {
 		fmt.Printf("Error")
 	}
 	sugar := zap.Sugar()
-	log := logger.NewLogger(sugar)
-	logger.SetLogger(log)
-	logger.GetZapLogger().Infof("Success to construct zap logger.")
+	// set package varriable logger.
+	logger := &logger.Logger{Zap: sugar}
+	logger.GetZapLogger().Infof("Success to read zap logger configuration")
 	_ = zap.Sync()
+	return logger
 }
 
 // ConvertToString func is convert model to string.

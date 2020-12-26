@@ -5,13 +5,10 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/ybkuroki/go-webapp-sample/config"
 	"go.uber.org/zap"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v2"
 )
-
-var logger *Logger
 
 // Config is
 type Config struct {
@@ -21,32 +18,12 @@ type Config struct {
 
 // Logger is an alternative implementation of *gorm.Logger
 type Logger struct {
-	zap *zap.SugaredLogger
-}
-
-// GetLogger is return Logger
-func GetLogger() *Logger {
-	return logger
-}
-
-// SetLogger sets logger
-func SetLogger(log *Logger) {
-	logger = log
-}
-
-// GetZapLogger returns zapSugaredLogger
-func GetZapLogger() *zap.SugaredLogger {
-	return logger.zap
+	Zap *zap.SugaredLogger
 }
 
 // NewLogger create logger object for *gorm.DB from *echo.Logger
-func NewLogger(zap *zap.SugaredLogger) *Logger {
-	return &Logger{zap: zap}
-}
-
-// InitLogger initialize logger.
-func InitLogger() {
-	configYaml, err := ioutil.ReadFile("./zaplogger." + *config.GetEnv() + ".yml")
+func NewLogger(env string) *Logger {
+	configYaml, err := ioutil.ReadFile("./zaplogger." + env + ".yml")
 	if err != nil {
 		fmt.Printf("Failed to read logger configuration: %s", err)
 		os.Exit(2)
@@ -64,7 +41,13 @@ func InitLogger() {
 	}
 	sugar := zap.Sugar()
 	// set package varriable logger.
-	logger = NewLogger(sugar)
-	logger.zap.Infof("Success to read zap logger configuration: zaplogger." + *config.GetEnv() + ".yml")
+	logger := &Logger{Zap: sugar}
+	logger.Zap.Infof("Success to read zap logger configuration: zaplogger." + env + ".yml")
 	_ = zap.Sync()
+	return logger
+}
+
+// GetZapLogger is
+func (log *Logger) GetZapLogger() *zap.SugaredLogger {
+	return log.Zap
 }

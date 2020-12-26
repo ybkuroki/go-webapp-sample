@@ -1,15 +1,14 @@
 package migration
 
 import (
-	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 )
 
 // CreateDatabase creates the tables used in this application.
-func CreateDatabase(config *config.Config) {
-	if config.Database.Migration {
-		db := repository.GetDB()
+func CreateDatabase(context mycontext.Context) {
+	if context.GetConfig().Database.Migration {
+		db := context.GetRepository()
 
 		db.DropTableIfExists(&model.Book{})
 		db.DropTableIfExists(&model.Category{})

@@ -4,8 +4,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/model"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/service"
 	"github.com/ybkuroki/go-webapp-sample/session"
 )
@@ -20,9 +20,9 @@ func GetLoginStatus() echo.HandlerFunc {
 }
 
 // GetLoginAccount returns the account data of logged in user.
-func GetLoginAccount() echo.HandlerFunc {
+func GetLoginAccount(context mycontext.Context) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		if !config.GetConfig().Extension.SecurityEnabled {
+		if !context.GetConfig().Extension.SecurityEnabled {
 			return c.JSON(http.StatusOK, dummyAccount)
 		}
 		return c.JSON(http.StatusOK, session.GetAccount(c))
@@ -30,14 +30,14 @@ func GetLoginAccount() echo.HandlerFunc {
 }
 
 // PostLogin is the method to login using username and password by http post.
-func PostLogin() echo.HandlerFunc {
+func PostLogin(context mycontext.Context) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		username := c.FormValue("username")
 		password := c.FormValue("password")
 
 		account := session.GetAccount(c)
 		if account == nil {
-			authenticate, a := service.AuthenticateByUsernameAndPassword(username, password)
+			authenticate, a := service.AuthenticateByUsernameAndPassword(context, username, password)
 			if authenticate {
 				_ = session.SetAccount(c, a)
 				_ = session.Save(c)

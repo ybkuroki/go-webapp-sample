@@ -6,6 +6,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/middleware"
 	"github.com/ybkuroki/go-webapp-sample/migration"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"github.com/ybkuroki/go-webapp-sample/router"
 )
@@ -13,22 +14,22 @@ import (
 func main() {
 	e := echo.New()
 
-	config.Load()
-	logger.InitLogger()
-	middleware.InitLoggerMiddleware(e)
-	logger.GetZapLogger().Infof("Loaded this configuration : application." + *config.GetEnv() + ".yml")
+	conf, env := config.Load()
+	logger := logger.NewLogger(env)
+	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
 
-	repository.InitDB()
-	db := repository.GetDB()
+	rep := repository.NewBookRepository(logger, conf)
+	context := mycontext.NewContext(rep, conf, logger)
 
-	migration.CreateDatabase(config.GetConfig())
-	migration.InitMasterData(config.GetConfig())
+	migration.CreateDatabase(context)
+	migration.InitMasterData(context)
 
-	router.Init(e, config.GetConfig())
-	middleware.InitSessionMiddleware(e, config.GetConfig())
+	router.Init(e, context)
+	middleware.InitLoggerMiddleware(e, context)
+	middleware.InitSessionMiddleware(e, context)
 	if err := e.Start(":8080"); err != nil {
 		logger.GetZapLogger().Errorf(err.Error())
 	}
 
-	defer db.Close()
+	defer rep.Close()
 }

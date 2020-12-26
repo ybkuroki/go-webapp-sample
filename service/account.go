@@ -1,15 +1,15 @@
 package service
 
 import (
-	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"golang.org/x/crypto/bcrypt"
 )
 
 // AuthenticateByUsernameAndPassword authenticates by using username and plain text password.
-func AuthenticateByUsernameAndPassword(username string, password string) (bool, *model.Account) {
-	rep := repository.GetRepository()
+func AuthenticateByUsernameAndPassword(context mycontext.Context, username string, password string) (bool, *model.Account) {
+	rep := context.GetRepository()
+	logger := context.GetLogger()
 	account := model.Account{}
 	result, err := account.FindByName(rep, username)
 	if err != nil {

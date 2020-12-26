@@ -6,38 +6,39 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/service"
 )
 
 // GetBookList returns the list of all books.
-func GetBookList() echo.HandlerFunc {
+func GetBookList(context mycontext.Context) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		page, _ := strconv.Atoi(c.QueryParam("page"))
 		size, _ := strconv.Atoi(c.QueryParam("size"))
 
-		return c.JSON(http.StatusOK, service.FindAllBooksByPage(page, size))
+		return c.JSON(http.StatusOK, service.FindAllBooksByPage(context, page, size))
 	}
 }
 
 // GetBookSearch returns the list of matched books by searching.
-func GetBookSearch() echo.HandlerFunc {
+func GetBookSearch(context mycontext.Context) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		title := c.QueryParam("query")
 		page, _ := strconv.Atoi(c.QueryParam("page"))
 		size, _ := strconv.Atoi(c.QueryParam("size"))
 
-		return c.JSON(http.StatusOK, service.FindBooksByTitle(title, page, size))
+		return c.JSON(http.StatusOK, service.FindBooksByTitle(context, title, page, size))
 	}
 }
 
 // PostBookRegist register a new book by http post.
-func PostBookRegist() echo.HandlerFunc {
+func PostBookRegist(context mycontext.Context) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		dto := dto.NewRegBookDto()
 		if err := c.Bind(dto); err != nil {
 			return c.JSON(http.StatusBadRequest, dto)
 		}
-		book, result := service.RegisterBook(dto)
+		book, result := service.RegisterBook(context, dto)
 		if result != nil {
 			return c.JSON(http.StatusBadRequest, result)
 		}
@@ -46,13 +47,13 @@ func PostBookRegist() echo.HandlerFunc {
 }
 
 // PostBookEdit edit the existing book by http post.
-func PostBookEdit() echo.HandlerFunc {
+func PostBookEdit(context mycontext.Context) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		dto := dto.NewChgBookDto()
 		if err := c.Bind(dto); err != nil {
 			return c.JSON(http.StatusBadRequest, dto)
 		}
-		book, result := service.EditBook(dto)
+		book, result := service.EditBook(context, dto)
 		if result != nil {
 			return c.JSON(http.StatusBadRequest, result)
 		}
@@ -61,13 +62,13 @@ func PostBookEdit() echo.HandlerFunc {
 }
 
 // PostBookDelete deletes the existing book by http post.
-func PostBookDelete() echo.HandlerFunc {
+func PostBookDelete(context mycontext.Context) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		dto := dto.NewChgBookDto()
 		if err := c.Bind(dto); err != nil {
 			return c.JSON(http.StatusBadRequest, dto)
 		}
-		book, result := service.DeleteBook(dto)
+		book, result := service.DeleteBook(context, dto)
 		if result != nil {
 			return c.JSON(http.StatusBadRequest, result)
 		}
