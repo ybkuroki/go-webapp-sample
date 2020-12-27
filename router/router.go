@@ -33,26 +33,32 @@ func Init(e *echo.Echo, context mycontext.Context) {
 		}))
 	}
 
-	e.HTTPErrorHandler = controller.JSONErrorHandler
+	errorHandler := controller.NewErrorController(context)
+	e.HTTPErrorHandler = errorHandler.JSONError
 	e.Use(middleware.Recover())
 
-	e.GET(controller.APIBookList, controller.GetBookList(context))
-	e.GET(controller.APIBookSearch, controller.GetBookSearch(context))
-	e.POST(controller.APIBookRegist, controller.PostBookRegist(context))
-	e.POST(controller.APIBookEdit, controller.PostBookEdit(context))
-	e.POST(controller.APIBookDelete, controller.PostBookDelete(context))
+	book := controller.NewBookController(context)
+	master := controller.NewMasterController(context)
+	account := controller.NewAccountController(context)
+	health := controller.NewHealthController(context)
 
-	e.GET(controller.APIMasterCategory, controller.GetCategoryList(context))
-	e.GET(controller.APIMasterFormat, controller.GetFormatList(context))
+	e.GET(controller.APIBookList, func(c echo.Context) error { return book.GetBookList(c) })
+	e.GET(controller.APIBookSearch, func(c echo.Context) error { return book.GetBookSearch(c) })
+	e.POST(controller.APIBookRegist, func(c echo.Context) error { return book.PostBookRegist(c) })
+	e.POST(controller.APIBookEdit, func(c echo.Context) error { return book.PostBookEdit(c) })
+	e.POST(controller.APIBookDelete, func(c echo.Context) error { return book.PostBookDelete(c) })
 
-	e.GET(controller.APIAccountLoginStatus, controller.GetLoginStatus())
-	e.GET(controller.APIAccountLoginAccount, controller.GetLoginAccount(context))
+	e.GET(controller.APIMasterCategory, func(c echo.Context) error { return master.GetCategoryList(c) })
+	e.GET(controller.APIMasterFormat, func(c echo.Context) error { return master.GetFormatList(c) })
+
+	e.GET(controller.APIAccountLoginStatus, func(c echo.Context) error { return account.GetLoginStatus(c) })
+	e.GET(controller.APIAccountLoginAccount, func(c echo.Context) error { return account.GetLoginAccount(c) })
 
 	if conf.Extension.SecurityEnabled {
-		e.POST(controller.APIAccountLogin, controller.PostLogin(context))
-		e.POST(controller.APIAccountLogout, controller.PostLogout())
+		e.POST(controller.APIAccountLogin, func(c echo.Context) error { return account.PostLogin(c) })
+		e.POST(controller.APIAccountLogout, func(c echo.Context) error { return account.PostLogout(c) })
 	}
 
-	e.GET(controller.APIHealth, controller.GetHealthCheck())
+	e.GET(controller.APIHealth, func(c echo.Context) error { return health.GetHealthCheck(c) })
 
 }

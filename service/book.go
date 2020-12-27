@@ -7,48 +7,58 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
+// BookService is
+type BookService struct {
+	context mycontext.Context
+}
+
+// NewBookService is
+func NewBookService(context mycontext.Context) *BookService {
+	return &BookService{context: context}
+}
+
 // FindAllBooks returns the list of all books.
-func FindAllBooks(context mycontext.Context) *[]model.Book {
-	rep := context.GetRepository()
+func (b *BookService) FindAllBooks() *[]model.Book {
+	rep := b.context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAll(rep)
 	if err != nil {
-		context.GetLogger().GetZapLogger().Errorf(err.Error())
+		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
 }
 
 // FindAllBooksByPage returns the page object of all books.
-func FindAllBooksByPage(context mycontext.Context, page int, size int) *model.Page {
-	rep := context.GetRepository()
+func (b *BookService) FindAllBooksByPage(page int, size int) *model.Page {
+	rep := b.context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAllByPage(rep, page, size)
 	if err != nil {
-		context.GetLogger().GetZapLogger().Errorf(err.Error())
+		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
 }
 
 // FindBooksByTitle returns the page object of books matched given book title.
-func FindBooksByTitle(context mycontext.Context, title string, page int, size int) *model.Page {
-	rep := context.GetRepository()
+func (b *BookService) FindBooksByTitle(title string, page int, size int) *model.Page {
+	rep := b.context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindByTitle(rep, title, page, size)
 	if err != nil {
-		context.GetLogger().GetZapLogger().Errorf(err.Error())
+		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
 		return nil
 	}
 	return result
 }
 
 // RegisterBook register the given book data.
-func RegisterBook(context mycontext.Context, dto *dto.RegBookDto) (*model.Book, map[string]string) {
+func (b *BookService) RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
-		rep := context.GetRepository()
+		rep := b.context.GetRepository()
 		var result *model.Book
 
 		err := rep.Transaction(func(txrep repository.Repository) error {
@@ -73,7 +83,7 @@ func RegisterBook(context mycontext.Context, dto *dto.RegBookDto) (*model.Book, 
 		})
 
 		if err != nil {
-			context.GetLogger().GetZapLogger().Errorf(err.Error())
+			b.context.GetLogger().GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
@@ -84,11 +94,11 @@ func RegisterBook(context mycontext.Context, dto *dto.RegBookDto) (*model.Book, 
 }
 
 // EditBook updates the given book data.
-func EditBook(context mycontext.Context, dto *dto.ChgBookDto) (*model.Book, map[string]string) {
+func (b *BookService) EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
-		rep := context.GetRepository()
+		rep := b.context.GetRepository()
 		var result *model.Book
 
 		err := rep.Transaction(func(txrep repository.Repository) error {
@@ -123,7 +133,7 @@ func EditBook(context mycontext.Context, dto *dto.ChgBookDto) (*model.Book, map[
 		})
 
 		if err != nil {
-			context.GetLogger().GetZapLogger().Errorf(err.Error())
+			b.context.GetLogger().GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 
@@ -134,11 +144,11 @@ func EditBook(context mycontext.Context, dto *dto.ChgBookDto) (*model.Book, map[
 }
 
 // DeleteBook deletes the given book data.
-func DeleteBook(context mycontext.Context, dto *dto.ChgBookDto) (*model.Book, map[string]string) {
+func (b *BookService) DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
-		rep := context.GetRepository()
+		rep := b.context.GetRepository()
 		var result *model.Book
 
 		err := rep.Transaction(func(txrep repository.Repository) error {
@@ -158,7 +168,7 @@ func DeleteBook(context mycontext.Context, dto *dto.ChgBookDto) (*model.Book, ma
 		})
 
 		if err != nil {
-			context.GetLogger().GetZapLogger().Errorf(err.Error())
+			b.context.GetLogger().GetZapLogger().Errorf(err.Error())
 			return nil, map[string]string{"error": "transaction error"}
 		}
 

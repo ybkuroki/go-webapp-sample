@@ -6,6 +6,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
@@ -15,7 +16,9 @@ import (
 
 func TestGetBookList(t *testing.T) {
 	router, context := test.Prepare()
-	router.GET(APIBookList, GetBookList(context))
+
+	book := NewBookController(context)
+	router.GET(APIBookList, func(c echo.Context) error { return book.GetBookList(c) })
 
 	setUpTestData(context)
 
@@ -25,8 +28,8 @@ func TestGetBookList(t *testing.T) {
 
 	router.ServeHTTP(rec, req)
 
-	book := &model.Book{}
-	data, _ := book.FindAllByPage(context.GetRepository(), 0, 5)
+	entity := &model.Book{}
+	data, _ := entity.FindAllByPage(context.GetRepository(), 0, 5)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -34,7 +37,9 @@ func TestGetBookList(t *testing.T) {
 
 func TestGetBookSearch(t *testing.T) {
 	router, context := test.Prepare()
-	router.GET(APIBookSearch, GetBookSearch(context))
+
+	book := NewBookController(context)
+	router.GET(APIBookSearch, func(c echo.Context) error { return book.GetBookSearch(c) })
 
 	setUpTestData(context)
 
@@ -44,8 +49,8 @@ func TestGetBookSearch(t *testing.T) {
 
 	router.ServeHTTP(rec, req)
 
-	book := &model.Book{}
-	data, _ := book.FindByTitle(context.GetRepository(), "Test", 0, 5)
+	entity := &model.Book{}
+	data, _ := entity.FindByTitle(context.GetRepository(), "Test", 0, 5)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -53,7 +58,9 @@ func TestGetBookSearch(t *testing.T) {
 
 func TestPostBookRegist(t *testing.T) {
 	router, context := test.Prepare()
-	router.POST(APIBookRegist, PostBookRegist(context))
+
+	book := NewBookController(context)
+	router.POST(APIBookRegist, func(c echo.Context) error { return book.PostBookRegist(c) })
 
 	param := createRegDto()
 	req := httptest.NewRequest("POST", APIBookRegist, strings.NewReader(test.ConvertToString(param)))
@@ -63,8 +70,8 @@ func TestPostBookRegist(t *testing.T) {
 
 	router.ServeHTTP(rec, req)
 
-	book := &model.Book{}
-	data, _ := book.FindByID(context.GetRepository(), 1)
+	entity := &model.Book{}
+	data, _ := entity.FindByID(context.GetRepository(), 1)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -72,7 +79,9 @@ func TestPostBookRegist(t *testing.T) {
 
 func TestPostBookEdit(t *testing.T) {
 	router, context := test.Prepare()
-	router.POST(APIBookEdit, PostBookEdit(context))
+
+	book := NewBookController(context)
+	router.POST(APIBookEdit, func(c echo.Context) error { return book.PostBookEdit(c) })
 
 	setUpTestData(context)
 
@@ -84,8 +93,8 @@ func TestPostBookEdit(t *testing.T) {
 
 	router.ServeHTTP(rec, req)
 
-	book := &model.Book{}
-	data, _ := book.FindByID(context.GetRepository(), 1)
+	entity := &model.Book{}
+	data, _ := entity.FindByID(context.GetRepository(), 1)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -93,12 +102,14 @@ func TestPostBookEdit(t *testing.T) {
 
 func TestPostBookDelete(t *testing.T) {
 	router, context := test.Prepare()
-	router.POST(APIBookDelete, PostBookDelete(context))
+
+	book := NewBookController(context)
+	router.POST(APIBookDelete, func(c echo.Context) error { return book.PostBookDelete(c) })
 
 	setUpTestData(context)
 
-	book := &model.Book{}
-	data, _ := book.FindByID(context.GetRepository(), 1)
+	entity := &model.Book{}
+	data, _ := entity.FindByID(context.GetRepository(), 1)
 
 	param := createChgDto()
 	req := httptest.NewRequest("POST", APIBookDelete, strings.NewReader(test.ConvertToString(param)))

@@ -8,16 +8,23 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/service"
 )
 
+// MasterController is
+type MasterController struct {
+	context mycontext.Context
+	service *service.MasterService
+}
+
+// NewMasterController is
+func NewMasterController(context mycontext.Context) *MasterController {
+	return &MasterController{context: context, service: service.NewMasterService(context)}
+}
+
 // GetCategoryList returns the list of all categories.
-func GetCategoryList(context mycontext.Context) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, service.FindAllCategories(context))
-	}
+func (controller *MasterController) GetCategoryList(c echo.Context) error {
+	return c.JSON(http.StatusOK, controller.service.FindAllCategories())
 }
 
 // GetFormatList returns the list of all formats.
-func GetFormatList(context mycontext.Context) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, service.FindAllFormats(context))
-	}
+func (controller *MasterController) GetFormatList(c echo.Context) error {
+	return c.JSON(http.StatusOK, controller.service.FindAllFormats())
 }

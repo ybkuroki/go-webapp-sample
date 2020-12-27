@@ -10,50 +10,56 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
-var dummyAccount = model.NewAccountWithPlainPassword("test", "test", 1)
+// AccountController is
+type AccountController struct {
+	context      mycontext.Context
+	service      *service.AccountService
+	dummyAccount *model.Account
+}
+
+// NewAccountController is
+func NewAccountController(context mycontext.Context) *AccountController {
+	return &AccountController{
+		context:      context,
+		service:      service.NewAccountService(context),
+		dummyAccount: model.NewAccountWithPlainPassword("test", "test", 1),
+	}
+}
 
 // GetLoginStatus returns the status of login.
-func GetLoginStatus() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, true)
-	}
+func (controller *AccountController) GetLoginStatus(c echo.Context) error {
+	return c.JSON(http.StatusOK, true)
 }
 
 // GetLoginAccount returns the account data of logged in user.
-func GetLoginAccount(context mycontext.Context) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		if !context.GetConfig().Extension.SecurityEnabled {
-			return c.JSON(http.StatusOK, dummyAccount)
-		}
-		return c.JSON(http.StatusOK, session.GetAccount(c))
+func (controller *AccountController) GetLoginAccount(c echo.Context) error {
+	if !controller.context.GetConfig().Extension.SecurityEnabled {
+		return c.JSON(http.StatusOK, controller.dummyAccount)
 	}
+	return c.JSON(http.StatusOK, session.GetAccount(c))
 }
 
 // PostLogin is the method to login using username and password by http post.
-func PostLogin(context mycontext.Context) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		username := c.FormValue("username")
-		password := c.FormValue("password")
+func (controller *AccountController) PostLogin(c echo.Context) error {
+	username := c.FormValue("username")
+	password := c.FormValue("password")
 
-		account := session.GetAccount(c)
-		if account == nil {
-			authenticate, a := service.AuthenticateByUsernameAndPassword(context, username, password)
-			if authenticate {
-				_ = session.SetAccount(c, a)
-				_ = session.Save(c)
-				return c.JSON(http.StatusOK, a)
-			}
-			return c.NoContent(http.StatusUnauthorized)
+	account := session.GetAccount(c)
+	if account == nil {
+		authenticate, a := controller.service.AuthenticateByUsernameAndPassword(username, password)
+		if authenticate {
+			_ = session.SetAccount(c, a)
+			_ = session.Save(c)
+			return c.JSON(http.StatusOK, a)
 		}
-		return c.JSON(http.StatusOK, account)
+		return c.NoContent(http.StatusUnauthorized)
 	}
+	return c.JSON(http.StatusOK, account)
 }
 
 // PostLogout is the method to logout by http post.
-func PostLogout() echo.HandlerFunc {
-	return func(c echo.Context) error {
-		_ = session.SetAccount(c, nil)
-		_ = session.Delete(c)
-		return c.NoContent(http.StatusOK)
-	}
+func (controller *AccountController) PostLogout(c echo.Context) error {
+	_ = session.SetAccount(c, nil)
+	_ = session.Delete(c)
+	return c.NoContent(http.StatusOK)
 }
