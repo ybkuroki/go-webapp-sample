@@ -24,7 +24,7 @@ func (l *Logger) Print(values ...interface{}) {
 func (l *Logger) Println(values []interface{}) {
 	sql := createLog(values)
 	if sql != "" {
-		l.zap.Debugf(sql)
+		l.Zap.Debugf(sql)
 	}
 }
 

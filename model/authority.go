@@ -23,7 +23,7 @@ func NewAuthority(name string) *Authority {
 }
 
 // Create persists this authority data.
-func (a *Authority) Create(rep *repository.Repository) (*Authority, error) {
+func (a *Authority) Create(rep repository.Repository) (*Authority, error) {
 	if error := rep.Create(a).Error; error != nil {
 		return nil, error
 	}

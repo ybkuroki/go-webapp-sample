@@ -5,13 +5,16 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
 func TestGetHealthCheck(t *testing.T) {
-	router := test.Prepare()
-	router.GET(APIHealth, GetHealthCheck())
+	router, context := test.Prepare()
+
+	health := NewHealthController(context)
+	router.GET(APIHealth, func(c echo.Context) error { return health.GetHealthCheck(c) })
 
 	req := httptest.NewRequest("GET", APIHealth, nil)
 	rec := httptest.NewRecorder()

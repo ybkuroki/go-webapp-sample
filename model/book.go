@@ -44,7 +44,7 @@ func NewBook(title string, isbn string, categoryID uint, formatID uint) *Book {
 }
 
 // FindByID returns a book full matched given book's ID.
-func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
+func (b *Book) FindByID(rep repository.Repository, id uint) (*Book, error) {
 	var book *Book
 
 	var rec RecordBook
@@ -55,7 +55,7 @@ func (b *Book) FindByID(rep *repository.Repository, id uint) (*Book, error) {
 }
 
 // FindAll returns all books of the book table.
-func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
+func (b *Book) FindAll(rep repository.Repository) (*[]Book, error) {
 	var books []Book
 
 	var rec RecordBook
@@ -76,7 +76,7 @@ func (b *Book) FindAll(rep *repository.Repository) (*[]Book, error) {
 }
 
 // FindAllByPage returns the page object of all books.
-func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*Page, error) {
+func (b *Book) FindAllByPage(rep repository.Repository, page int, size int) (*Page, error) {
 	var books []Book
 
 	var rec RecordBook
@@ -98,7 +98,7 @@ func (b *Book) FindAllByPage(rep *repository.Repository, page int, size int) (*P
 }
 
 // FindByTitle returns the page object of books partially matched given book title.
-func (b *Book) FindByTitle(rep *repository.Repository, title string, page int, size int) (*Page, error) {
+func (b *Book) FindByTitle(rep repository.Repository, title string, page int, size int) (*Page, error) {
 	var books []Book
 
 	var rec RecordBook
@@ -132,7 +132,7 @@ func createPage(books *[]Book, page int, size int) *Page {
 }
 
 // Save persists this book data.
-func (b *Book) Save(rep *repository.Repository) (*Book, error) {
+func (b *Book) Save(rep repository.Repository) (*Book, error) {
 	if error := rep.Save(b).Error; error != nil {
 		return nil, error
 	}
@@ -140,7 +140,7 @@ func (b *Book) Save(rep *repository.Repository) (*Book, error) {
 }
 
 // Update updates this book data.
-func (b *Book) Update(rep *repository.Repository) (*Book, error) {
+func (b *Book) Update(rep repository.Repository) (*Book, error) {
 	if error := rep.Model(Book{}).Where("id = ?", b.ID).Select("title", "isbn", "category_id", "format_id").Updates(b).Error; error != nil {
 		return nil, error
 	}
@@ -148,7 +148,7 @@ func (b *Book) Update(rep *repository.Repository) (*Book, error) {
 }
 
 // Create persists this book data.
-func (b *Book) Create(rep *repository.Repository) (*Book, error) {
+func (b *Book) Create(rep repository.Repository) (*Book, error) {
 	if error := rep.Select("title", "isbn", "category_id", "format_id").Create(b).Error; error != nil {
 		return nil, error
 	}
@@ -156,7 +156,7 @@ func (b *Book) Create(rep *repository.Repository) (*Book, error) {
 }
 
 // Delete deletes this book data.
-func (b *Book) Delete(rep *repository.Repository) (*Book, error) {
+func (b *Book) Delete(rep repository.Repository) (*Book, error) {
 	if error := rep.Delete(b).Error; error != nil {
 		return nil, error
 	}

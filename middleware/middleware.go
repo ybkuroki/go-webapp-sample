@@ -12,19 +12,21 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/valyala/fasttemplate"
 	"github.com/ybkuroki/go-webapp-sample/config"
-	"github.com/ybkuroki/go-webapp-sample/logger"
+	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	mySession "github.com/ybkuroki/go-webapp-sample/session"
 	"gopkg.in/boj/redistore.v1"
 )
 
 // InitLoggerMiddleware initialize a middleware for logger.
-func InitLoggerMiddleware(e *echo.Echo) {
-	e.Use(RequestLoggerMiddleware)
-	e.Use(ActionLoggerMiddleware)
+func InitLoggerMiddleware(e *echo.Echo, context mycontext.Context) {
+	e.Use(RequestLoggerMiddleware(context))
+	e.Use(ActionLoggerMiddleware(context))
 }
 
 // InitSessionMiddleware initialize a middleware for session management.
-func InitSessionMiddleware(e *echo.Echo, conf *config.Config) {
+func InitSessionMiddleware(e *echo.Echo, context mycontext.Context) {
+	conf := context.GetConfig()
+	logger := context.GetLogger()
 	if conf.Extension.SecurityEnabled {
 		if conf.Redis.Enabled {
 			logger.GetZapLogger().Infof("Try redis connection")
@@ -43,49 +45,54 @@ func InitSessionMiddleware(e *echo.Echo, conf *config.Config) {
 }
 
 // RequestLoggerMiddleware is middleware for logging the contents of requests.
-func RequestLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		req := c.Request()
-		res := c.Response()
-		if err := next(c); err != nil {
-			c.Error(err)
-		}
-
-		template := fasttemplate.New(config.GetConfig().Log.RequestLogFormat, "${", "}")
-		logstr := template.ExecuteFuncString(func(w io.Writer, tag string) (int, error) {
-			switch tag {
-			case "remote_ip":
-				return w.Write([]byte(c.RealIP()))
-			case "account_name":
-				if account := mySession.GetAccount(c); account != nil {
-					return w.Write([]byte(account.Name))
-				}
-				return w.Write([]byte("None"))
-			case "uri":
-				return w.Write([]byte(req.RequestURI))
-			case "method":
-				return w.Write([]byte(req.Method))
-			case "status":
-				return w.Write([]byte(strconv.Itoa(res.Status)))
-			default:
-				return w.Write([]byte(""))
+func RequestLoggerMiddleware(context mycontext.Context) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			req := c.Request()
+			res := c.Response()
+			if err := next(c); err != nil {
+				c.Error(err)
 			}
-		})
-		logger.GetZapLogger().Infof(logstr)
-		return nil
+
+			template := fasttemplate.New(context.GetConfig().Log.RequestLogFormat, "${", "}")
+			logstr := template.ExecuteFuncString(func(w io.Writer, tag string) (int, error) {
+				switch tag {
+				case "remote_ip":
+					return w.Write([]byte(c.RealIP()))
+				case "account_name":
+					if account := mySession.GetAccount(c); account != nil {
+						return w.Write([]byte(account.Name))
+					}
+					return w.Write([]byte("None"))
+				case "uri":
+					return w.Write([]byte(req.RequestURI))
+				case "method":
+					return w.Write([]byte(req.Method))
+				case "status":
+					return w.Write([]byte(strconv.Itoa(res.Status)))
+				default:
+					return w.Write([]byte(""))
+				}
+			})
+			context.GetLogger().GetZapLogger().Infof(logstr)
+			return nil
+		}
 	}
 }
 
 // ActionLoggerMiddleware is middleware for logging the start and end of controller processes.
 // ref: https://echo.labstack.com/cookbook/middleware
-func ActionLoggerMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		logger.GetZapLogger().Debugf(c.Path() + " Action Start")
-		if err := next(c); err != nil {
-			c.Error(err)
+func ActionLoggerMiddleware(context mycontext.Context) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			logger := context.GetLogger()
+			logger.GetZapLogger().Debugf(c.Path() + " Action Start")
+			if err := next(c); err != nil {
+				c.Error(err)
+			}
+			logger.GetZapLogger().Debugf(c.Path() + " Action End")
+			return nil
 		}
-		logger.GetZapLogger().Debugf(c.Path() + " Action End")
-		return nil
 	}
 }
 

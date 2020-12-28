@@ -23,7 +23,7 @@ func NewFormat(name string) *Format {
 }
 
 // FindByID returns a format full matched given format's ID.
-func (f *Format) FindByID(rep *repository.Repository, id uint) (*Format, error) {
+func (f *Format) FindByID(rep repository.Repository, id uint) (*Format, error) {
 	var format Format
 	if error := rep.Where("id = ?", id).Find(&format).Error; error != nil {
 		return nil, error
@@ -32,7 +32,7 @@ func (f *Format) FindByID(rep *repository.Repository, id uint) (*Format, error) 
 }
 
 // FindAll returns all formats of the format table.
-func (f *Format) FindAll(rep *repository.Repository) (*[]Format, error) {
+func (f *Format) FindAll(rep repository.Repository) (*[]Format, error) {
 	var formats []Format
 	if error := rep.Find(&formats).Error; error != nil {
 		return nil, error
@@ -41,7 +41,7 @@ func (f *Format) FindAll(rep *repository.Repository) (*[]Format, error) {
 }
 
 // Create persists this category data.
-func (f *Format) Create(rep *repository.Repository) (*Format, error) {
+func (f *Format) Create(rep repository.Repository) (*Format, error) {
 	if error := rep.Create(f).Error; error != nil {
 		return nil, error
 	}

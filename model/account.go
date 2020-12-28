@@ -45,7 +45,7 @@ func NewAccountWithPlainPassword(name string, password string, authorityID uint)
 }
 
 // FindByName returns accounts full matched given account name.
-func (a *Account) FindByName(rep *repository.Repository, name string) (*Account, error) {
+func (a *Account) FindByName(rep repository.Repository, name string) (*Account, error) {
 	var account *Account
 
 	var rec RecordAccount
@@ -56,7 +56,7 @@ func (a *Account) FindByName(rep *repository.Repository, name string) (*Account,
 }
 
 // Create persists this account data.
-func (a *Account) Create(rep *repository.Repository) (*Account, error) {
+func (a *Account) Create(rep repository.Repository) (*Account, error) {
 	if error := rep.Select("name", "password", "authority_id").Create(a).Error; error != nil {
 		return nil, error
 	}

@@ -23,7 +23,7 @@ func NewCategory(name string) *Category {
 }
 
 // FindByID returns a category full matched given category's ID.
-func (c *Category) FindByID(rep *repository.Repository, id uint) (*Category, error) {
+func (c *Category) FindByID(rep repository.Repository, id uint) (*Category, error) {
 	var category Category
 	if error := rep.Where("id = ?", id).Find(&category).Error; error != nil {
 		return nil, error
@@ -32,7 +32,7 @@ func (c *Category) FindByID(rep *repository.Repository, id uint) (*Category, err
 }
 
 // FindAll returns all categories of the category table.
-func (c *Category) FindAll(rep *repository.Repository) (*[]Category, error) {
+func (c *Category) FindAll(rep repository.Repository) (*[]Category, error) {
 	var categories []Category
 	if error := rep.Find(&categories).Error; error != nil {
 		return nil, error
@@ -41,7 +41,7 @@ func (c *Category) FindAll(rep *repository.Repository) (*[]Category, error) {
 }
 
 // Create persists this category data.
-func (c *Category) Create(rep *repository.Repository) (*Category, error) {
+func (c *Category) Create(rep repository.Repository) (*Category, error) {
 	if error := rep.Create(c).Error; error != nil {
 		return nil, error
 	}
