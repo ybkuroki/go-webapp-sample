@@ -5,12 +5,12 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/mycontext"
 )
 
-// MasterService is
+// MasterService is a service for managing master data such as format and category.
 type MasterService struct {
 	context mycontext.Context
 }
 
-// NewMasterService is
+// NewMasterService is constructor.
 func NewMasterService(context mycontext.Context) *MasterService {
 	return &MasterService{context: context}
 }

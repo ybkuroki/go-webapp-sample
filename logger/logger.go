@@ -10,7 +10,7 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
-// Config is
+// Config represents the setting for zap logger.
 type Config struct {
 	ZapConfig zap.Config        `json:"zap_config" yaml:"zap_config"`
 	LogRotate lumberjack.Logger `json:"log_rotate" yaml:"log_rotate"`
@@ -47,7 +47,7 @@ func NewLogger(env string) *Logger {
 	return logger
 }
 
-// GetZapLogger is
+// GetZapLogger returns zapSugaredLogger
 func (log *Logger) GetZapLogger() *zap.SugaredLogger {
 	return log.Zap
 }

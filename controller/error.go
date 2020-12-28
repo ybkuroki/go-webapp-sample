@@ -7,18 +7,18 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/mycontext"
 )
 
-// APIError represents
+// APIError has a error code and a message.
 type APIError struct {
 	Code    int
 	Message string
 }
 
-// ErrorController is
+// ErrorController is a controller for handling errors.
 type ErrorController struct {
 	context mycontext.Context
 }
 
-// NewErrorController is
+// NewErrorController is constructor.
 func NewErrorController(context mycontext.Context) *ErrorController {
 	return &ErrorController{context: context}
 }

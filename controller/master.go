@@ -8,13 +8,13 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/service"
 )
 
-// MasterController is
+// MasterController is a controller for managing master data such as format and category.
 type MasterController struct {
 	context mycontext.Context
 	service *service.MasterService
 }
 
-// NewMasterController is
+// NewMasterController is constructor.
 func NewMasterController(context mycontext.Context) *MasterController {
 	return &MasterController{context: context, service: service.NewMasterService(context)}
 }

@@ -10,14 +10,14 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
-// AccountController is
+// AccountController is a controller for managing user account.
 type AccountController struct {
 	context      mycontext.Context
 	service      *service.AccountService
 	dummyAccount *model.Account
 }
 
-// NewAccountController is
+// NewAccountController is constructor.
 func NewAccountController(context mycontext.Context) *AccountController {
 	return &AccountController{
 		context:      context,

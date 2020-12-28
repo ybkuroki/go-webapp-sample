@@ -7,12 +7,12 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/mycontext"
 )
 
-// HealthController is
+// HealthController is a controller returns the current status of this application.
 type HealthController struct {
 	context mycontext.Context
 }
 
-// NewHealthController is
+// NewHealthController is constructor.
 func NewHealthController(context mycontext.Context) *HealthController {
 	return &HealthController{context: context}
 }

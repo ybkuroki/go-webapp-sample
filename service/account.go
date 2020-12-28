@@ -6,12 +6,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// AccountService is
+// AccountService is a service for managing user account.
 type AccountService struct {
 	context mycontext.Context
 }
 
-// NewAccountService is
+// NewAccountService is constructor.
 func NewAccountService(context mycontext.Context) *AccountService {
 	return &AccountService{context: context}
 }

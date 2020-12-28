@@ -7,12 +7,12 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
-// BookService is
+// BookService is a service for managing books.
 type BookService struct {
 	context mycontext.Context
 }
 
-// NewBookService is
+// NewBookService is constructor.
 func NewBookService(context mycontext.Context) *BookService {
 	return &BookService{context: context}
 }

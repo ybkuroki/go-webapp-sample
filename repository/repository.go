@@ -12,7 +12,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/logger"
 )
 
-// Repository defines a repository for access the database.
+// Repository defines a interface for access the database.
 type Repository interface {
 	Model(value interface{}) *gorm.DB
 	Select(query interface{}, args ...interface{}) *gorm.DB
@@ -39,11 +39,12 @@ type repository struct {
 	db *gorm.DB
 }
 
+// bookRepository is a concrete repository that implements repository.
 type bookRepository struct {
 	*repository
 }
 
-// NewBookRepository is
+// NewBookRepository is constructor for bookRepository.
 func NewBookRepository(logger *logger.Logger, conf *config.Config) Repository {
 	logger.GetZapLogger().Infof("Try database connection")
 	db, err := gorm.Open(conf.Database.Dialect, getConnection(conf))
@@ -145,14 +146,17 @@ func (rep *repository) ScanRows(rows *sql.Rows, result interface{}) error {
 	return rep.db.ScanRows(rows, result)
 }
 
+// Close close current db connection. If database connection is not an io.Closer, returns an error.
 func (rep *repository) Close() error {
 	return rep.db.Close()
 }
 
+// DropTableIfExists drop table if it is exist
 func (rep *repository) DropTableIfExists(value interface{}) *gorm.DB {
 	return rep.db.DropTableIfExists(value)
 }
 
+// AutoMigrate run auto migration for given models, will only add missing fields, won't delete/change current data
 func (rep *repository) AutoMigrate(value interface{}) *gorm.DB {
 	return rep.db.AutoMigrate(value)
 }
