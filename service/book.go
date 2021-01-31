@@ -17,7 +17,7 @@ func NewBookService(context mycontext.Context) *BookService {
 	return &BookService{context: context}
 }
 
-// FindByID is
+// FindByID returns one record matched book's id.
 func (b *BookService) FindByID(id uint) *model.Book {
 	rep := b.context.GetRepository()
 	book := model.Book{}

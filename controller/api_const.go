@@ -5,7 +5,7 @@ const (
 	API = "/api"
 	// APIBook represents the group of book management API.
 	APIBook = API + "/book"
-	// APIBookGet is
+	// APIBookGet represents the API to get one book.
 	APIBookGet = APIBook + "/get"
 	// APIBookList represents the API to get book's list.
 	APIBookList = APIBook + "/list"

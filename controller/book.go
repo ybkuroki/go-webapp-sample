@@ -21,7 +21,7 @@ func NewBookController(context mycontext.Context) *BookController {
 	return &BookController{context: context, service: service.NewBookService(context)}
 }
 
-// GetBook is
+// GetBook returns one record matched book's id.
 func (controller *BookController) GetBook(c echo.Context) error {
 	id, _ := strconv.Atoi(c.QueryParam("id"))
 
