@@ -21,6 +21,13 @@ func NewBookController(context mycontext.Context) *BookController {
 	return &BookController{context: context, service: service.NewBookService(context)}
 }
 
+// GetBook is
+func (controller *BookController) GetBook(c echo.Context) error {
+	id, _ := strconv.Atoi(c.QueryParam("id"))
+
+	return c.JSON(http.StatusOK, controller.service.FindByID(uint(id)))
+}
+
 // GetBookList returns the list of all books.
 func (controller *BookController) GetBookList(c echo.Context) error {
 	page, _ := strconv.Atoi(c.QueryParam("page"))

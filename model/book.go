@@ -82,7 +82,11 @@ func (b *Book) FindAllByPage(rep repository.Repository, page int, size int) (*Pa
 	var rec RecordBook
 	var rows *sql.Rows
 	var err error
-	if rows, err = rep.Raw(selectBook+" limit ? offset ? ", size, page*size).Rows(); err != nil {
+	var sql = selectBook
+	if page > 0 && size > 0 {
+		sql += " limit ? offset ? "
+	}
+	if rows, err = rep.Raw(sql, size, page*size).Rows(); err != nil {
 		return nil, err
 	}
 	for rows.Next() {

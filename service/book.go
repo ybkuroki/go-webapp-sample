@@ -17,6 +17,18 @@ func NewBookService(context mycontext.Context) *BookService {
 	return &BookService{context: context}
 }
 
+// FindByID is
+func (b *BookService) FindByID(id uint) *model.Book {
+	rep := b.context.GetRepository()
+	book := model.Book{}
+	result, err := book.FindByID(rep, id)
+	if err != nil {
+		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
+		return nil
+	}
+	return result
+}
+
 // FindAllBooks returns the list of all books.
 func (b *BookService) FindAllBooks() *[]model.Book {
 	rep := b.context.GetRepository()
