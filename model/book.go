@@ -82,7 +82,7 @@ func (b *Book) FindAllByPage(rep repository.Repository, page int, size int) (*Pa
 	var rec RecordBook
 	var rows *sql.Rows
 	var err error
-	if rows, err = rep.Raw(selectBook+" limit ? offset ? ", size, page*size).Rows(); err != nil {
+	if rows, err = rep.Raw(createSQL(selectBook, page, size), size, page*size).Rows(); err != nil {
 		return nil, err
 	}
 	for rows.Next() {
@@ -104,7 +104,7 @@ func (b *Book) FindByTitle(rep repository.Repository, title string, page int, si
 	var rec RecordBook
 	var rows *sql.Rows
 	var err error
-	if rows, err = rep.Raw(selectBook+" where title like ? limit ? offset ? ", "%"+title+"%", size, page*size).Rows(); err != nil {
+	if rows, err = rep.Raw(createSQL(selectBook+" where title like ? ", page, size), "%"+title+"%", size, page*size).Rows(); err != nil {
 		return nil, err
 	}
 	for rows.Next() {
@@ -117,6 +117,13 @@ func (b *Book) FindByTitle(rep repository.Repository, title string, page int, si
 
 	p := createPage(&books, page, size)
 	return p, nil
+}
+
+func createSQL(sql string, page int, size int) string {
+	if page > 0 && size > 0 {
+		sql += " limit ? offset ? "
+	}
+	return sql
 }
 
 func createPage(books *[]Book, page int, size int) *Page {

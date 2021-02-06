@@ -74,11 +74,12 @@ There are the following services in the book management.
 
 |Service Name|HTTP Method|URL|Parameter|Summary|
 |:---|:---:|:---|:---|:---|
-|List Service|GET|``/api/book/list``|Page|Get a list of books.|
+|Get Service|GET|``/api/book/get?id=[BOOK_ID]``|Book ID|Get a book data.|
+|List Service|GET|``/api/book/list?page=[PAGE_NUMBER]&size=[PAGE_SIZE]``|Page|Get a list of books.|
 |Regist Service|POST|``/api/book/new``|Book|Regist a book data.|
 |Edit Service|POST|``/api/book/edit``|Book|Edit a book data.|
 |Delete Service|POST|``/api/book/delete``|Book|Delete a book data.|
-|Search Title Service|GET|``/api/book/search``|Keyword, Page|Search a title with  the specified keyword.|
+|Search Title Service|GET|``/api/book/search?query=[KEYWORD]&page=[PAGE_NUMBER]&size=[PAGE_SIZE]``|Keyword, Page|Search a title with  the specified keyword.|
 
 ### Account Management
 There are the following services in the Account management.
