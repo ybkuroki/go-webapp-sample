@@ -27,6 +27,9 @@ func main() {
 	router.Init(e, context)
 	middleware.InitLoggerMiddleware(e, context)
 	middleware.InitSessionMiddleware(e, context)
+
+	e.Static("/", "./public/")
+
 	if err := e.Start(":8080"); err != nil {
 		logger.GetZapLogger().Errorf(err.Error())
 	}
