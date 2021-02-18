@@ -8,8 +8,8 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres" // indirect
 	_ "github.com/jinzhu/gorm/dialects/sqlite"   // indirect
-	"github.com/ybkuroki/go-webapp-sample/config"
-	"github.com/ybkuroki/go-webapp-sample/logger"
+	"github.com/maju6406/go-webapp-sample/config"
+	"github.com/maju6406/go-webapp-sample/logger"
 )
 
 // Repository defines a interface for access the database.

@@ -1,15 +1,15 @@
 # go-webapp-sample
 
-[![license](https://img.shields.io/github/license/ybkuroki/go-webapp-sample?style=for-the-badge)](https://github.com/ybkuroki/go-webapp-sample/blob/master/LICENSE)
-[![report](https://goreportcard.com/badge/github.com/ybkuroki/go-webapp-sample?style=for-the-badge)](https://goreportcard.com/report/github.com/ybkuroki/go-webapp-sample)
-[![workflow](https://img.shields.io/github/workflow/status/ybkuroki/go-webapp-sample/check?label=check&style=for-the-badge&logo=github)](https://github.com/ybkuroki/go-webapp-sample/actions?query=workflow%3Acheck)
-[![release](https://img.shields.io/github/release/ybkuroki/go-webapp-sample?style=for-the-badge&logo=github)](https://github.com/ybkuroki/go-webapp-sample/releases)
+[![license](https://img.shields.io/github/license/maju6406/go-webapp-sample?style=for-the-badge)](https://github.com/maju6406/go-webapp-sample/blob/master/LICENSE)
+[![report](https://goreportcard.com/badge/github.com/maju6406/go-webapp-sample?style=for-the-badge)](https://goreportcard.com/report/github.com/maju6406/go-webapp-sample)
+[![workflow](https://img.shields.io/github/workflow/status/maju6406/go-webapp-sample/check?label=check&style=for-the-badge&logo=github)](https://github.com/maju6406/go-webapp-sample/actions?query=workflow%3Acheck)
+[![release](https://img.shields.io/github/release/maju6406/go-webapp-sample?style=for-the-badge&logo=github)](https://github.com/maju6406/go-webapp-sample/releases)
 
 ## Preface
 This repository is the sample of web application using golang.
 This sample uses [Echo](https://echo.labstack.com/), [Gorm](https://gorm.io/) and [Zap logger](https://pkg.go.dev/go.uber.org/zap).
 This sample application provides only functions via Web APIs.
-So, if you would like to use web UI, I will recommend using [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) with this application. 
+So, if you would like to use web UI, I will recommend using [vuejs-webapp-sample](https://github.com/maju6406/vuejs-webapp-sample) with this application. 
 
 If you would like to develop a web application using golang, please feel free to use this sample.
 
@@ -20,7 +20,7 @@ Perform the following steps:
 1. Download and install [Golang](https://golang.org/).
 1. Get the source code of this repository by the following command.
     ```bash
-    go get -u github.com/ybkuroki/go-webapp-sample
+    go get -u github.com/maju6406/go-webapp-sample
     ```
 
 ## Starting Server

@@ -1,4 +1,4 @@
-module github.com/ybkuroki/go-webapp-sample
+module github.com/maju6406/go-webapp-sample
 
 go 1.14
 

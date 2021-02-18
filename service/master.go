@@ -1,8 +1,8 @@
 package service
 
 import (
-	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
+	"github.com/maju6406/go-webapp-sample/model"
+	"github.com/maju6406/go-webapp-sample/mycontext"
 )
 
 // MasterService is a service for managing master data such as format and category.

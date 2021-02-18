@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
+	"github.com/maju6406/go-webapp-sample/model"
+	"github.com/maju6406/go-webapp-sample/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
 func TestGetCategoryList(t *testing.T) {
