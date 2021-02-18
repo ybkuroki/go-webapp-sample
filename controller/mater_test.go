@@ -23,9 +23,9 @@ func TestGetCategoryList(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	data := [...]*model.Category{
-		{ID: 1, Name: "技術書"},
-		{ID: 2, Name: "雑誌"},
-		{ID: 3, Name: "小説"},
+		{ID: 1, Name: "Technical book"},
+		{ID: 2, Name: "Magazine"},
+		{ID: 3, Name: "Novel"},
 	}
 
 	assert.Equal(t, http.StatusOK, rec.Code)
@@ -44,8 +44,8 @@ func TestGetFormatList(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	data := [...]*model.Format{
-		{ID: 1, Name: "書籍"},
-		{ID: 2, Name: "電子書籍"},
+		{ID: 1, Name: "Book"},
+		{ID: 2, Name: "E-Book"},
 	}
 
 	assert.Equal(t, http.StatusOK, rec.Code)
