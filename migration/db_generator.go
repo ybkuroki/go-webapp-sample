@@ -1,8 +1,8 @@
 package migration
 
 import (
-	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
+	"github.com/maju6406/go-webapp-sample/model"
+	"github.com/maju6406/go-webapp-sample/mycontext"
 )
 
 // CreateDatabase creates the tables used in this application.

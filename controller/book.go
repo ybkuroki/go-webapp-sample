@@ -5,9 +5,9 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/model/dto"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
-	"github.com/ybkuroki/go-webapp-sample/service"
+	"github.com/maju6406/go-webapp-sample/model/dto"
+	"github.com/maju6406/go-webapp-sample/mycontext"
+	"github.com/maju6406/go-webapp-sample/service"
 )
 
 // BookController is a controller for managing books.

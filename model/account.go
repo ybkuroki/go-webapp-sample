@@ -3,7 +3,7 @@ package model
 import (
 	"encoding/json"
 
-	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/maju6406/go-webapp-sample/repository"
 	"golang.org/x/crypto/bcrypt"
 )
 

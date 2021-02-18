@@ -2,13 +2,13 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/config"
-	"github.com/ybkuroki/go-webapp-sample/logger"
-	"github.com/ybkuroki/go-webapp-sample/middleware"
-	"github.com/ybkuroki/go-webapp-sample/migration"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
-	"github.com/ybkuroki/go-webapp-sample/repository"
-	"github.com/ybkuroki/go-webapp-sample/router"
+	"github.com/maju6406/go-webapp-sample/config"
+	"github.com/maju6406/go-webapp-sample/logger"
+	"github.com/maju6406/go-webapp-sample/middleware"
+	"github.com/maju6406/go-webapp-sample/migration"
+	"github.com/maju6406/go-webapp-sample/mycontext"
+	"github.com/maju6406/go-webapp-sample/repository"
+	"github.com/maju6406/go-webapp-sample/router"
 )
 
 func main() {

@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
-	"github.com/ybkuroki/go-webapp-sample/service"
-	"github.com/ybkuroki/go-webapp-sample/session"
+	"github.com/maju6406/go-webapp-sample/model"
+	"github.com/maju6406/go-webapp-sample/mycontext"
+	"github.com/maju6406/go-webapp-sample/service"
+	"github.com/maju6406/go-webapp-sample/session"
 )
 
 // AccountController is a controller for managing user account.
