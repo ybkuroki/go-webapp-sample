@@ -48,17 +48,17 @@ func validateDto(b interface{}) map[string]string {
 				case "ID":
 					switch errors[i].Tag() {
 					case required:
-						result["id"] = "書籍IDが存在しません"
+						result["id"] = "Book ID does not exist"
 					}
 				case "Title":
 					switch errors[i].Tag() {
 					case required, min, max:
-						result["title"] = "書籍タイトルは、3文字以上50文字以下で入力してください"
+						result["title"] = "Please enter the book title in 3 to 50 characters."
 					}
 				case "Isbn":
 					switch errors[i].Tag() {
 					case required, min, max:
-						result["isbn"] = "ISBNは、10文字以上20文字以下で入力してください"
+						result["isbn"] = "ISBN Enter ISBN with 10 to 20 characters."
 					}
 				}
 			}
