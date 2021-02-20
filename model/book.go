@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"math"
 
-	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/maju6406/go-webapp-sample/repository"
 )
 
 // Book defines struct of book data.

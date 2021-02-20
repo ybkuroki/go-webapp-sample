@@ -1,9 +1,9 @@
 package mycontext
 
 import (
-	"github.com/ybkuroki/go-webapp-sample/config"
-	"github.com/ybkuroki/go-webapp-sample/logger"
-	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/maju6406/go-webapp-sample/config"
+	"github.com/maju6406/go-webapp-sample/logger"
+	"github.com/maju6406/go-webapp-sample/repository"
 )
 
 // Context represents a interface for accessing the data which sharing in overall application.

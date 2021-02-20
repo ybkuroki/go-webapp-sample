@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
+	"github.com/maju6406/go-webapp-sample/mycontext"
 )
 
 // APIError has a error code and a message.

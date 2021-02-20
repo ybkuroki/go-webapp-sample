@@ -5,8 +5,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/ybkuroki/go-webapp-sample/controller"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
+	"github.com/maju6406/go-webapp-sample/controller"
+	"github.com/maju6406/go-webapp-sample/mycontext"
 )
 
 // Init initialize the routing of this application.

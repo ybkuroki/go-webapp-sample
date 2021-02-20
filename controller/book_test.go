@@ -7,11 +7,11 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
+	"github.com/maju6406/go-webapp-sample/model"
+	"github.com/maju6406/go-webapp-sample/model/dto"
+	"github.com/maju6406/go-webapp-sample/mycontext"
+	"github.com/maju6406/go-webapp-sample/test"
 	"github.com/stretchr/testify/assert"
-	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/model/dto"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
-	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
 func TestGetBookList(t *testing.T) {

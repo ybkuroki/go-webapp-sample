@@ -10,10 +10,10 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
+	"github.com/maju6406/go-webapp-sample/config"
+	"github.com/maju6406/go-webapp-sample/mycontext"
+	mySession "github.com/maju6406/go-webapp-sample/session"
 	"github.com/valyala/fasttemplate"
-	"github.com/ybkuroki/go-webapp-sample/config"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
-	mySession "github.com/ybkuroki/go-webapp-sample/session"
 	"gopkg.in/boj/redistore.v1"
 )
 
