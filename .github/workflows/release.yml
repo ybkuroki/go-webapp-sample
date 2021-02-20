@@ -26,3 +26,12 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: deploy
+        uses: fifsky/ssh-action@master
+        with:
+          command: |
+            cd /root/go-webapp-sample
+            ./deploy.sh
+          host: ${{ secrets.HOST }}
+          user: root
+          key: ${{ secrets.PRIVATE_KEY}}          
