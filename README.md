@@ -24,7 +24,24 @@ Perform the following steps:
     ```
 
 ## Starting Server
-Perform the following steps:
+There are 2 methods for starting server.
+
+### Without Web Server
+1. Starting this web application by the following command.
+    ```bash
+    go run main.go
+    ```
+1. When startup is complete, the console shows the following message:
+    ```
+    http server started on [::]:8080
+    ```
+1. Access [http://localhost:8080](http://localhost:8080) in your browser.
+1. Login with the following username and password.
+    - username : ``test``
+    - password : ``test``
+
+### With Web Server
+#### Starting Application Server
 1. Starting this web application by the following command.
     ```bash
     go run main.go
@@ -37,6 +54,24 @@ Perform the following steps:
     ```
     healthy
     ```
+#### Starting Web Server
+1. Clone [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project and install some tools.
+1. Start by the following command.
+    ```bash
+    npm run serve
+    ```
+1. When startup is complete, the console shows the following message:
+    ```
+    DONE Compiled successfully in *****ms
+    
+    App running at:
+    - Local:   http://localhost:3000/
+    - Network: http://192.168.***.***:3000/
+    
+    Note that the development build is not optimized.
+    To create a production build, run npm run build.
+    ```
+1. Access [http://localhost:3000](http://localhost:3000) in your browser.
 1. Login with the following username and password.
     - username : ``test``
     - password : ``test``
@@ -104,13 +139,13 @@ This sample uses the following libraries.
 
 |Library Name|Version|
 |:---|:---:|
-|Echo|4.1.17|
+|Echo|4.2.0|
 |Gorm|1.9.16|
 |go-playground/validator.v9|9.31.0|
 |Zap/logger|1.16.0|
 
 ## Contribution
-Please read CONTRIBUTING.md for proposing new functions, reporting bugs and submitting pull requests before contributing to this repository.
+Please read [CONTRIBUTING.md](https://github.com/ybkuroki/go-webapp-sample/blob/master/CONTRIBUTING.md) for proposing new functions, reporting bugs and submitting pull requests before contributing to this repository.
 
 ## License
 The License of this sample is *MIT License*.
