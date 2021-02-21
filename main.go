@@ -28,7 +28,10 @@ func main() {
 	middleware.InitLoggerMiddleware(e, context)
 	middleware.InitSessionMiddleware(e, context)
 
-	e.Static("/", "./public/")
+	if conf.StaticContents.Path != "" {
+		e.Static("/", conf.StaticContents.Path)
+		logger.GetZapLogger().Infof("Served the static contents. path: " + conf.StaticContents.Path)
+	}
 
 	if err := e.Start(":8080"); err != nil {
 		logger.GetZapLogger().Errorf(err.Error())

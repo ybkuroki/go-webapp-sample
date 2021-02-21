@@ -15,6 +15,9 @@ extension:
 log:
   request_log_format: ${remote_ip} ${account_name} ${uri} ${method} ${status}
 
+staticcontents:
+  path: ./public/
+
 security:
   auth_path:
     - /api/.*
