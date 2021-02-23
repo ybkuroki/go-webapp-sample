@@ -7,9 +7,13 @@
 
 ## Preface
 This repository is the sample of web application using golang.
-This sample uses [Echo](https://echo.labstack.com/), [Gorm](https://gorm.io/) and [Zap logger](https://pkg.go.dev/go.uber.org/zap).
-This sample application provides only functions via Web APIs.
-So, if you would like to use web UI, I will recommend using [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) with this application. 
+This sample uses [Echo](https://echo.labstack.com/) as web application framework, [Gorm](https://gorm.io/) as OR mapper and [Zap logger](https://pkg.go.dev/go.uber.org/zap) as logger.
+This sample application provides only several functions as Web APIs.
+Please refer to the 'Service' section about the detail of those functions.
+
+Also, this application contains the static contents such as html file, css file and javascript file which built [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project to easily check the behavior of those functions.
+So, you can check this application without starting a web server for front end.
+Please refer to the 'Starting Server' section about checking the behavior of this application.
 
 If you would like to develop a web application using golang, please feel free to use this sample.
 
