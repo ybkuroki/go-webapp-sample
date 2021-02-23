@@ -7,9 +7,13 @@
 
 ## Preface
 This repository is the sample of web application using golang.
-This sample uses [Echo](https://echo.labstack.com/), [Gorm](https://gorm.io/) and [Zap logger](https://pkg.go.dev/go.uber.org/zap).
-This sample application provides only functions via Web APIs.
-So, if you would like to use web UI, I will recommend using [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) with this application. 
+This sample uses [Echo](https://echo.labstack.com/) as web application framework, [Gorm](https://gorm.io/) as OR mapper and [Zap logger](https://pkg.go.dev/go.uber.org/zap) as logger.
+This sample application provides only several functions as Web APIs.
+Please refer to the 'Service' section about the detail of those functions.
+
+Also, this application contains the static contents such as html file, css file and javascript file which built [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project to easily check the behavior of those functions.
+So, you can check this application without starting a web server for front end.
+Please refer to the 'Starting Server' section about checking the behavior of this application.
 
 If you would like to develop a web application using golang, please feel free to use this sample.
 
@@ -24,7 +28,24 @@ Perform the following steps:
     ```
 
 ## Starting Server
-Perform the following steps:
+There are 2 methods for starting server.
+
+### Without Web Server
+1. Starting this web application by the following command.
+    ```bash
+    go run main.go
+    ```
+1. When startup is complete, the console shows the following message:
+    ```
+    http server started on [::]:8080
+    ```
+1. Access [http://localhost:8080](http://localhost:8080) in your browser.
+1. Login with the following username and password.
+    - username : ``test``
+    - password : ``test``
+
+### With Web Server
+#### Starting Application Server
 1. Starting this web application by the following command.
     ```bash
     go run main.go
@@ -37,6 +58,24 @@ Perform the following steps:
     ```
     healthy
     ```
+#### Starting Web Server
+1. Clone [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project and install some tools.
+1. Start by the following command.
+    ```bash
+    npm run serve
+    ```
+1. When startup is complete, the console shows the following message:
+    ```
+    DONE Compiled successfully in *****ms
+    
+    App running at:
+    - Local:   http://localhost:3000/
+    - Network: http://192.168.***.***:3000/
+    
+    Note that the development build is not optimized.
+    To create a production build, run npm run build.
+    ```
+1. Access [http://localhost:3000](http://localhost:3000) in your browser.
 1. Login with the following username and password.
     - username : ``test``
     - password : ``test``
@@ -104,13 +143,13 @@ This sample uses the following libraries.
 
 |Library Name|Version|
 |:---|:---:|
-|Echo|4.1.17|
+|Echo|4.2.0|
 |Gorm|1.9.16|
 |go-playground/validator.v9|9.31.0|
 |Zap/logger|1.16.0|
 
 ## Contribution
-Please read CONTRIBUTING.md for proposing new functions, reporting bugs and submitting pull requests before contributing to this repository.
+Please read [CONTRIBUTING.md](https://github.com/ybkuroki/go-webapp-sample/blob/master/CONTRIBUTING.md) for proposing new functions, reporting bugs and submitting pull requests before contributing to this repository.
 
 ## License
 The License of this sample is *MIT License*.

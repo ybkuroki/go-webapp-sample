@@ -33,9 +33,6 @@ func (controller *ErrorController) JSONError(err error, c echo.Context) {
 		code = he.Code
 		msg = he.Message.(string)
 	}
-	if c.Echo().Debug {
-		msg = err.Error()
-	}
 
 	var apierr APIError
 	apierr.Code = code

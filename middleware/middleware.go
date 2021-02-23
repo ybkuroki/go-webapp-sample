@@ -114,22 +114,25 @@ func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
 // hasAuthorization judges whether the user has the right to access the path.
 func hasAuthorization(c echo.Context, conf *config.Config) bool {
 	currentPath := c.Path()
-	if equalPath(currentPath, conf.Security.ExculdePath) {
-		return true
-	}
-	account := mySession.GetAccount(c)
-	if account == nil {
+	if equalPath(currentPath, conf.Security.AuthPath) {
+		if equalPath(currentPath, conf.Security.ExculdePath) {
+			return true
+		}
+		account := mySession.GetAccount(c)
+		if account == nil {
+			return false
+		}
+		if account.Authority.Name == "Admin" && equalPath(currentPath, conf.Security.AdminPath) {
+			_ = mySession.Save(c)
+			return true
+		}
+		if account.Authority.Name == "User" && equalPath(currentPath, conf.Security.UserPath) {
+			_ = mySession.Save(c)
+			return true
+		}
 		return false
 	}
-	if account.Authority.Name == "Admin" && equalPath(currentPath, conf.Security.AdminPath) {
-		_ = mySession.Save(c)
-		return true
-	}
-	if account.Authority.Name == "User" && equalPath(currentPath, conf.Security.UserPath) {
-		_ = mySession.Save(c)
-		return true
-	}
-	return false
+	return true
 }
 
 // equalPath judges whether a given path contains in the path list.
