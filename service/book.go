@@ -42,7 +42,7 @@ func (b *BookService) FindAllBooks() *[]model.Book {
 }
 
 // FindAllBooksByPage returns the page object of all books.
-func (b *BookService) FindAllBooksByPage(page int, size int) *model.Page {
+func (b *BookService) FindAllBooksByPage(page string, size string) *model.Page {
 	rep := b.context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAllByPage(rep, page, size)
@@ -54,7 +54,7 @@ func (b *BookService) FindAllBooksByPage(page int, size int) *model.Page {
 }
 
 // FindBooksByTitle returns the page object of books matched given book title.
-func (b *BookService) FindBooksByTitle(title string, page int, size int) *model.Page {
+func (b *BookService) FindBooksByTitle(title string, page string, size string) *model.Page {
 	rep := b.context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindByTitle(rep, title, page, size)

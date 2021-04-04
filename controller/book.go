@@ -30,19 +30,12 @@ func (controller *BookController) GetBook(c echo.Context) error {
 
 // GetBookList returns the list of all books.
 func (controller *BookController) GetBookList(c echo.Context) error {
-	page, _ := strconv.Atoi(c.QueryParam("page"))
-	size, _ := strconv.Atoi(c.QueryParam("size"))
-
-	return c.JSON(http.StatusOK, controller.service.FindAllBooksByPage(page, size))
+	return c.JSON(http.StatusOK, controller.service.FindAllBooksByPage(c.QueryParam("page"), c.QueryParam("size")))
 }
 
 // GetBookSearch returns the list of matched books by searching.
 func (controller *BookController) GetBookSearch(c echo.Context) error {
-	title := c.QueryParam("query")
-	page, _ := strconv.Atoi(c.QueryParam("page"))
-	size, _ := strconv.Atoi(c.QueryParam("size"))
-
-	return c.JSON(http.StatusOK, controller.service.FindBooksByTitle(title, page, size))
+	return c.JSON(http.StatusOK, controller.service.FindBooksByTitle(c.QueryParam("query"), c.QueryParam("page"), c.QueryParam("size")))
 }
 
 // PostBookRegist register a new book by http post.

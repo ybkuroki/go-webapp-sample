@@ -29,7 +29,7 @@ func TestGetBookList(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindAllByPage(context.GetRepository(), 0, 5)
+	data, _ := entity.FindAllByPage(context.GetRepository(), "0", "5")
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -50,7 +50,7 @@ func TestGetBookSearch(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByTitle(context.GetRepository(), "Test", 0, 5)
+	data, _ := entity.FindByTitle(context.GetRepository(), "Test", "0", "5")
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())

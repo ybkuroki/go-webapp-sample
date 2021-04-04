@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"encoding/json"
 	"math"
+	"strconv"
 
+	"github.com/jinzhu/gorm"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
@@ -30,8 +32,12 @@ type RecordBook struct {
 	FormatName   string
 }
 
-const selectBook = "select b.*, c.id as category_id, c.name as category_name, f.id as format_id, f.name as format_name " +
-	"from book b inner join category_master c on c.id = b.category_id inner join format_master f on f.id = b.format_id "
+const (
+	selectBook = "select b.*, c.id as category_id, c.name as category_name, f.id as format_id, f.name as format_name " +
+		"from book b inner join category_master c on c.id = b.category_id inner join format_master f on f.id = b.format_id "
+	findById    = " where b.id = ?"
+	findByTitle = " where title like ? "
+)
 
 // TableName returns the table name of book struct and it is used by gorm.
 func (Book) TableName() string {
@@ -46,9 +52,10 @@ func NewBook(title string, isbn string, categoryID uint, formatID uint) *Book {
 // FindByID returns a book full matched given book's ID.
 func (b *Book) FindByID(rep repository.Repository, id uint) (*Book, error) {
 	var book *Book
-
 	var rec RecordBook
-	rep.Raw(selectBook+" where b.id = ?", id).Scan(&rec)
+	args := []interface{}{id}
+
+	createRaw(rep, selectBook+findById, "", "", args).Scan(&rec)
 	book = converToBook(&rec)
 
 	return book, nil
@@ -57,54 +64,47 @@ func (b *Book) FindByID(rep repository.Repository, id uint) (*Book, error) {
 // FindAll returns all books of the book table.
 func (b *Book) FindAll(rep repository.Repository) (*[]Book, error) {
 	var books []Book
-
-	var rec RecordBook
-	var rows *sql.Rows
 	var err error
-	if rows, err = rep.Raw(selectBook).Rows(); err != nil {
+
+	if books, err = findRows(rep, selectBook, "", "", []interface{}{}); err != nil {
 		return nil, err
 	}
-	for rows.Next() {
-		if err = rep.ScanRows(rows, &rec); err != nil {
-			return nil, err
-		}
-		book := converToBook(&rec)
-		books = append(books, *book)
-	}
-
 	return &books, nil
 }
 
 // FindAllByPage returns the page object of all books.
-func (b *Book) FindAllByPage(rep repository.Repository, page int, size int) (*Page, error) {
+func (b *Book) FindAllByPage(rep repository.Repository, page string, size string) (*Page, error) {
 	var books []Book
-
-	var rec RecordBook
-	var rows *sql.Rows
 	var err error
-	if rows, err = rep.Raw(createSQL(selectBook, page, size), size, page*size).Rows(); err != nil {
+
+	if books, err = findRows(rep, selectBook, page, size, []interface{}{}); err != nil {
 		return nil, err
 	}
-	for rows.Next() {
-		if err = rep.ScanRows(rows, &rec); err != nil {
-			return nil, err
-		}
-		book := converToBook(&rec)
-		books = append(books, *book)
-	}
-
 	p := createPage(&books, page, size)
 	return p, nil
 }
 
 // FindByTitle returns the page object of books partially matched given book title.
-func (b *Book) FindByTitle(rep repository.Repository, title string, page int, size int) (*Page, error) {
+func (b *Book) FindByTitle(rep repository.Repository, title string, page string, size string) (*Page, error) {
+	var books []Book
+	var err error
+	args := []interface{}{"%" + title + "%"}
+
+	if books, err = findRows(rep, selectBook+findByTitle, page, size, args); err != nil {
+		return nil, err
+	}
+	p := createPage(&books, page, size)
+	return p, nil
+}
+
+func findRows(rep repository.Repository, sqlquery string, page string, size string, args []interface{}) ([]Book, error) {
 	var books []Book
 
 	var rec RecordBook
 	var rows *sql.Rows
 	var err error
-	if rows, err = rep.Raw(createSQL(selectBook+" where title like ? ", page, size), "%"+title+"%", size, page*size).Rows(); err != nil {
+
+	if rows, err = createRaw(rep, sqlquery, page, size, args).Rows(); err != nil {
 		return nil, err
 	}
 	for rows.Next() {
@@ -114,28 +114,43 @@ func (b *Book) FindByTitle(rep repository.Repository, title string, page int, si
 		book := converToBook(&rec)
 		books = append(books, *book)
 	}
-
-	p := createPage(&books, page, size)
-	return p, nil
+	return books, nil
 }
 
-func createSQL(sql string, page int, size int) string {
-	if page > 0 && size > 0 {
+func createRaw(rep repository.Repository, sql string, pageNum string, pageSize string, args []interface{}) *gorm.DB {
+	if pageNum != "" && pageSize != "" {
+		page := convertToInt(pageNum)
+		size := convertToInt(pageSize)
+		args = append(args, size)
+		args = append(args, page*size)
 		sql += " limit ? offset ? "
 	}
-	return sql
+	if len(args) > 0 {
+		return rep.Raw(sql, args...)
+	}
+	return rep.Raw(sql)
 }
 
-func createPage(books *[]Book, page int, size int) *Page {
+func createPage(books *[]Book, page string, size string) *Page {
 	p := NewPage()
-	p.Page = page
-	p.Size = size
+	p.Page = convertToInt(page)
+	p.Size = convertToInt(size)
 	p.NumberOfElements = p.Size
 	p.TotalElements = len(*books)
-	p.TotalPages = int(math.Ceil(float64(p.TotalElements) / float64(p.Size)))
+	if p.TotalPages = int(math.Ceil(float64(p.TotalElements) / float64(p.Size))); p.TotalPages < 0 {
+		p.TotalPages = 0
+	}
 	p.Content = books
 
 	return p
+}
+
+func convertToInt(number string) int {
+	value, err := strconv.Atoi(number)
+	if err != nil {
+		return 0
+	}
+	return value
 }
 
 // Save persists this book data.
