@@ -55,8 +55,14 @@ const (
 
 // Load reads the settings written to the yml file
 func Load() (*Config, string) {
-	env := flag.String("env", "develop", "To switch configurations.")
-	flag.Parse()
+	var env *string
+	if value := os.Getenv("WEB_APP_ENV"); value != "" {
+		env = &value
+	} else {
+		env = flag.String("env", "develop", "To switch configurations.")
+		flag.Parse()
+	}
+
 	config := &Config{}
 	if err := configor.Load(config, "application."+*env+".yml"); err != nil {
 		fmt.Printf("Failed to read application.%s.yml: %s", *env, err)

@@ -5,6 +5,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
 	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/util"
 )
 
 // BookService is a service for managing books.
@@ -18,10 +19,14 @@ func NewBookService(context mycontext.Context) *BookService {
 }
 
 // FindByID returns one record matched book's id.
-func (b *BookService) FindByID(id uint) *model.Book {
+func (b *BookService) FindByID(id string) *model.Book {
+	if !util.IsNumeric(id) {
+		return nil
+	}
+
 	rep := b.context.GetRepository()
 	book := model.Book{}
-	result, err := book.FindByID(rep, id)
+	result, err := book.FindByID(rep, util.ConvertToUint(id))
 	if err != nil {
 		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
 		return nil
@@ -42,7 +47,7 @@ func (b *BookService) FindAllBooks() *[]model.Book {
 }
 
 // FindAllBooksByPage returns the page object of all books.
-func (b *BookService) FindAllBooksByPage(page int, size int) *model.Page {
+func (b *BookService) FindAllBooksByPage(page string, size string) *model.Page {
 	rep := b.context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAllByPage(rep, page, size)
@@ -54,7 +59,7 @@ func (b *BookService) FindAllBooksByPage(page int, size int) *model.Page {
 }
 
 // FindBooksByTitle returns the page object of books matched given book title.
-func (b *BookService) FindBooksByTitle(title string, page int, size int) *model.Page {
+func (b *BookService) FindBooksByTitle(title string, page string, size string) *model.Page {
 	rep := b.context.GetRepository()
 	book := model.Book{}
 	result, err := book.FindByTitle(rep, title, page, size)
