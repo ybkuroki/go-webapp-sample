@@ -4,10 +4,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"math"
-	"strconv"
 
 	"github.com/jinzhu/gorm"
 	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/util"
 )
 
 // Book defines struct of book data.
@@ -118,9 +118,9 @@ func findRows(rep repository.Repository, sqlquery string, page string, size stri
 }
 
 func createRaw(rep repository.Repository, sql string, pageNum string, pageSize string, args []interface{}) *gorm.DB {
-	if pageNum != "" && pageSize != "" {
-		page := convertToInt(pageNum)
-		size := convertToInt(pageSize)
+	if util.IsNumeric(pageNum) && util.IsNumeric(pageSize) {
+		page := util.ConvertToInt(pageNum)
+		size := util.ConvertToInt(pageSize)
 		args = append(args, size)
 		args = append(args, page*size)
 		sql += " limit ? offset ? "
@@ -133,8 +133,8 @@ func createRaw(rep repository.Repository, sql string, pageNum string, pageSize s
 
 func createPage(books *[]Book, page string, size string) *Page {
 	p := NewPage()
-	p.Page = convertToInt(page)
-	p.Size = convertToInt(size)
+	p.Page = util.ConvertToInt(page)
+	p.Size = util.ConvertToInt(size)
 	p.NumberOfElements = p.Size
 	p.TotalElements = len(*books)
 	if p.TotalPages = int(math.Ceil(float64(p.TotalElements) / float64(p.Size))); p.TotalPages < 0 {
@@ -143,14 +143,6 @@ func createPage(books *[]Book, page string, size string) *Page {
 	p.Content = books
 
 	return p
-}
-
-func convertToInt(number string) int {
-	value, err := strconv.Atoi(number)
-	if err != nil {
-		return 0
-	}
-	return value
 }
 
 // Save persists this book data.

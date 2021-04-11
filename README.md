@@ -143,7 +143,7 @@ This sample uses the following libraries.
 
 |Library Name|Version|
 |:---|:---:|
-|Echo|4.2.0|
+|Echo|4.2.2|
 |Gorm|1.9.16|
 |go-playground/validator.v9|9.31.0|
 |Zap/logger|1.16.0|

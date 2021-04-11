@@ -2,7 +2,6 @@ package controller
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
@@ -23,9 +22,7 @@ func NewBookController(context mycontext.Context) *BookController {
 
 // GetBook returns one record matched book's id.
 func (controller *BookController) GetBook(c echo.Context) error {
-	id, _ := strconv.Atoi(c.QueryParam("id"))
-
-	return c.JSON(http.StatusOK, controller.service.FindByID(uint(id)))
+	return c.JSON(http.StatusOK, controller.service.FindByID(c.QueryParam("id")))
 }
 
 // GetBookList returns the list of all books.
