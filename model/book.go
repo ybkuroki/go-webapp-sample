@@ -35,7 +35,7 @@ type RecordBook struct {
 const (
 	selectBook = "select b.*, c.id as category_id, c.name as category_name, f.id as format_id, f.name as format_name " +
 		"from book b inner join category_master c on c.id = b.category_id inner join format_master f on f.id = b.format_id "
-	findById    = " where b.id = ?"
+	findByID    = " where b.id = ?"
 	findByTitle = " where title like ? "
 )
 
@@ -55,7 +55,7 @@ func (b *Book) FindByID(rep repository.Repository, id uint) (*Book, error) {
 	var rec RecordBook
 	args := []interface{}{id}
 
-	createRaw(rep, selectBook+findById, "", "", args).Scan(&rec)
+	createRaw(rep, selectBook+findByID, "", "", args).Scan(&rec)
 	book = converToBook(&rec)
 
 	return book, nil
