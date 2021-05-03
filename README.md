@@ -113,7 +113,7 @@ There are the following services in the book management.
 
 |Service Name|HTTP Method|URL|Parameter|Summary|
 |:---|:---:|:---|:---|:---|
-|Get Service|GET|``/api/book/get?id=[BOOK_ID]``|Book ID|Get a book data.|
+|Get Service|GET|``/api/book?id=[BOOK_ID]``|Book ID|Get a book data.|
 |List Service|GET|``/api/book/list?page=[PAGE_NUMBER]&size=[PAGE_SIZE]``|Page|Get a list of books.|
 |Regist Service|POST|``/api/book/new``|Book|Regist a book data.|
 |Edit Service|POST|``/api/book/edit``|Book|Edit a book data.|

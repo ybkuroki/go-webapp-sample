@@ -42,7 +42,7 @@ func Init(e *echo.Echo, context mycontext.Context) {
 	account := controller.NewAccountController(context)
 	health := controller.NewHealthController(context)
 
-	e.GET(controller.APIBookGet, func(c echo.Context) error { return book.GetBook(c) })
+	e.GET(controller.APIBook, func(c echo.Context) error { return book.GetBook(c) })
 	e.GET(controller.APIBookList, func(c echo.Context) error { return book.GetBookList(c) })
 	e.GET(controller.APIBookSearch, func(c echo.Context) error { return book.GetBookSearch(c) })
 	e.POST(controller.APIBookRegist, func(c echo.Context) error { return book.PostBookRegist(c) })
