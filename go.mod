@@ -1,6 +1,6 @@
 module github.com/ybkuroki/go-webapp-sample
 
-go 1.14
+go 1.16
 
 require (
 	github.com/garyburd/redigo v1.6.2 // indirect
