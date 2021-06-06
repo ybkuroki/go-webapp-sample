@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres" // indirect
-	_ "github.com/jinzhu/gorm/dialects/sqlite"   // indirect
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/logger"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 // Repository defines a interface for access the database.
@@ -22,7 +23,7 @@ type Repository interface {
 	Raw(sql string, values ...interface{}) *gorm.DB
 	Create(value interface{}) *gorm.DB
 	Save(value interface{}) *gorm.DB
-	Update(value interface{}) *gorm.DB
+	Updates(value interface{}) *gorm.DB
 	Delete(value interface{}) *gorm.DB
 	Where(query interface{}, args ...interface{}) *gorm.DB
 	Preload(column string, conditions ...interface{}) *gorm.DB
@@ -30,8 +31,8 @@ type Repository interface {
 	ScanRows(rows *sql.Rows, result interface{}) error
 	Transaction(fc func(tx Repository) error) (err error)
 	Close() error
-	DropTableIfExists(value interface{}) *gorm.DB
-	AutoMigrate(value interface{}) *gorm.DB
+	DropTableIfExists(value interface{}) error
+	AutoMigrate(value interface{}) error
 }
 
 // repository defines a repository for access the database.
@@ -47,14 +48,12 @@ type bookRepository struct {
 // NewBookRepository is constructor for bookRepository.
 func NewBookRepository(logger *logger.Logger, conf *config.Config) Repository {
 	logger.GetZapLogger().Infof("Try database connection")
-	db, err := gorm.Open(conf.Database.Dialect, getConnection(conf))
+	db, err := getConnection(logger, conf)
 	if err != nil {
 		logger.GetZapLogger().Errorf("Failure database connection")
 		os.Exit(2)
 	}
 	logger.GetZapLogger().Infof("Success database connection, %s:%s", conf.Database.Host, conf.Database.Port)
-	db.LogMode(true)
-	db.SetLogger(logger)
 	return &bookRepository{&repository{db: db}}
 }
 
@@ -67,13 +66,18 @@ const (
 	MYSQL = "mysql"
 )
 
-func getConnection(config *config.Config) string {
+func getConnection(logger *logger.Logger, config *config.Config) (*gorm.DB, error) {
+	var dsn string
+	gormConfig := &gorm.Config{Logger: logger}
+
 	if config.Database.Dialect == POSTGRES {
-		return fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", config.Database.Host, config.Database.Port, config.Database.Username, config.Database.Dbname, config.Database.Password)
+		dsn = fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable", config.Database.Host, config.Database.Port, config.Database.Username, config.Database.Dbname, config.Database.Password)
+		return gorm.Open(postgres.Open(dsn), gormConfig)
 	} else if config.Database.Dialect == MYSQL {
-		return fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local", config.Database.Username, config.Database.Password, config.Database.Host, config.Database.Dbname)
+		dsn = fmt.Sprintf("%s:%s@(%s)/%s?charset=utf8&parseTime=True&loc=Local", config.Database.Username, config.Database.Password, config.Database.Host, config.Database.Dbname)
+		return gorm.Open(mysql.Open(dsn), gormConfig)
 	}
-	return config.Database.Host
+	return gorm.Open(sqlite.Open(config.Database.Host), gormConfig)
 }
 
 // Model specify the model you would like to run db operations
@@ -117,8 +121,8 @@ func (rep *repository) Save(value interface{}) *gorm.DB {
 }
 
 // Update update value in database
-func (rep *repository) Update(value interface{}) *gorm.DB {
-	return rep.db.Update(value)
+func (rep *repository) Updates(value interface{}) *gorm.DB {
+	return rep.db.Updates(value)
 }
 
 // Delete delete value match given conditions.
@@ -148,16 +152,17 @@ func (rep *repository) ScanRows(rows *sql.Rows, result interface{}) error {
 
 // Close close current db connection. If database connection is not an io.Closer, returns an error.
 func (rep *repository) Close() error {
-	return rep.db.Close()
+	sqlDB, _ := rep.db.DB()
+	return sqlDB.Close()
 }
 
 // DropTableIfExists drop table if it is exist
-func (rep *repository) DropTableIfExists(value interface{}) *gorm.DB {
-	return rep.db.DropTableIfExists(value)
+func (rep *repository) DropTableIfExists(value interface{}) error {
+	return rep.db.Migrator().DropTable(value)
 }
 
 // AutoMigrate run auto migration for given models, will only add missing fields, won't delete/change current data
-func (rep *repository) AutoMigrate(value interface{}) *gorm.DB {
+func (rep *repository) AutoMigrate(value interface{}) error {
 	return rep.db.AutoMigrate(value)
 }
 
