@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"fmt"
+	"errors"
 	"os"
 
 	"go.uber.org/zap"
@@ -15,7 +15,7 @@ func build(cfg *Config) (*zap.Logger, error) {
 	writer, errWriter := openWriters(cfg)
 
 	if zapCfg.Level == (zap.AtomicLevel{}) {
-		return nil, fmt.Errorf("missing Level")
+		return nil, errors.New("missing Level")
 	}
 
 	log := zap.New(zapcore.NewCore(enc, writer, zapCfg.Level), buildOptions(zapCfg, errWriter)...)
@@ -29,7 +29,7 @@ func newEncoder(cfg zap.Config) (zapcore.Encoder, error) {
 	case "json":
 		return zapcore.NewJSONEncoder(cfg.EncoderConfig), nil
 	}
-	return nil, fmt.Errorf("Failed to set encoder")
+	return nil, errors.New("failed to set encoder")
 }
 
 func openWriters(cfg *Config) (zapcore.WriteSyncer, zapcore.WriteSyncer) {

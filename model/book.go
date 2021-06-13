@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"math"
 
-	"github.com/jinzhu/gorm"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"github.com/ybkuroki/go-webapp-sample/util"
+	"gorm.io/gorm"
 )
 
 // Book defines struct of book data.
