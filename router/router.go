@@ -21,13 +21,12 @@ func Init(e *echo.Echo, context mycontext.Context) {
 				echo.HeaderContentType,
 				echo.HeaderContentLength,
 				echo.HeaderAcceptEncoding,
-				echo.HeaderXCSRFToken,
-				echo.HeaderAuthorization,
-				"X-XSRF-TOKEN",
 			},
 			AllowMethods: []string{
 				http.MethodGet,
 				http.MethodPost,
+				http.MethodPut,
+				http.MethodDelete,
 			},
 			MaxAge: 86400,
 		}))
@@ -42,15 +41,14 @@ func Init(e *echo.Echo, context mycontext.Context) {
 	account := controller.NewAccountController(context)
 	health := controller.NewHealthController(context)
 
-	e.GET(controller.APIBook, func(c echo.Context) error { return book.GetBook(c) })
-	e.GET(controller.APIBookList, func(c echo.Context) error { return book.GetBookList(c) })
-	e.GET(controller.APIBookSearch, func(c echo.Context) error { return book.GetBookSearch(c) })
-	e.POST(controller.APIBookRegist, func(c echo.Context) error { return book.PostBookRegist(c) })
-	e.POST(controller.APIBookEdit, func(c echo.Context) error { return book.PostBookEdit(c) })
-	e.POST(controller.APIBookDelete, func(c echo.Context) error { return book.PostBookDelete(c) })
+	e.GET(controller.APIBooksID, func(c echo.Context) error { return book.GetBook(c) })
+	e.GET(controller.APIBooks, func(c echo.Context) error { return book.GetBookSearch(c) })
+	e.POST(controller.APIBooks, func(c echo.Context) error { return book.PostBookRegist(c) })
+	e.PUT(controller.APIBooksID, func(c echo.Context) error { return book.PostBookEdit(c) })
+	e.DELETE(controller.APIBooksID, func(c echo.Context) error { return book.PostBookDelete(c) })
 
-	e.GET(controller.APIMasterCategory, func(c echo.Context) error { return master.GetCategoryList(c) })
-	e.GET(controller.APIMasterFormat, func(c echo.Context) error { return master.GetFormatList(c) })
+	e.GET(controller.APICategories, func(c echo.Context) error { return master.GetCategoryList(c) })
+	e.GET(controller.APIFormats, func(c echo.Context) error { return master.GetFormatList(c) })
 
 	e.GET(controller.APIAccountLoginStatus, func(c echo.Context) error { return account.GetLoginStatus(c) })
 	e.GET(controller.APIAccountLoginAccount, func(c echo.Context) error { return account.GetLoginAccount(c) })

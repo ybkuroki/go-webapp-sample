@@ -15,9 +15,9 @@ func TestGetCategoryList(t *testing.T) {
 	router, context := test.Prepare()
 
 	master := NewMasterController(context)
-	router.GET(APIMasterCategory, func(c echo.Context) error { return master.GetCategoryList(c) })
+	router.GET(APICategories, func(c echo.Context) error { return master.GetCategoryList(c) })
 
-	req := httptest.NewRequest("GET", APIMasterCategory, nil)
+	req := httptest.NewRequest("GET", APICategories, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -36,9 +36,9 @@ func TestGetFormatList(t *testing.T) {
 	router, context := test.Prepare()
 
 	master := NewMasterController(context)
-	router.GET(APIMasterFormat, func(c echo.Context) error { return master.GetFormatList(c) })
+	router.GET(APIFormats, func(c echo.Context) error { return master.GetFormatList(c) })
 
-	req := httptest.NewRequest("GET", APIMasterFormat, nil)
+	req := httptest.NewRequest("GET", APIFormats, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)

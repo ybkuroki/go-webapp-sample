@@ -71,7 +71,7 @@ func (b *BookService) FindBooksByTitle(title string, page string, size string) *
 }
 
 // RegisterBook register the given book data.
-func (b *BookService) RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string]string) {
+func (b *BookService) RegisterBook(dto *dto.BookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
@@ -111,7 +111,7 @@ func (b *BookService) RegisterBook(dto *dto.RegBookDto) (*model.Book, map[string
 }
 
 // EditBook updates the given book data.
-func (b *BookService) EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
+func (b *BookService) EditBook(dto *dto.BookDto, id string) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
@@ -123,7 +123,7 @@ func (b *BookService) EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]str
 			var book *model.Book
 
 			b := model.Book{}
-			if book, err = b.FindByID(txrep, dto.ID); err != nil {
+			if book, err = b.FindByID(txrep, util.ConvertToUint(id)); err != nil {
 				return err
 			}
 
@@ -161,36 +161,30 @@ func (b *BookService) EditBook(dto *dto.ChgBookDto) (*model.Book, map[string]str
 }
 
 // DeleteBook deletes the given book data.
-func (b *BookService) DeleteBook(dto *dto.ChgBookDto) (*model.Book, map[string]string) {
-	errors := dto.Validate()
+func (b *BookService) DeleteBook(id string) (*model.Book, map[string]string) {
+	rep := b.context.GetRepository()
+	var result *model.Book
 
-	if errors == nil {
-		rep := b.context.GetRepository()
-		var result *model.Book
+	err := rep.Transaction(func(txrep repository.Repository) error {
+		var err error
+		var book *model.Book
 
-		err := rep.Transaction(func(txrep repository.Repository) error {
-			var err error
-			var book *model.Book
-
-			b := model.Book{}
-			if book, err = b.FindByID(txrep, dto.ID); err != nil {
-				return err
-			}
-
-			if result, err = book.Delete(txrep); err != nil {
-				return err
-			}
-
-			return nil
-		})
-
-		if err != nil {
-			b.context.GetLogger().GetZapLogger().Errorf(err.Error())
-			return nil, map[string]string{"error": "transaction error"}
+		b := model.Book{}
+		if book, err = b.FindByID(txrep, util.ConvertToUint(id)); err != nil {
+			return err
 		}
 
-		return result, nil
+		if result, err = book.Delete(txrep); err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
+		return nil, map[string]string{"error": "transaction error"}
 	}
 
-	return nil, errors
+	return result, nil
 }

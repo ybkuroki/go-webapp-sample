@@ -22,7 +22,7 @@ func NewBookController(context mycontext.Context) *BookController {
 
 // GetBook returns one record matched book's id.
 func (controller *BookController) GetBook(c echo.Context) error {
-	return c.JSON(http.StatusOK, controller.service.FindByID(c.QueryParam("id")))
+	return c.JSON(http.StatusOK, controller.service.FindByID(c.Param("id")))
 }
 
 // GetBookList returns the list of all books.
@@ -37,7 +37,7 @@ func (controller *BookController) GetBookSearch(c echo.Context) error {
 
 // PostBookRegist register a new book by http post.
 func (controller *BookController) PostBookRegist(c echo.Context) error {
-	dto := dto.NewRegBookDto()
+	dto := dto.NewBookDto()
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
 	}
@@ -50,11 +50,11 @@ func (controller *BookController) PostBookRegist(c echo.Context) error {
 
 // PostBookEdit edit the existing book by http post.
 func (controller *BookController) PostBookEdit(c echo.Context) error {
-	dto := dto.NewChgBookDto()
+	dto := dto.NewBookDto()
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
 	}
-	book, result := controller.service.EditBook(dto)
+	book, result := controller.service.EditBook(dto, c.Param("id"))
 	if result != nil {
 		return c.JSON(http.StatusBadRequest, result)
 	}
@@ -63,11 +63,7 @@ func (controller *BookController) PostBookEdit(c echo.Context) error {
 
 // PostBookDelete deletes the existing book by http post.
 func (controller *BookController) PostBookDelete(c echo.Context) error {
-	dto := dto.NewChgBookDto()
-	if err := c.Bind(dto); err != nil {
-		return c.JSON(http.StatusBadRequest, dto)
-	}
-	book, result := controller.service.DeleteBook(dto)
+	book, result := controller.service.DeleteBook(c.Param("id"))
 	if result != nil {
 		return c.JSON(http.StatusBadRequest, result)
 	}

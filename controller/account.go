@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/model"
+	"github.com/ybkuroki/go-webapp-sample/model/dto"
 	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/service"
 	"github.com/ybkuroki/go-webapp-sample/session"
@@ -41,12 +42,14 @@ func (controller *AccountController) GetLoginAccount(c echo.Context) error {
 
 // PostLogin is the method to login using username and password by http post.
 func (controller *AccountController) PostLogin(c echo.Context) error {
-	username := c.FormValue("username")
-	password := c.FormValue("password")
+	dto := dto.NewLoginDto()
+	if err := c.Bind(dto); err != nil {
+		return c.JSON(http.StatusBadRequest, dto)
+	}
 
 	account := session.GetAccount(c)
 	if account == nil {
-		authenticate, a := controller.service.AuthenticateByUsernameAndPassword(username, password)
+		authenticate, a := controller.service.AuthenticateByUsernameAndPassword(dto.UserName, dto.Password)
 		if authenticate {
 			_ = session.SetAccount(c, a)
 			_ = session.Save(c)

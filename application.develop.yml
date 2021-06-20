@@ -22,13 +22,10 @@ security:
   auth_path:
     - /api/.*
   exclude_path:
-    - /api/account/login$
-    - /api/account/logout$
+    - /api/auth/login$
+    - /api/auth/logout$
     - /api/health$
   user_path:
-    - /api/account/.*
-    - /api/master/.*
-    - /api/book/list
-    - /api/book/search.*
+    - /api/.*
   admin_path:
     - /api/.*
