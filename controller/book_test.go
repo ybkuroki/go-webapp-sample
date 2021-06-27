@@ -22,7 +22,7 @@ func TestGetBookList(t *testing.T) {
 
 	setUpTestData(context)
 
-	uri := test.NewRequestBuilder().URL(APIBooks).Params("page", "0").Params("size", "5").Build().GetRequestURL()
+	uri := test.NewRequestBuilder().URL(APIBooks).RequestParams("page", "0").RequestParams("size", "5").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
 	rec := httptest.NewRecorder()
 
@@ -43,7 +43,7 @@ func TestGetBookSearch(t *testing.T) {
 
 	setUpTestData(context)
 
-	uri := test.NewRequestBuilder().URL(APIBooks).Params("query", "Test").Params("page", "0").Params("size", "5").Build().GetRequestURL()
+	uri := test.NewRequestBuilder().URL(APIBooks).RequestParams("query", "Test").RequestParams("page", "0").RequestParams("size", "5").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
 	rec := httptest.NewRecorder()
 
@@ -85,8 +85,9 @@ func TestPostBookEdit(t *testing.T) {
 
 	setUpTestData(context)
 
-	param := createDto()
-	req := httptest.NewRequest("PUT", APIBooksID, strings.NewReader(test.ConvertToString(param)))
+	param := changeDto()
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	req := httptest.NewRequest("PUT", uri, strings.NewReader(test.ConvertToString(param)))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 	rec := httptest.NewRecorder()
@@ -111,8 +112,8 @@ func TestPostBookDelete(t *testing.T) {
 	entity := &model.Book{}
 	data, _ := entity.FindByID(context.GetRepository(), 1)
 
-	param := createDto()
-	req := httptest.NewRequest("DELETE", APIBooksID, strings.NewReader(test.ConvertToString(param)))
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	req := httptest.NewRequest("DELETE", uri, nil)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 	rec := httptest.NewRecorder()
@@ -135,6 +136,16 @@ func createDto() *dto.BookDto {
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
 		FormatID:   1,
+	}
+	return dto
+}
+
+func changeDto() *dto.BookDto {
+	dto := &dto.BookDto{
+		Title:      "Test2",
+		Isbn:       "123-123-123-2",
+		CategoryID: 2,
+		FormatID:   2,
 	}
 	return dto
 }
