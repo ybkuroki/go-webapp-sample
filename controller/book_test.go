@@ -14,7 +14,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
-func TestGetBookSearch(t *testing.T) {
+func TestGetBookList(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
@@ -35,7 +35,7 @@ func TestGetBookSearch(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestPostBookRegist(t *testing.T) {
+func TestCreateBook(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
@@ -56,7 +56,7 @@ func TestPostBookRegist(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestPostBookEdit(t *testing.T) {
+func TestUpdateBook(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
@@ -80,7 +80,7 @@ func TestPostBookEdit(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestPostBookDelete(t *testing.T) {
+func TestDeleteBook(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
