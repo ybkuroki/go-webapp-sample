@@ -8,7 +8,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/service"
 )
 
-// FormatController is a controller for managing master data such as format and category.
+// FormatController is a controller for managing format data.
 type FormatController struct {
 	context mycontext.Context
 	service *service.FormatService

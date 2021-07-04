@@ -13,7 +13,7 @@ const (
 	min      string = "min"
 )
 
-// BookDto defines a data transfer object for register.
+// BookDto defines a data transfer object for book.
 type BookDto struct {
 	Title      string `validate:"required,min=3,max=50" json:"title"`
 	Isbn       string `validate:"required,min=10,max=20" json:"isbn"`

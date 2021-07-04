@@ -8,7 +8,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/service"
 )
 
-// CategoryController is a controller for managing master data such as format and category.
+// CategoryController is a controller for managing category data.
 type CategoryController struct {
 	context mycontext.Context
 	service *service.CategoryService
