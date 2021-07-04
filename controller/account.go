@@ -40,8 +40,8 @@ func (controller *AccountController) GetLoginAccount(c echo.Context) error {
 	return c.JSON(http.StatusOK, session.GetAccount(c))
 }
 
-// PostLogin is the method to login using username and password by http post.
-func (controller *AccountController) PostLogin(c echo.Context) error {
+// Login is the method to login using username and password by http post.
+func (controller *AccountController) Login(c echo.Context) error {
 	dto := dto.NewLoginDto()
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
@@ -60,8 +60,8 @@ func (controller *AccountController) PostLogin(c echo.Context) error {
 	return c.JSON(http.StatusOK, account)
 }
 
-// PostLogout is the method to logout by http post.
-func (controller *AccountController) PostLogout(c echo.Context) error {
+// Logout is the method to logout by http post.
+func (controller *AccountController) Logout(c echo.Context) error {
 	_ = session.SetAccount(c, nil)
 	_ = session.Delete(c)
 	return c.NoContent(http.StatusOK)

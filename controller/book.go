@@ -25,18 +25,13 @@ func (controller *BookController) GetBook(c echo.Context) error {
 	return c.JSON(http.StatusOK, controller.service.FindByID(c.Param("id")))
 }
 
-// GetBookList returns the list of all books.
+// GetBookList returns the list of matched books by searching.
 func (controller *BookController) GetBookList(c echo.Context) error {
-	return c.JSON(http.StatusOK, controller.service.FindAllBooksByPage(c.QueryParam("page"), c.QueryParam("size")))
-}
-
-// GetBookSearch returns the list of matched books by searching.
-func (controller *BookController) GetBookSearch(c echo.Context) error {
 	return c.JSON(http.StatusOK, controller.service.FindBooksByTitle(c.QueryParam("query"), c.QueryParam("page"), c.QueryParam("size")))
 }
 
-// PostBookRegist register a new book by http post.
-func (controller *BookController) PostBookRegist(c echo.Context) error {
+// CreateBook create a new book by http post.
+func (controller *BookController) CreateBook(c echo.Context) error {
 	dto := dto.NewBookDto()
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
@@ -48,8 +43,8 @@ func (controller *BookController) PostBookRegist(c echo.Context) error {
 	return c.JSON(http.StatusOK, book)
 }
 
-// PostBookEdit edit the existing book by http post.
-func (controller *BookController) PostBookEdit(c echo.Context) error {
+// UpdateBook update the existing book by http post.
+func (controller *BookController) UpdateBook(c echo.Context) error {
 	dto := dto.NewBookDto()
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
@@ -61,8 +56,8 @@ func (controller *BookController) PostBookEdit(c echo.Context) error {
 	return c.JSON(http.StatusOK, book)
 }
 
-// PostBookDelete deletes the existing book by http post.
-func (controller *BookController) PostBookDelete(c echo.Context) error {
+// DeleteBook deletes the existing book by http post.
+func (controller *BookController) DeleteBook(c echo.Context) error {
 	book, result := controller.service.DeleteBook(c.Param("id"))
 	if result != nil {
 		return c.JSON(http.StatusBadRequest, result)

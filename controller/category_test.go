@@ -14,8 +14,8 @@ import (
 func TestGetCategoryList(t *testing.T) {
 	router, context := test.Prepare()
 
-	master := NewMasterController(context)
-	router.GET(APICategories, func(c echo.Context) error { return master.GetCategoryList(c) })
+	category := NewCategoryController(context)
+	router.GET(APICategories, func(c echo.Context) error { return category.GetCategoryList(c) })
 
 	req := httptest.NewRequest("GET", APICategories, nil)
 	rec := httptest.NewRecorder()
@@ -26,26 +26,6 @@ func TestGetCategoryList(t *testing.T) {
 		{ID: 1, Name: "技術書"},
 		{ID: 2, Name: "雑誌"},
 		{ID: 3, Name: "小説"},
-	}
-
-	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
-}
-
-func TestGetFormatList(t *testing.T) {
-	router, context := test.Prepare()
-
-	master := NewMasterController(context)
-	router.GET(APIFormats, func(c echo.Context) error { return master.GetFormatList(c) })
-
-	req := httptest.NewRequest("GET", APIFormats, nil)
-	rec := httptest.NewRecorder()
-
-	router.ServeHTTP(rec, req)
-
-	data := [...]*model.Format{
-		{ID: 1, Name: "書籍"},
-		{ID: 2, Name: "電子書籍"},
 	}
 
 	assert.Equal(t, http.StatusOK, rec.Code)

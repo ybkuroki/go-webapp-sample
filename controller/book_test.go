@@ -14,32 +14,11 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
-func TestGetBookList(t *testing.T) {
-	router, context := test.Prepare()
-
-	book := NewBookController(context)
-	router.GET(APIBooks, func(c echo.Context) error { return book.GetBookList(c) })
-
-	setUpTestData(context)
-
-	uri := test.NewRequestBuilder().URL(APIBooks).RequestParams("page", "0").RequestParams("size", "5").Build().GetRequestURL()
-	req := httptest.NewRequest("GET", uri, nil)
-	rec := httptest.NewRecorder()
-
-	router.ServeHTTP(rec, req)
-
-	entity := &model.Book{}
-	data, _ := entity.FindAllByPage(context.GetRepository(), "0", "5")
-
-	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
-}
-
 func TestGetBookSearch(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
-	router.GET(APIBooks, func(c echo.Context) error { return book.GetBookSearch(c) })
+	router.GET(APIBooks, func(c echo.Context) error { return book.GetBookList(c) })
 
 	setUpTestData(context)
 
@@ -60,7 +39,7 @@ func TestPostBookRegist(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
-	router.POST(APIBooks, func(c echo.Context) error { return book.PostBookRegist(c) })
+	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
 
 	param := createDto()
 	req := httptest.NewRequest("POST", APIBooks, strings.NewReader(test.ConvertToString(param)))
@@ -81,7 +60,7 @@ func TestPostBookEdit(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
-	router.PUT(APIBooksID, func(c echo.Context) error { return book.PostBookEdit(c) })
+	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
 
 	setUpTestData(context)
 
@@ -105,7 +84,7 @@ func TestPostBookDelete(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
-	router.DELETE(APIBooksID, func(c echo.Context) error { return book.PostBookDelete(c) })
+	router.DELETE(APIBooksID, func(c echo.Context) error { return book.DeleteBook(c) })
 
 	setUpTestData(context)
 
