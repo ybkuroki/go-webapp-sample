@@ -36,7 +36,7 @@ func (controller *BookController) CreateBook(c echo.Context) error {
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
 	}
-	book, result := controller.service.RegisterBook(dto)
+	book, result := controller.service.CreateBook(dto)
 	if result != nil {
 		return c.JSON(http.StatusBadRequest, result)
 	}
@@ -49,7 +49,7 @@ func (controller *BookController) UpdateBook(c echo.Context) error {
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
 	}
-	book, result := controller.service.EditBook(dto, c.Param("id"))
+	book, result := controller.service.UpdateBook(dto, c.Param("id"))
 	if result != nil {
 		return c.JSON(http.StatusBadRequest, result)
 	}

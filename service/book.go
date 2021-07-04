@@ -70,8 +70,8 @@ func (b *BookService) FindBooksByTitle(title string, page string, size string) *
 	return result
 }
 
-// RegisterBook register the given book data.
-func (b *BookService) RegisterBook(dto *dto.BookDto) (*model.Book, map[string]string) {
+// CreateBook register the given book data.
+func (b *BookService) CreateBook(dto *dto.BookDto) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
@@ -110,8 +110,8 @@ func (b *BookService) RegisterBook(dto *dto.BookDto) (*model.Book, map[string]st
 	return nil, errors
 }
 
-// EditBook updates the given book data.
-func (b *BookService) EditBook(dto *dto.BookDto, id string) (*model.Book, map[string]string) {
+// UpdateBook updates the given book data.
+func (b *BookService) UpdateBook(dto *dto.BookDto, id string) (*model.Book, map[string]string) {
 	errors := dto.Validate()
 
 	if errors == nil {
