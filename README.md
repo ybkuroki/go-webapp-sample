@@ -113,40 +113,39 @@ There are the following services in the book management.
 
 |Service Name|HTTP Method|URL|Parameter|Summary|
 |:---|:---:|:---|:---|:---|
-|Get Service|GET|``/api/book?id=[BOOK_ID]``|Book ID|Get a book data.|
-|List Service|GET|``/api/book/list?page=[PAGE_NUMBER]&size=[PAGE_SIZE]``|Page|Get a list of books.|
-|Regist Service|POST|``/api/book/new``|Book|Regist a book data.|
-|Edit Service|POST|``/api/book/edit``|Book|Edit a book data.|
-|Delete Service|POST|``/api/book/delete``|Book|Delete a book data.|
-|Search Title Service|GET|``/api/book/search?query=[KEYWORD]&page=[PAGE_NUMBER]&size=[PAGE_SIZE]``|Keyword, Page|Search a title with  the specified keyword.|
+|Get Service|GET|``/api/books/[BOOK_ID]``|Book ID|Get a book data.|
+|List/Search Service|GET|``/api/books?query=[KEYWORD]&page=[PAGE_NUMBER]&size=[PAGE_SIZE]``|Page, Keyword(Optional)|Get a list of books.|
+|Regist Service|POST|``/api/books``|Book|Regist a book data.|
+|Edit Service|PUT|``/api/books``|Book|Edit a book data.|
+|Delete Service|DELETE|``/api/books``|Book|Delete a book data.|
 
 ### Account Management
 There are the following services in the Account management.
 
 |Service Name|HTTP Method|URL|Parameter|Summary|
 |:---|:---:|:---|:---|:---|
-|Login Service|POST|``/api/account/login``|Session ID, User Name, Password|Session authentication with username and password.|
-|Logout Service|POST|``/api/account/logout``|Session ID|Logout a user.|
-|Login Status Check Service|GET|``/api/account/loginStatus``|Session ID|Check if the user is logged in.|
-|Login Username Service|GET|``/api/account/loginAccount``|Session ID|Get the login user's username.|
+|Login Service|POST|``/api/auth/login``|Session ID, User Name, Password|Session authentication with username and password.|
+|Logout Service|POST|``/api/auth/logout``|Session ID|Logout a user.|
+|Login Status Check Service|GET|``/api/auth/loginStatus``|Session ID|Check if the user is logged in.|
+|Login Username Service|GET|``/api/auth/loginAccount``|Session ID|Get the login user's username.|
 
 ### Master Management
 There are the following services in the Master management.
 
 |Service Name|HTTP Method|URL|Parameter|Summary|
 |:---|:---:|:---|:---|:---|
-|Category List Service|GET|``/api/master/category``|Nothing|Get a list of categories.|
-|Format List Service|GET|``/api/master/format``|Nothing|Get a list of formats.|
+|Category List Service|GET|``/api/categories``|Nothing|Get a list of categories.|
+|Format List Service|GET|``/api/formats``|Nothing|Get a list of formats.|
 
 ## Libraries
 This sample uses the following libraries.
 
 |Library Name|Version|
 |:---|:---:|
-|Echo|4.3.0|
-|Gorm|1.9.16|
+|echo|4.3.0|
+|gorm|1.21.11|
 |go-playground/validator.v9|9.31.0|
-|Zap/logger|1.17.0|
+|zap|1.18.1|
 
 ## Contribution
 Please read [CONTRIBUTING.md](https://github.com/ybkuroki/go-webapp-sample/blob/master/CONTRIBUTING.md) for proposing new functions, reporting bugs and submitting pull requests before contributing to this repository.
