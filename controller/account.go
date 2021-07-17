@@ -5,6 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/model"
+	"github.com/ybkuroki/go-webapp-sample/model/dto"
 	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/service"
 	"github.com/ybkuroki/go-webapp-sample/session"
@@ -39,14 +40,16 @@ func (controller *AccountController) GetLoginAccount(c echo.Context) error {
 	return c.JSON(http.StatusOK, session.GetAccount(c))
 }
 
-// PostLogin is the method to login using username and password by http post.
-func (controller *AccountController) PostLogin(c echo.Context) error {
-	username := c.FormValue("username")
-	password := c.FormValue("password")
+// Login is the method to login using username and password by http post.
+func (controller *AccountController) Login(c echo.Context) error {
+	dto := dto.NewLoginDto()
+	if err := c.Bind(dto); err != nil {
+		return c.JSON(http.StatusBadRequest, dto)
+	}
 
 	account := session.GetAccount(c)
 	if account == nil {
-		authenticate, a := controller.service.AuthenticateByUsernameAndPassword(username, password)
+		authenticate, a := controller.service.AuthenticateByUsernameAndPassword(dto.UserName, dto.Password)
 		if authenticate {
 			_ = session.SetAccount(c, a)
 			_ = session.Save(c)
@@ -57,8 +60,8 @@ func (controller *AccountController) PostLogin(c echo.Context) error {
 	return c.JSON(http.StatusOK, account)
 }
 
-// PostLogout is the method to logout by http post.
-func (controller *AccountController) PostLogout(c echo.Context) error {
+// Logout is the method to logout by http post.
+func (controller *AccountController) Logout(c echo.Context) error {
 	_ = session.SetAccount(c, nil)
 	_ = session.Delete(c)
 	return c.NoContent(http.StatusOK)

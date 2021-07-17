@@ -18,32 +18,11 @@ func TestGetBookList(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
-	router.GET(APIBookList, func(c echo.Context) error { return book.GetBookList(c) })
+	router.GET(APIBooks, func(c echo.Context) error { return book.GetBookList(c) })
 
 	setUpTestData(context)
 
-	uri := test.NewRequestBuilder().URL(APIBookList).Params("page", "0").Params("size", "5").Build().GetRequestURL()
-	req := httptest.NewRequest("GET", uri, nil)
-	rec := httptest.NewRecorder()
-
-	router.ServeHTTP(rec, req)
-
-	entity := &model.Book{}
-	data, _ := entity.FindAllByPage(context.GetRepository(), "0", "5")
-
-	assert.Equal(t, http.StatusOK, rec.Code)
-	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
-}
-
-func TestGetBookSearch(t *testing.T) {
-	router, context := test.Prepare()
-
-	book := NewBookController(context)
-	router.GET(APIBookSearch, func(c echo.Context) error { return book.GetBookSearch(c) })
-
-	setUpTestData(context)
-
-	uri := test.NewRequestBuilder().URL(APIBookSearch).Params("query", "Test").Params("page", "0").Params("size", "5").Build().GetRequestURL()
+	uri := test.NewRequestBuilder().URL(APIBooks).RequestParams("query", "Test").RequestParams("page", "0").RequestParams("size", "5").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
 	rec := httptest.NewRecorder()
 
@@ -56,14 +35,14 @@ func TestGetBookSearch(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestPostBookRegist(t *testing.T) {
+func TestCreateBook(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
-	router.POST(APIBookRegist, func(c echo.Context) error { return book.PostBookRegist(c) })
+	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
 
-	param := createRegDto()
-	req := httptest.NewRequest("POST", APIBookRegist, strings.NewReader(test.ConvertToString(param)))
+	param := createDto()
+	req := httptest.NewRequest("POST", APIBooks, strings.NewReader(test.ConvertToString(param)))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 	rec := httptest.NewRecorder()
@@ -77,16 +56,17 @@ func TestPostBookRegist(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestPostBookEdit(t *testing.T) {
+func TestUpdateBook(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
-	router.POST(APIBookEdit, func(c echo.Context) error { return book.PostBookEdit(c) })
+	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
 
 	setUpTestData(context)
 
-	param := createChgDto()
-	req := httptest.NewRequest("POST", APIBookEdit, strings.NewReader(test.ConvertToString(param)))
+	param := changeDto()
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	req := httptest.NewRequest("PUT", uri, strings.NewReader(test.ConvertToString(param)))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 	rec := httptest.NewRecorder()
@@ -100,19 +80,19 @@ func TestPostBookEdit(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestPostBookDelete(t *testing.T) {
+func TestDeleteBook(t *testing.T) {
 	router, context := test.Prepare()
 
 	book := NewBookController(context)
-	router.POST(APIBookDelete, func(c echo.Context) error { return book.PostBookDelete(c) })
+	router.DELETE(APIBooksID, func(c echo.Context) error { return book.DeleteBook(c) })
 
 	setUpTestData(context)
 
 	entity := &model.Book{}
 	data, _ := entity.FindByID(context.GetRepository(), 1)
 
-	param := createChgDto()
-	req := httptest.NewRequest("POST", APIBookDelete, strings.NewReader(test.ConvertToString(param)))
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	req := httptest.NewRequest("DELETE", uri, nil)
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")
 	rec := httptest.NewRecorder()
@@ -129,8 +109,8 @@ func setUpTestData(context mycontext.Context) {
 	_, _ = model.Create(repo)
 }
 
-func createRegDto() *dto.RegBookDto {
-	dto := &dto.RegBookDto{
+func createDto() *dto.BookDto {
+	dto := &dto.BookDto{
 		Title:      "Test1",
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
@@ -139,11 +119,10 @@ func createRegDto() *dto.RegBookDto {
 	return dto
 }
 
-func createChgDto() *dto.ChgBookDto {
-	dto := &dto.ChgBookDto{
-		ID:         1,
-		Title:      "EditedTest1",
-		Isbn:       "234-234-234-2",
+func changeDto() *dto.BookDto {
+	dto := &dto.BookDto{
+		Title:      "Test2",
+		Isbn:       "123-123-123-2",
 		CategoryID: 2,
 		FormatID:   2,
 	}

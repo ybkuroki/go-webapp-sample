@@ -13,26 +13,26 @@ const (
 	min      string = "min"
 )
 
-// RegBookDto defines a data transfer object for register.
-type RegBookDto struct {
+// BookDto defines a data transfer object for book.
+type BookDto struct {
 	Title      string `validate:"required,min=3,max=50" json:"title"`
 	Isbn       string `validate:"required,min=10,max=20" json:"isbn"`
 	CategoryID uint   `json:"categoryId"`
 	FormatID   uint   `json:"formatId"`
 }
 
-// NewRegBookDto is constructor.
-func NewRegBookDto() *RegBookDto {
-	return &RegBookDto{}
+// NewBookDto is constructor.
+func NewBookDto() *BookDto {
+	return &BookDto{}
 }
 
 // Create creates a book model from this DTO.
-func (b *RegBookDto) Create() *model.Book {
+func (b *BookDto) Create() *model.Book {
 	return model.NewBook(b.Title, b.Isbn, b.CategoryID, b.FormatID)
 }
 
 // Validate performs validation check for the each item.
-func (b *RegBookDto) Validate() map[string]string {
+func (b *BookDto) Validate() map[string]string {
 	return validateDto(b)
 }
 
@@ -69,32 +69,7 @@ func validateDto(b interface{}) map[string]string {
 }
 
 // ToString is return string of object
-func (b *RegBookDto) ToString() (string, error) {
-	bytes, error := json.Marshal(b)
-	return string(bytes), error
-}
-
-// ChgBookDto defines a data transfer object for changes or updates.
-type ChgBookDto struct {
-	ID         uint   `validate:"required" json:"id"`
-	Title      string `validate:"required,gte=3,lt=50" json:"title"`
-	Isbn       string `validate:"required,gte=10,lt=20" json:"isbn"`
-	CategoryID uint   `json:"categoryId"`
-	FormatID   uint   `json:"formatId"`
-}
-
-// NewChgBookDto is constructor.
-func NewChgBookDto() *ChgBookDto {
-	return &ChgBookDto{}
-}
-
-// Validate performs validation check for the each item.
-func (b *ChgBookDto) Validate() map[string]string {
-	return validateDto(b)
-}
-
-// ToString is return string of object
-func (b *ChgBookDto) ToString() (string, error) {
+func (b *BookDto) ToString() (string, error) {
 	bytes, error := json.Marshal(b)
 	return string(bytes), error
 }
