@@ -80,6 +80,25 @@ There are 2 methods for starting server.
     - username : ``test``
     - password : ``test``
 
+## Using Swagger
+In this sample, Swagger is enabled only when executed this application on the development environment.
+Swagger isn't enabled on the another environments in default.
+
+### Accessing to Swagger
+1. Start this application according to the 'Starting Application Server' section.
+2. Access [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) in your browser.
+
+### Updating the existing Swagger document
+1. Update some comments of some controllers.
+2. Download Swag library. (Only first time)
+    ```bash
+    go get github.com/swaggo/swag/cmd/swag
+    ```
+3. Update ``docs/docs.go``.
+    ```bash
+    swag init
+    ```
+
 ## Build executable file
 Build this source code by the following command.
 ```bash
@@ -107,6 +126,7 @@ The follwing figure is the map of this sample project.
 
 ## Services
 This sample provides 3 services: book management, account management, and master management.
+Regarding the detail of the API specification, please refer to the 'Using Swagger' section.
 
 ### Book Management
 There are the following services in the book management.

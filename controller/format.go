@@ -25,7 +25,7 @@ func NewFormatController(context mycontext.Context) *FormatController {
 // @Tags Formats
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} model.Format "Sucess to fetch a format list."
+// @Success 200 {array} model.Format "Success to fetch a format list."
 // @Failure 401 {string} false "Failed to the authentication."
 // @Router /formats [get]
 func (controller *FormatController) GetFormatList(c echo.Context) error {

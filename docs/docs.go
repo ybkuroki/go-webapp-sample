@@ -429,7 +429,7 @@ var doc = `{
                 "summary": "Get a format list",
                 "responses": {
                     "200": {
-                        "description": "Sucess to fetch a format list.",
+                        "description": "Success to fetch a format list.",
                         "schema": {
                             "type": "array",
                             "items": {
