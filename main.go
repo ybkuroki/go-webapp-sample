@@ -11,6 +11,15 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/router"
 )
 
+// @title go-webapp-sample API
+// @version 1.5.1
+// @description This is API specification for go-webapp-sample project.
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/mit-license.php
+
+// @host localhost:8080
+// @BasePath /api
 func main() {
 	e := echo.New()
 
@@ -19,7 +28,7 @@ func main() {
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
 
 	rep := repository.NewBookRepository(logger, conf)
-	context := mycontext.NewContext(rep, conf, logger)
+	context := mycontext.NewContext(rep, conf, logger, env)
 
 	migration.CreateDatabase(context)
 	migration.InitMasterData(context)

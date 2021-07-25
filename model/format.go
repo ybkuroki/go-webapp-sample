@@ -25,7 +25,7 @@ func NewFormat(name string) *Format {
 // FindByID returns a format full matched given format's ID.
 func (f *Format) FindByID(rep repository.Repository, id uint) (*Format, error) {
 	var format Format
-	if error := rep.Where("id = ?", id).Find(&format).Error; error != nil {
+	if error := rep.Where("id = ?", id).First(&format).Error; error != nil {
 		return nil, error
 	}
 	return &format, nil

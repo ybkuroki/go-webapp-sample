@@ -22,10 +22,21 @@ func NewCategory(name string) *Category {
 	return &Category{Name: name}
 }
 
+func (c *Category) Exist(rep repository.Repository, id uint) (bool, error) {
+	var count int64
+	if error := rep.Where("id = ?", id).Count(&count).Error; error != nil {
+		return false, error
+	}
+	if count > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
 // FindByID returns a category full matched given category's ID.
 func (c *Category) FindByID(rep repository.Repository, id uint) (*Category, error) {
 	var category Category
-	if error := rep.Where("id = ?", id).Find(&category).Error; error != nil {
+	if error := rep.Where("id = ?", id).First(&category).Error; error != nil {
 		return nil, error
 	}
 	return &category, nil

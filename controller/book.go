@@ -21,16 +21,56 @@ func NewBookController(context mycontext.Context) *BookController {
 }
 
 // GetBook returns one record matched book's id.
+// @Summary Get a book
+// @Description Get a book
+// @Tags Books
+// @Accept  json
+// @Produce  json
+// @Param book_id path int true "Book ID"
+// @Success 200 {object} model.Book "Success to fetch data."
+// @Failure 400 {string} message "Failed to fetch data."
+// @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
+// @Router /books/{book_id} [get]
 func (controller *BookController) GetBook(c echo.Context) error {
-	return c.JSON(http.StatusOK, controller.service.FindByID(c.Param("id")))
+	book, err := controller.service.FindByID(c.Param("id"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, book)
 }
 
 // GetBookList returns the list of matched books by searching.
+// @Summary Get a book list
+// @Description Get the list of matched books by searching
+// @Tags Books
+// @Accept  json
+// @Produce  json
+// @Param query query string false "Keyword"
+// @Param page query int false "Page number"
+// @Param size query int false "Item size per page"
+// @Success 200 {object} model.Page "Sucess to fetch a book list."
+// @Failure 400 {string} message "Failed to fetch data."
+// @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
+// @Router /books [get]
 func (controller *BookController) GetBookList(c echo.Context) error {
-	return c.JSON(http.StatusOK, controller.service.FindBooksByTitle(c.QueryParam("query"), c.QueryParam("page"), c.QueryParam("size")))
+	book, err := controller.service.FindBooksByTitle(c.QueryParam("query"), c.QueryParam("page"), c.QueryParam("size"))
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, book)
 }
 
 // CreateBook create a new book by http post.
+// @Summary Create a new book
+// @Description Create a new book
+// @Tags Books
+// @Accept  json
+// @Produce  json
+// @Param data body dto.BookDto true "a new book data for creating"
+// @Success 200 {object} model.Book "Sccess to create a new book."
+// @Failure 400 {string} message "Failed to the registration."
+// @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
+// @Router /books [post]
 func (controller *BookController) CreateBook(c echo.Context) error {
 	dto := dto.NewBookDto()
 	if err := c.Bind(dto); err != nil {
@@ -43,7 +83,18 @@ func (controller *BookController) CreateBook(c echo.Context) error {
 	return c.JSON(http.StatusOK, book)
 }
 
-// UpdateBook update the existing book by http post.
+// UpdateBook update the existing book by http put.
+// @Summary Update the existing book
+// @Description Update the existing book
+// @Tags Books
+// @Accept  json
+// @Produce  json
+// @Param book_id path int true "Book ID"
+// @Param data body dto.BookDto true "the book data for updating"
+// @Success 200 {object} model.Book "Success to update the existing book."
+// @Failure 400 {string} message "Failed to the update."
+// @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
+// @Router /books/{book_id} [put]
 func (controller *BookController) UpdateBook(c echo.Context) error {
 	dto := dto.NewBookDto()
 	if err := c.Bind(dto); err != nil {
@@ -56,7 +107,17 @@ func (controller *BookController) UpdateBook(c echo.Context) error {
 	return c.JSON(http.StatusOK, book)
 }
 
-// DeleteBook deletes the existing book by http post.
+// DeleteBook deletes the existing book by http delete.
+// @Summary Delete the existing book
+// @Description Delete the existing book
+// @Tags Books
+// @Accept  json
+// @Produce  json
+// @Param book_id path int true "Book ID"
+// @Success 200 {object} model.Book "Sucess to delete the existing book."
+// @Failure 400 {string} message "Failed to the delete."
+// @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
+// @Router /books/{book_id} [delete]
 func (controller *BookController) DeleteBook(c echo.Context) error {
 	book, result := controller.service.DeleteBook(c.Param("id"))
 	if result != nil {

@@ -28,11 +28,27 @@ func NewAccountController(context mycontext.Context) *AccountController {
 }
 
 // GetLoginStatus returns the status of login.
+// @Summary Get the login status.
+// @Description Get the login status of current logged-in user.
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Success 200 {boolean} bool "The current user have already logged-in. Returns true."
+// @Failure 401 {boolean} bool "The current user haven't logged-in yet. Returns false."
+// @Router /auth/loginStatus [get]
 func (controller *AccountController) GetLoginStatus(c echo.Context) error {
 	return c.JSON(http.StatusOK, true)
 }
 
 // GetLoginAccount returns the account data of logged in user.
+// @Summary Get the account data of logged-in user.
+// @Description Get the account data of logged-in user.
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} model.Account "Success to fetch the account data. If the security function is disable, it returns the dummy data."
+// @Failure 401 {boolean} bool "The current user haven't logged-in yet. Returns false."
+// @Router /auth/loginAccount [get]
 func (controller *AccountController) GetLoginAccount(c echo.Context) error {
 	if !controller.context.GetConfig().Extension.SecurityEnabled {
 		return c.JSON(http.StatusOK, controller.dummyAccount)
@@ -41,6 +57,15 @@ func (controller *AccountController) GetLoginAccount(c echo.Context) error {
 }
 
 // Login is the method to login using username and password by http post.
+// @Summary Login using username and password.
+// @Description Login using username and password.
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Param data body dto.LoginDto true "User name and Password for logged-in."
+// @Success 200 {object} model.Account "Success to the authentication."
+// @Failure 401 {boolean} bool "Failed to the authentication."
+// @Router /auth/login [post]
 func (controller *AccountController) Login(c echo.Context) error {
 	dto := dto.NewLoginDto()
 	if err := c.Bind(dto); err != nil {
@@ -61,6 +86,13 @@ func (controller *AccountController) Login(c echo.Context) error {
 }
 
 // Logout is the method to logout by http post.
+// @Summary Logout.
+// @Description Logout.
+// @Tags Auth
+// @Accept  json
+// @Produce  json
+// @Success 200
+// @Router /auth/logout [post]
 func (controller *AccountController) Logout(c echo.Context) error {
 	_ = session.SetAccount(c, nil)
 	_ = session.Delete(c)

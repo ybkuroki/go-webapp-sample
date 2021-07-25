@@ -22,6 +22,7 @@ security:
   auth_path:
     - /api/.*
   exclude_path:
+    - /swagger/.*
     - /api/auth/login$
     - /api/auth/logout$
     - /api/health$

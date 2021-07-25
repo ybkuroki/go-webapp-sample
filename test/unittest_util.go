@@ -29,7 +29,7 @@ func Prepare() (*echo.Echo, mycontext.Context) {
 
 	logger := initTestLogger()
 	rep := repository.NewBookRepository(logger, conf)
-	context := mycontext.NewContext(rep, conf, logger)
+	context := mycontext.NewContext(rep, conf, logger, "test")
 
 	middleware.InitLoggerMiddleware(e, context)
 

@@ -20,6 +20,14 @@ func NewFormatController(context mycontext.Context) *FormatController {
 }
 
 // GetFormatList returns the list of all formats.
+// @Summary Get a format list
+// @Description Get a format list
+// @Tags Formats
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} model.Format "Sucess to fetch a format list."
+// @Failure 401 {string} false "Failed to the authentication."
+// @Router /formats [get]
 func (controller *FormatController) GetFormatList(c echo.Context) error {
 	return c.JSON(http.StatusOK, controller.service.FindAllFormats())
 }

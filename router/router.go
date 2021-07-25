@@ -5,8 +5,12 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/controller"
 	"github.com/ybkuroki/go-webapp-sample/mycontext"
+
+	echoSwagger "github.com/swaggo/echo-swagger"
+	_ "github.com/ybkuroki/go-webapp-sample/docs"
 )
 
 // Init initialize the routing of this application.
@@ -58,6 +62,10 @@ func Init(e *echo.Echo, context mycontext.Context) {
 	if conf.Extension.SecurityEnabled {
 		e.POST(controller.APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
 		e.POST(controller.APIAccountLogout, func(c echo.Context) error { return account.Logout(c) })
+	}
+
+	if context.GetEnv() == config.DEV {
+		e.GET("/swagger/*", echoSwagger.WrapHandler)
 	}
 
 	e.GET(controller.APIHealth, func(c echo.Context) error { return health.GetHealthCheck(c) })
