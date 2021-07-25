@@ -25,7 +25,7 @@ func NewCategoryController(context mycontext.Context) *CategoryController {
 // @Tags Categories
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} model.Category "Sucess to fetch a category list."
+// @Success 200 {array} model.Category "Success to fetch a category list."
 // @Failure 401 {string} false "Failed to the authentication."
 // @Router /categories [get]
 func (controller *CategoryController) GetCategoryList(c echo.Context) error {

@@ -10,7 +10,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/mycontext"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
-	_ "github.com/ybkuroki/go-webapp-sample/docs"
+	_ "github.com/ybkuroki/go-webapp-sample/docs" // for using echo-swagger
 )
 
 // Init initialize the routing of this application.

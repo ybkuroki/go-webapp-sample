@@ -48,7 +48,7 @@ func (controller *BookController) GetBook(c echo.Context) error {
 // @Param query query string false "Keyword"
 // @Param page query int false "Page number"
 // @Param size query int false "Item size per page"
-// @Success 200 {object} model.Page "Sucess to fetch a book list."
+// @Success 200 {object} model.Page "Success to fetch a book list."
 // @Failure 400 {string} message "Failed to fetch data."
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books [get]
@@ -114,7 +114,7 @@ func (controller *BookController) UpdateBook(c echo.Context) error {
 // @Accept  json
 // @Produce  json
 // @Param book_id path int true "Book ID"
-// @Success 200 {object} model.Book "Sucess to delete the existing book."
+// @Success 200 {object} model.Book "Success to delete the existing book."
 // @Failure 400 {string} message "Failed to the delete."
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books/{book_id} [delete]

@@ -181,7 +181,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Sucess to fetch a book list.",
+                        "description": "Success to fetch a book list.",
                         "schema": {
                             "$ref": "#/definitions/model.Page"
                         }
@@ -362,7 +362,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Sucess to delete the existing book.",
+                        "description": "Success to delete the existing book.",
                         "schema": {
                             "$ref": "#/definitions/model.Book"
                         }
@@ -397,7 +397,7 @@ var doc = `{
                 "summary": "Get a category list",
                 "responses": {
                     "200": {
-                        "description": "Sucess to fetch a category list.",
+                        "description": "Success to fetch a category list.",
                         "schema": {
                             "type": "array",
                             "items": {
