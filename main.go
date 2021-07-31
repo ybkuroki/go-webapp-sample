@@ -3,10 +3,10 @@ package main
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/config"
+	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/middleware"
 	"github.com/ybkuroki/go-webapp-sample/migration"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"github.com/ybkuroki/go-webapp-sample/router"
 )
@@ -28,14 +28,14 @@ func main() {
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
 
 	rep := repository.NewBookRepository(logger, conf)
-	context := mycontext.NewContext(rep, conf, logger, env)
+	container := container.NewContainer(rep, conf, logger, env)
 
-	migration.CreateDatabase(context)
-	migration.InitMasterData(context)
+	migration.CreateDatabase(container)
+	migration.InitMasterData(container)
 
-	router.Init(e, context)
-	middleware.InitLoggerMiddleware(e, context)
-	middleware.InitSessionMiddleware(e, context)
+	router.Init(e, container)
+	middleware.InitLoggerMiddleware(e, container)
+	middleware.InitSessionMiddleware(e, container)
 
 	if conf.StaticContents.Path != "" {
 		e.Static("/", conf.StaticContents.Path)

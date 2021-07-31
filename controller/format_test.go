@@ -12,9 +12,9 @@ import (
 )
 
 func TestGetFormatList(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	format := NewFormatController(context)
+	format := NewFormatController(container)
 	router.GET(APIFormats, func(c echo.Context) error { return format.GetFormatList(c) })
 
 	req := httptest.NewRequest("GET", APIFormats, nil)

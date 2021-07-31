@@ -12,9 +12,9 @@ import (
 )
 
 func TestGetLoginStatus(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	account := NewAccountController(context)
+	account := NewAccountController(container)
 	router.GET(APIAccountLoginStatus, func(c echo.Context) error { return account.GetLoginStatus(c) })
 
 	req := httptest.NewRequest("GET", APIAccountLoginStatus, nil)
@@ -27,9 +27,9 @@ func TestGetLoginStatus(t *testing.T) {
 }
 
 func TestGetLoginAccount(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	account := NewAccountController(context)
+	account := NewAccountController(container)
 	router.GET(APIAccountLoginAccount, func(c echo.Context) error { return account.GetLoginAccount(c) })
 
 	req := httptest.NewRequest("GET", APIAccountLoginAccount, nil)

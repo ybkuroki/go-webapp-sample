@@ -4,25 +4,25 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/service"
 	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
 // AccountController is a controller for managing user account.
 type AccountController struct {
-	context      mycontext.Context
+	context      container.Container
 	service      *service.AccountService
 	dummyAccount *model.Account
 }
 
 // NewAccountController is constructor.
-func NewAccountController(context mycontext.Context) *AccountController {
+func NewAccountController(container container.Container) *AccountController {
 	return &AccountController{
-		context:      context,
-		service:      service.NewAccountService(context),
+		context:      container,
+		service:      service.NewAccountService(container),
 		dummyAccount: model.NewAccountWithPlainPassword("test", "test", 1),
 	}
 }

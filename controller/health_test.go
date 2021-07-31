@@ -11,9 +11,9 @@ import (
 )
 
 func TestGetHealthCheck(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	health := NewHealthController(context)
+	health := NewHealthController(container)
 	router.GET(APIHealth, func(c echo.Context) error { return health.GetHealthCheck(c) })
 
 	req := httptest.NewRequest("GET", APIHealth, nil)

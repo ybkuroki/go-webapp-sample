@@ -12,21 +12,21 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/valyala/fasttemplate"
 	"github.com/ybkuroki/go-webapp-sample/config"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
+	"github.com/ybkuroki/go-webapp-sample/container"
 	mySession "github.com/ybkuroki/go-webapp-sample/session"
 	"gopkg.in/boj/redistore.v1"
 )
 
 // InitLoggerMiddleware initialize a middleware for logger.
-func InitLoggerMiddleware(e *echo.Echo, context mycontext.Context) {
-	e.Use(RequestLoggerMiddleware(context))
-	e.Use(ActionLoggerMiddleware(context))
+func InitLoggerMiddleware(e *echo.Echo, container container.Container) {
+	e.Use(RequestLoggerMiddleware(container))
+	e.Use(ActionLoggerMiddleware(container))
 }
 
 // InitSessionMiddleware initialize a middleware for session management.
-func InitSessionMiddleware(e *echo.Echo, context mycontext.Context) {
-	conf := context.GetConfig()
-	logger := context.GetLogger()
+func InitSessionMiddleware(e *echo.Echo, container container.Container) {
+	conf := container.GetConfig()
+	logger := container.GetLogger()
 	if conf.Extension.SecurityEnabled {
 		if conf.Redis.Enabled {
 			logger.GetZapLogger().Infof("Try redis connection")
@@ -45,7 +45,7 @@ func InitSessionMiddleware(e *echo.Echo, context mycontext.Context) {
 }
 
 // RequestLoggerMiddleware is middleware for logging the contents of requests.
-func RequestLoggerMiddleware(context mycontext.Context) echo.MiddlewareFunc {
+func RequestLoggerMiddleware(container container.Container) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			req := c.Request()
@@ -54,7 +54,7 @@ func RequestLoggerMiddleware(context mycontext.Context) echo.MiddlewareFunc {
 				c.Error(err)
 			}
 
-			template := fasttemplate.New(context.GetConfig().Log.RequestLogFormat, "${", "}")
+			template := fasttemplate.New(container.GetConfig().Log.RequestLogFormat, "${", "}")
 			logstr := template.ExecuteFuncString(func(w io.Writer, tag string) (int, error) {
 				switch tag {
 				case "remote_ip":
@@ -74,7 +74,7 @@ func RequestLoggerMiddleware(context mycontext.Context) echo.MiddlewareFunc {
 					return w.Write([]byte(""))
 				}
 			})
-			context.GetLogger().GetZapLogger().Infof(logstr)
+			container.GetLogger().GetZapLogger().Infof(logstr)
 			return nil
 		}
 	}
@@ -82,10 +82,10 @@ func RequestLoggerMiddleware(context mycontext.Context) echo.MiddlewareFunc {
 
 // ActionLoggerMiddleware is middleware for logging the start and end of controller processes.
 // ref: https://echo.labstack.com/cookbook/middleware
-func ActionLoggerMiddleware(context mycontext.Context) echo.MiddlewareFunc {
+func ActionLoggerMiddleware(container container.Container) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			logger := context.GetLogger()
+			logger := container.GetLogger()
 			logger.GetZapLogger().Debugf(c.Path() + " Action Start")
 			if err := next(c); err != nil {
 				c.Error(err)

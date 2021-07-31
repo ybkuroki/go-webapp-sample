@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
+	"github.com/ybkuroki/go-webapp-sample/container"
 )
 
 // APIError has a error code and a message.
@@ -15,17 +15,17 @@ type APIError struct {
 
 // ErrorController is a controller for handling errors.
 type ErrorController struct {
-	context mycontext.Context
+	container container.Container
 }
 
 // NewErrorController is constructor.
-func NewErrorController(context mycontext.Context) *ErrorController {
-	return &ErrorController{context: context}
+func NewErrorController(container container.Container) *ErrorController {
+	return &ErrorController{container: container}
 }
 
 // JSONError is cumstomize error handler
 func (controller *ErrorController) JSONError(err error, c echo.Context) {
-	logger := controller.context.GetLogger()
+	logger := controller.container.GetLogger()
 	code := http.StatusInternalServerError
 	msg := http.StatusText(code)
 

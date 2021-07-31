@@ -1,30 +1,30 @@
 package migration
 
 import (
+	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/model"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
 )
 
 // InitMasterData creates the master data used in this application.
-func InitMasterData(context mycontext.Context) {
-	if context.GetConfig().Extension.MasterGenerator {
-		rep := context.GetRepository()
+func InitMasterData(container container.Container) {
+	if container.GetConfig().Extension.MasterGenerator {
+		rep := container.GetRepository()
 
 		r := model.NewAuthority("Admin")
 		_, _ = r.Create(rep)
 		a := model.NewAccountWithPlainPassword("test", "test", r.ID)
 		_, _ = a.Create(rep)
 
-		c := model.NewCategory("技術書")
+		c := model.NewCategory("Technical Book")
 		_, _ = c.Create(rep)
-		c = model.NewCategory("雑誌")
+		c = model.NewCategory("Magazine")
 		_, _ = c.Create(rep)
-		c = model.NewCategory("小説")
+		c = model.NewCategory("Novel")
 		_, _ = c.Create(rep)
 
-		f := model.NewFormat("書籍")
+		f := model.NewFormat("Paper Book")
 		_, _ = f.Create(rep)
-		f = model.NewFormat("電子書籍")
+		f = model.NewFormat("e-Book")
 		_, _ = f.Create(rep)
 	}
 }

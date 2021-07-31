@@ -4,20 +4,20 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/service"
 )
 
 // BookController is a controller for managing books.
 type BookController struct {
-	context mycontext.Context
-	service *service.BookService
+	container container.Container
+	service   *service.BookService
 }
 
 // NewBookController is constructor.
-func NewBookController(context mycontext.Context) *BookController {
-	return &BookController{context: context, service: service.NewBookService(context)}
+func NewBookController(container container.Container) *BookController {
+	return &BookController{container: container, service: service.NewBookService(container)}
 }
 
 // GetBook returns one record matched book's id.

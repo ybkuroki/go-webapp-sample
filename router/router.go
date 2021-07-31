@@ -6,16 +6,16 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/ybkuroki/go-webapp-sample/config"
+	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/controller"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
 
 	echoSwagger "github.com/swaggo/echo-swagger"
 	_ "github.com/ybkuroki/go-webapp-sample/docs" // for using echo-swagger
 )
 
 // Init initialize the routing of this application.
-func Init(e *echo.Echo, context mycontext.Context) {
-	conf := context.GetConfig()
+func Init(e *echo.Echo, container container.Container) {
+	conf := container.GetConfig()
 	if conf.Extension.CorsEnabled {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 			AllowCredentials: true,
@@ -36,15 +36,15 @@ func Init(e *echo.Echo, context mycontext.Context) {
 		}))
 	}
 
-	errorHandler := controller.NewErrorController(context)
+	errorHandler := controller.NewErrorController(container)
 	e.HTTPErrorHandler = errorHandler.JSONError
 	e.Use(middleware.Recover())
 
-	book := controller.NewBookController(context)
-	category := controller.NewCategoryController(context)
-	format := controller.NewFormatController(context)
-	account := controller.NewAccountController(context)
-	health := controller.NewHealthController(context)
+	book := controller.NewBookController(container)
+	category := controller.NewCategoryController(container)
+	format := controller.NewFormatController(container)
+	account := controller.NewAccountController(container)
+	health := controller.NewHealthController(container)
 
 	e.GET(controller.APIBooksID, func(c echo.Context) error { return book.GetBook(c) })
 	e.GET(controller.APIBooks, func(c echo.Context) error { return book.GetBookList(c) })
@@ -64,7 +64,7 @@ func Init(e *echo.Echo, context mycontext.Context) {
 		e.POST(controller.APIAccountLogout, func(c echo.Context) error { return account.Logout(c) })
 	}
 
-	if context.GetEnv() == config.DEV {
+	if container.GetEnv() == config.DEV {
 		e.GET("/swagger/*", echoSwagger.WrapHandler)
 	}
 
