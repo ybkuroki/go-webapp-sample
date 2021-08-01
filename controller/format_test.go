@@ -12,9 +12,9 @@ import (
 )
 
 func TestGetFormatList(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	format := NewFormatController(context)
+	format := NewFormatController(container)
 	router.GET(APIFormats, func(c echo.Context) error { return format.GetFormatList(c) })
 
 	req := httptest.NewRequest("GET", APIFormats, nil)
@@ -23,8 +23,8 @@ func TestGetFormatList(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	data := [...]*model.Format{
-		{ID: 1, Name: "書籍"},
-		{ID: 2, Name: "電子書籍"},
+		{ID: 1, Name: "Paper Book"},
+		{ID: 2, Name: "e-Book"},
 	}
 
 	assert.Equal(t, http.StatusOK, rec.Code)

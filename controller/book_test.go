@@ -8,19 +8,19 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
 func TestGetBookList(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	book := NewBookController(context)
+	book := NewBookController(container)
 	router.GET(APIBooks, func(c echo.Context) error { return book.GetBookList(c) })
 
-	setUpTestData(context)
+	setUpTestData(container)
 
 	uri := test.NewRequestBuilder().URL(APIBooks).RequestParams("query", "Test").RequestParams("page", "0").RequestParams("size", "5").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
@@ -29,16 +29,16 @@ func TestGetBookList(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByTitle(context.GetRepository(), "Test", "0", "5")
+	data, _ := entity.FindByTitle(container.GetRepository(), "Test", "0", "5")
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
 func TestCreateBook(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	book := NewBookController(context)
+	book := NewBookController(container)
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
 
 	param := createDto()
@@ -50,19 +50,19 @@ func TestCreateBook(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(context.GetRepository(), 1)
+	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
 func TestUpdateBook(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	book := NewBookController(context)
+	book := NewBookController(container)
 	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
 
-	setUpTestData(context)
+	setUpTestData(container)
 
 	param := changeDto()
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
@@ -74,22 +74,22 @@ func TestUpdateBook(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(context.GetRepository(), 1)
+	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
 func TestDeleteBook(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	book := NewBookController(context)
+	book := NewBookController(container)
 	router.DELETE(APIBooksID, func(c echo.Context) error { return book.DeleteBook(c) })
 
-	setUpTestData(context)
+	setUpTestData(container)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(context.GetRepository(), 1)
+	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := httptest.NewRequest("DELETE", uri, nil)
@@ -103,9 +103,9 @@ func TestDeleteBook(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func setUpTestData(context mycontext.Context) {
+func setUpTestData(container container.Container) {
 	model := model.NewBook("Test1", "123-123-123-1", 1, 1)
-	repo := context.GetRepository()
+	repo := container.GetRepository()
 	_, _ = model.Create(repo)
 }
 

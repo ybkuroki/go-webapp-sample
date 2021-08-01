@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"math"
 
 	"github.com/ybkuroki/go-webapp-sample/repository"
@@ -51,14 +52,11 @@ func NewBook(title string, isbn string, categoryID uint, formatID uint) *Book {
 
 // FindByID returns a book full matched given book's ID.
 func (b *Book) FindByID(rep repository.Repository, id uint) (*Book, error) {
-	var book *Book
 	var rec RecordBook
 	args := []interface{}{id}
 
 	createRaw(rep, selectBook+findByID, "", "", args).Scan(&rec)
-	book = converToBook(&rec)
-
-	return book, nil
+	return converToBook(&rec)
 }
 
 // FindAll returns all books of the book table.
@@ -111,7 +109,10 @@ func findRows(rep repository.Repository, sqlquery string, page string, size stri
 		if err = rep.ScanRows(rows, &rec); err != nil {
 			return nil, err
 		}
-		book := converToBook(&rec)
+		book, err := converToBook(&rec)
+		if err != nil {
+			return nil, err
+		}
 		books = append(books, *book)
 	}
 	return books, nil
@@ -177,10 +178,13 @@ func (b *Book) Delete(rep repository.Repository) (*Book, error) {
 	return b, nil
 }
 
-func converToBook(rec *RecordBook) *Book {
+func converToBook(rec *RecordBook) (*Book, error) {
+	if rec.ID == 0 {
+		return nil, errors.New("failed to fetch data")
+	}
 	c := &Category{ID: rec.CategoryID, Name: rec.CategoryName}
 	f := &Format{ID: rec.FormatID, Name: rec.FormatName}
-	return &Book{ID: rec.ID, Title: rec.Title, Isbn: rec.Isbn, CategoryID: rec.CategoryID, Category: c, FormatID: rec.FormatID, Format: f}
+	return &Book{ID: rec.ID, Title: rec.Title, Isbn: rec.Isbn, CategoryID: rec.CategoryID, Category: c, FormatID: rec.FormatID, Format: f}, nil
 }
 
 // ToString is return string of object

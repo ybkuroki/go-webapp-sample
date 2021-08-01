@@ -12,9 +12,9 @@ import (
 )
 
 func TestGetCategoryList(t *testing.T) {
-	router, context := test.Prepare()
+	router, container := test.Prepare()
 
-	category := NewCategoryController(context)
+	category := NewCategoryController(container)
 	router.GET(APICategories, func(c echo.Context) error { return category.GetCategoryList(c) })
 
 	req := httptest.NewRequest("GET", APICategories, nil)
@@ -23,9 +23,9 @@ func TestGetCategoryList(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	data := [...]*model.Category{
-		{ID: 1, Name: "技術書"},
-		{ID: 2, Name: "雑誌"},
-		{ID: 3, Name: "小説"},
+		{ID: 1, Name: "Technical Book"},
+		{ID: 2, Name: "Magazine"},
+		{ID: 3, Name: "Novel"},
 	}
 
 	assert.Equal(t, http.StatusOK, rec.Code)

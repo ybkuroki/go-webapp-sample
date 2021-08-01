@@ -14,3 +14,10 @@
 
 # Dependency directories (remove the comment below to include it)
 #vendor/
+
+# Output file of the swaggo/swag
+swagger.json
+swagger.yaml
+
+# Debug folder
+.vscode

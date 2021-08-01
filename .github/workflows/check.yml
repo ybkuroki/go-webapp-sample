@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-go-
       # Run golangci-lint using reviewdog
       - name: golangci-lint
-        uses: reviewdog/action-golangci-lint@v1.24
+        uses: reviewdog/action-golangci-lint@v2
         with:
           github_token: ${{ secrets.github_token }}
           level: warning

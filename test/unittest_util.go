@@ -6,17 +6,17 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/config"
+	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/middleware"
 	"github.com/ybkuroki/go-webapp-sample/migration"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
 
 // Prepare func is to prepare for unit test.
-func Prepare() (*echo.Echo, mycontext.Context) {
+func Prepare() (*echo.Echo, container.Container) {
 	e := echo.New()
 
 	conf := &config.Config{}
@@ -29,15 +29,15 @@ func Prepare() (*echo.Echo, mycontext.Context) {
 
 	logger := initTestLogger()
 	rep := repository.NewBookRepository(logger, conf)
-	context := mycontext.NewContext(rep, conf, logger)
+	container := container.NewContainer(rep, conf, logger, "test")
 
-	middleware.InitLoggerMiddleware(e, context)
+	middleware.InitLoggerMiddleware(e, container)
 
-	migration.CreateDatabase(context)
-	migration.InitMasterData(context)
+	migration.CreateDatabase(container)
+	migration.InitMasterData(container)
 
-	middleware.InitSessionMiddleware(e, context)
-	return e, context
+	middleware.InitSessionMiddleware(e, container)
+	return e, container
 }
 
 func initTestLogger() *logger.Logger {

@@ -1,73 +1,75 @@
 package service
 
 import (
+	"errors"
+
+	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
-	"github.com/ybkuroki/go-webapp-sample/mycontext"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"github.com/ybkuroki/go-webapp-sample/util"
 )
 
 // BookService is a service for managing books.
 type BookService struct {
-	context mycontext.Context
+	container container.Container
 }
 
 // NewBookService is constructor.
-func NewBookService(context mycontext.Context) *BookService {
-	return &BookService{context: context}
+func NewBookService(container container.Container) *BookService {
+	return &BookService{container: container}
 }
 
 // FindByID returns one record matched book's id.
-func (b *BookService) FindByID(id string) *model.Book {
+func (b *BookService) FindByID(id string) (*model.Book, error) {
 	if !util.IsNumeric(id) {
-		return nil
+		return nil, errors.New("failed to fetch data")
 	}
 
-	rep := b.context.GetRepository()
+	rep := b.container.GetRepository()
 	book := model.Book{}
 	result, err := book.FindByID(rep, util.ConvertToUint(id))
 	if err != nil {
-		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
-		return nil
+		b.container.GetLogger().GetZapLogger().Errorf(err.Error())
+		return nil, err
 	}
-	return result
+	return result, nil
 }
 
 // FindAllBooks returns the list of all books.
-func (b *BookService) FindAllBooks() *[]model.Book {
-	rep := b.context.GetRepository()
+func (b *BookService) FindAllBooks() (*[]model.Book, error) {
+	rep := b.container.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAll(rep)
 	if err != nil {
-		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
-		return nil
+		b.container.GetLogger().GetZapLogger().Errorf(err.Error())
+		return nil, err
 	}
-	return result
+	return result, nil
 }
 
 // FindAllBooksByPage returns the page object of all books.
-func (b *BookService) FindAllBooksByPage(page string, size string) *model.Page {
-	rep := b.context.GetRepository()
+func (b *BookService) FindAllBooksByPage(page string, size string) (*model.Page, error) {
+	rep := b.container.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAllByPage(rep, page, size)
 	if err != nil {
-		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
-		return nil
+		b.container.GetLogger().GetZapLogger().Errorf(err.Error())
+		return nil, err
 	}
-	return result
+	return result, nil
 }
 
 // FindBooksByTitle returns the page object of books matched given book title.
-func (b *BookService) FindBooksByTitle(title string, page string, size string) *model.Page {
-	rep := b.context.GetRepository()
+func (b *BookService) FindBooksByTitle(title string, page string, size string) (*model.Page, error) {
+	rep := b.container.GetRepository()
 	book := model.Book{}
 	result, err := book.FindByTitle(rep, title, page, size)
 	if err != nil {
-		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
-		return nil
+		b.container.GetLogger().GetZapLogger().Errorf(err.Error())
+		return nil, err
 	}
-	return result
+	return result, nil
 }
 
 // CreateBook register the given book data.
@@ -75,7 +77,7 @@ func (b *BookService) CreateBook(dto *dto.BookDto) (*model.Book, map[string]stri
 	errors := dto.Validate()
 
 	if errors == nil {
-		rep := b.context.GetRepository()
+		rep := b.container.GetRepository()
 		var result *model.Book
 
 		err := rep.Transaction(func(txrep repository.Repository) error {
@@ -100,8 +102,8 @@ func (b *BookService) CreateBook(dto *dto.BookDto) (*model.Book, map[string]stri
 		})
 
 		if err != nil {
-			b.context.GetLogger().GetZapLogger().Errorf(err.Error())
-			return nil, map[string]string{"error": "transaction error"}
+			b.container.GetLogger().GetZapLogger().Errorf(err.Error())
+			return nil, map[string]string{"error": "Failed to the registration"}
 		}
 
 		return result, nil
@@ -115,7 +117,7 @@ func (b *BookService) UpdateBook(dto *dto.BookDto, id string) (*model.Book, map[
 	errors := dto.Validate()
 
 	if errors == nil {
-		rep := b.context.GetRepository()
+		rep := b.container.GetRepository()
 		var result *model.Book
 
 		err := rep.Transaction(func(txrep repository.Repository) error {
@@ -150,8 +152,8 @@ func (b *BookService) UpdateBook(dto *dto.BookDto, id string) (*model.Book, map[
 		})
 
 		if err != nil {
-			b.context.GetLogger().GetZapLogger().Errorf(err.Error())
-			return nil, map[string]string{"error": "transaction error"}
+			b.container.GetLogger().GetZapLogger().Errorf(err.Error())
+			return nil, map[string]string{"error": "Failed to the update"}
 		}
 
 		return result, nil
@@ -162,7 +164,7 @@ func (b *BookService) UpdateBook(dto *dto.BookDto, id string) (*model.Book, map[
 
 // DeleteBook deletes the given book data.
 func (b *BookService) DeleteBook(id string) (*model.Book, map[string]string) {
-	rep := b.context.GetRepository()
+	rep := b.container.GetRepository()
 	var result *model.Book
 
 	err := rep.Transaction(func(txrep repository.Repository) error {
@@ -182,8 +184,8 @@ func (b *BookService) DeleteBook(id string) (*model.Book, map[string]string) {
 	})
 
 	if err != nil {
-		b.context.GetLogger().GetZapLogger().Errorf(err.Error())
-		return nil, map[string]string{"error": "transaction error"}
+		b.container.GetLogger().GetZapLogger().Errorf(err.Error())
+		return nil, map[string]string{"error": "Failed to the delete"}
 	}
 
 	return result, nil
