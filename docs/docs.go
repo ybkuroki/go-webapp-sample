@@ -445,6 +445,35 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/health": {
+            "get": {
+                "description": "Get the status of this application",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Health"
+                ],
+                "summary": "Get the status of this application",
+                "responses": {
+                    "200": {
+                        "description": "healthy: This application is started.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "None: This application is stopped.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
