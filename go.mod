@@ -13,7 +13,7 @@ require (
 	github.com/jackc/pgproto3/v2 v2.0.7 // indirect
 	github.com/jinzhu/configor v1.2.1
 	github.com/labstack/echo-contrib v0.11.0
-	github.com/labstack/echo/v4 v4.4.0
+	github.com/labstack/echo/v4 v4.5.0
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/lib/pq v1.7.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
