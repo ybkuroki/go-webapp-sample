@@ -19,7 +19,7 @@ require (
 	github.com/mattn/go-isatty v0.0.13 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/stretchr/testify v1.7.0
-	github.com/swaggo/echo-swagger v1.1.2
+	github.com/swaggo/echo-swagger v1.1.3
 	github.com/swaggo/swag v1.7.1
 	github.com/valyala/fasttemplate v1.2.1
 	go.uber.org/zap v1.19.0
