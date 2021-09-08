@@ -55,4 +55,4 @@ linters:
 # https://github.com/golangci/golangci/wiki/Configuration
 # latest version: https://github.com/golangci/golangci-lint
 service:
-  golangci-lint-version: 1.39.0
+  golangci-lint-version: 1.42.1
