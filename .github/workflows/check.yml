@@ -17,7 +17,7 @@ jobs:
         id: go
       # Check out this repository
       - name: checkout
-        uses: actions/checkout@v2.3.5
+        uses: actions/checkout@v2.4.0
       # Store cache
       - name: cache
         uses: actions/cache@v2.1.6
