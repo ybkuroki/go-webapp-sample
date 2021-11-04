@@ -31,7 +31,7 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v2 v2.4.0
-	gorm.io/driver/mysql v1.1.2
+	gorm.io/driver/mysql v1.1.3
 	gorm.io/driver/postgres v1.1.2
 	gorm.io/driver/sqlite v1.1.6
 	gorm.io/gorm v1.21.16
