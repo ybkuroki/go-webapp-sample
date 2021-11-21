@@ -163,7 +163,7 @@ This sample uses the following libraries.
 |Library Name|Version|
 |:---|:---:|
 |echo|4.6.1|
-|gorm|1.21.16|
+|gorm|1.22.3|
 |go-playground/validator.v9|9.31.0|
 |zap|1.19.1|
 
