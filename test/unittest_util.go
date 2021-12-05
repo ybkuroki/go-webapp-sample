@@ -3,6 +3,9 @@ package test
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/config"
@@ -16,7 +19,7 @@ import (
 )
 
 // Prepare func is to prepare for unit test.
-func Prepare() (*echo.Echo, container.Container) {
+func Prepare(securityEnabled bool) (*echo.Echo, container.Container) {
 	e := echo.New()
 
 	conf := &config.Config{}
@@ -24,7 +27,7 @@ func Prepare() (*echo.Echo, container.Container) {
 	conf.Database.Host = "file::memory:?cache=shared"
 	conf.Database.Migration = true
 	conf.Extension.MasterGenerator = true
-	conf.Extension.SecurityEnabled = false
+	conf.Extension.SecurityEnabled = securityEnabled
 	conf.Log.RequestLogFormat = "${remote_ip} ${account_name} ${uri} ${method} ${status}"
 
 	logger := initTestLogger()
@@ -79,4 +82,11 @@ func initTestLogger() *logger.Logger {
 func ConvertToString(model interface{}) string {
 	bytes, _ := json.Marshal(model)
 	return string(bytes)
+}
+
+func NewJsonRequest(method string, target string, param interface{}) *http.Request {
+	req := httptest.NewRequest(method, target, strings.NewReader(ConvertToString(param)))
+	req.Header.Add("Content-Type", "application/json")
+	req.Header.Add("Accept", "application/json")
+	return req
 }

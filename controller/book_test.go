@@ -3,7 +3,6 @@ package controller
 import (
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/labstack/echo/v4"
@@ -15,7 +14,7 @@ import (
 )
 
 func TestGetBookList(t *testing.T) {
-	router, container := test.Prepare()
+	router, container := test.Prepare(false)
 
 	book := NewBookController(container)
 	router.GET(APIBooks, func(c echo.Context) error { return book.GetBookList(c) })
@@ -36,15 +35,13 @@ func TestGetBookList(t *testing.T) {
 }
 
 func TestCreateBook(t *testing.T) {
-	router, container := test.Prepare()
+	router, container := test.Prepare(false)
 
 	book := NewBookController(container)
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
 
 	param := createDto()
-	req := httptest.NewRequest("POST", APIBooks, strings.NewReader(test.ConvertToString(param)))
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
+	req := test.NewJsonRequest("POST", APIBooks, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -57,7 +54,7 @@ func TestCreateBook(t *testing.T) {
 }
 
 func TestUpdateBook(t *testing.T) {
-	router, container := test.Prepare()
+	router, container := test.Prepare(false)
 
 	book := NewBookController(container)
 	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
@@ -66,9 +63,7 @@ func TestUpdateBook(t *testing.T) {
 
 	param := changeDto()
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
-	req := httptest.NewRequest("PUT", uri, strings.NewReader(test.ConvertToString(param)))
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
+	req := test.NewJsonRequest("PUT", uri, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -81,7 +76,7 @@ func TestUpdateBook(t *testing.T) {
 }
 
 func TestDeleteBook(t *testing.T) {
-	router, container := test.Prepare()
+	router, container := test.Prepare(false)
 
 	book := NewBookController(container)
 	router.DELETE(APIBooksID, func(c echo.Context) error { return book.DeleteBook(c) })
@@ -92,9 +87,7 @@ func TestDeleteBook(t *testing.T) {
 	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
-	req := httptest.NewRequest("DELETE", uri, nil)
-	req.Header.Add("Content-Type", "application/json")
-	req.Header.Add("Accept", "application/json")
+	req := test.NewJsonRequest("DELETE", uri, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
