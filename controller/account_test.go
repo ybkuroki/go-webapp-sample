@@ -49,42 +49,57 @@ func TestLoginSuccess(t *testing.T) {
 	account := NewAccountController(container)
 	router.POST(APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
 
-	param := createSuccessAccountDto()
+	param := createLoginSuccessAccount()
 	req := test.NewJsonRequest("POST", APIAccountLogin, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.NotEmpty(t, test.GetCookie(rec, "GSESSION"))
 }
 
-func TestLoginFailure(t *testing.T) {
+func TestLoginAuthenticationFailure(t *testing.T) {
 	router, container := test.Prepare(true)
 
 	account := NewAccountController(container)
 	router.POST(APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
 
-	param := createFailureAccountDto()
+	param := createLoginFailureAccount()
 	req := test.NewJsonRequest("POST", APIAccountLogin, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusUnauthorized, rec.Code)
+	assert.Empty(t, test.GetCookie(rec, "GSESSION"))
 }
 
-func createSuccessAccountDto() *dto.LoginDto {
-	dto := &dto.LoginDto{
+func TestLogoutSuccess(t *testing.T) {
+	router, container := test.Prepare(true)
+
+	account := NewAccountController(container)
+	router.POST(APIAccountLogout, func(c echo.Context) error { return account.Logout(c) })
+
+	req := test.NewJsonRequest("POST", APIAccountLogout, nil)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.NotEmpty(t, test.GetCookie(rec, "GSESSION"))
+}
+
+func createLoginSuccessAccount() *dto.LoginDto {
+	return &dto.LoginDto{
 		UserName: "test",
 		Password: "test",
 	}
-	return dto
 }
 
-func createFailureAccountDto() *dto.LoginDto {
-	dto := &dto.LoginDto{
+func createLoginFailureAccount() *dto.LoginDto {
+	return &dto.LoginDto{
 		UserName: "test",
 		Password: "abcde",
 	}
-	return dto
 }

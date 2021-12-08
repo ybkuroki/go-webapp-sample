@@ -74,42 +74,44 @@ func (b *BookService) FindBooksByTitle(title string, page string, size string) (
 
 // CreateBook register the given book data.
 func (b *BookService) CreateBook(dto *dto.BookDto) (*model.Book, map[string]string) {
-	errors := dto.Validate()
-
-	if errors == nil {
-		rep := b.container.GetRepository()
-		var result *model.Book
-
-		err := rep.Transaction(func(txrep repository.Repository) error {
-			var err error
-			book := dto.Create()
-
-			category := model.Category{}
-			if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
-				return err
-			}
-
-			format := model.Format{}
-			if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
-				return err
-			}
-
-			if result, err = book.Create(txrep); err != nil {
-				return err
-			}
-
-			return nil
-		})
-
-		if err != nil {
-			b.container.GetLogger().GetZapLogger().Errorf(err.Error())
-			return nil, map[string]string{"error": "Failed to the registration"}
-		}
-
-		return result, nil
+	if errors := dto.Validate(); errors != nil {
+		return nil, errors
 	}
 
-	return nil, errors
+	rep := b.container.GetRepository()
+	var result *model.Book
+	var err error
+
+	if error := rep.Transaction(func(txrep repository.Repository) error {
+		result, err = create(txrep, dto)
+		return err
+	}); error != nil {
+		b.container.GetLogger().GetZapLogger().Errorf(error.Error())
+		return nil, map[string]string{"error": "Failed to the registration"}
+	}
+	return result, nil
+}
+
+func create(txrep repository.Repository, dto *dto.BookDto) (*model.Book, error) {
+	var result *model.Book
+	var err error
+	book := dto.Create()
+
+	category := model.Category{}
+	if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
+		return nil, err
+	}
+
+	format := model.Format{}
+	if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
+		return nil, err
+	}
+
+	if result, err = book.Create(txrep); err != nil {
+		return nil, err
+	}
+
+	return result, nil
 }
 
 // UpdateBook updates the given book data.

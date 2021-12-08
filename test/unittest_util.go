@@ -90,3 +90,11 @@ func NewJsonRequest(method string, target string, param interface{}) *http.Reque
 	req.Header.Add("Accept", "application/json")
 	return req
 }
+
+func GetCookie(rec *httptest.ResponseRecorder, cookieName string) string {
+	parser := &http.Request{Header: http.Header{"Cookie": rec.Header()["Set-Cookie"]}}
+	if cookie, err := parser.Cookie(cookieName); cookie != nil && err == nil {
+		return cookie.Value
+	}
+	return ""
+}
