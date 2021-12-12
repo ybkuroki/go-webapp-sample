@@ -13,7 +13,35 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
-func TestGetBookList(t *testing.T) {
+type BookDtoForBindError struct {
+	Title      string
+	Isbn       string
+	CategoryID string
+	FormatID   string
+}
+
+func TestGetBook_Success(t *testing.T) {
+	router, container := test.Prepare(false)
+
+	book := NewBookController(container)
+	router.GET(APIBooksID, func(c echo.Context) error { return book.GetBook(c) })
+
+	setUpTestData(container)
+
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	req := httptest.NewRequest("GET", uri, nil)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	entity := &model.Book{}
+	data, _ := entity.FindByID(container.GetRepository(), 1)
+
+	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
+}
+
+func TestGetBookList_Success(t *testing.T) {
 	router, container := test.Prepare(false)
 
 	book := NewBookController(container)
@@ -34,13 +62,13 @@ func TestGetBookList(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestCreateBook(t *testing.T) {
+func TestCreateBook_Success(t *testing.T) {
 	router, container := test.Prepare(false)
 
 	book := NewBookController(container)
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
 
-	param := createDto()
+	param := createBookForCreate()
 	req := test.NewJsonRequest("POST", APIBooks, param)
 	rec := httptest.NewRecorder()
 
@@ -53,7 +81,24 @@ func TestCreateBook(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestUpdateBook(t *testing.T) {
+func TestCreateBook_BindError(t *testing.T) {
+	router, container := test.Prepare(false)
+
+	book := NewBookController(container)
+	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
+
+	param := createBookForBindError()
+	req := test.NewJsonRequest("POST", APIBooks, param)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	result := createResultForBindError()
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.JSONEq(t, test.ConvertToString(result), rec.Body.String())
+}
+
+func TestUpdateBook_Success(t *testing.T) {
 	router, container := test.Prepare(false)
 
 	book := NewBookController(container)
@@ -61,7 +106,7 @@ func TestUpdateBook(t *testing.T) {
 
 	setUpTestData(container)
 
-	param := changeDto()
+	param := createBookForUpdate()
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := test.NewJsonRequest("PUT", uri, param)
 	rec := httptest.NewRecorder()
@@ -75,7 +120,27 @@ func TestUpdateBook(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
-func TestDeleteBook(t *testing.T) {
+func TestUpdateBook_BindError(t *testing.T) {
+	router, container := test.Prepare(false)
+
+	book := NewBookController(container)
+	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
+
+	setUpTestData(container)
+
+	param := createBookForBindError()
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	req := test.NewJsonRequest("PUT", uri, param)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	result := createResultForBindError()
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.JSONEq(t, test.ConvertToString(result), rec.Body.String())
+}
+
+func TestDeleteBook_Success(t *testing.T) {
 	router, container := test.Prepare(false)
 
 	book := NewBookController(container)
@@ -102,22 +167,38 @@ func setUpTestData(container container.Container) {
 	_, _ = model.Create(repo)
 }
 
-func createDto() *dto.BookDto {
-	dto := &dto.BookDto{
+func createBookForCreate() *dto.BookDto {
+	return &dto.BookDto{
 		Title:      "Test1",
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
 		FormatID:   1,
 	}
-	return dto
 }
 
-func changeDto() *dto.BookDto {
-	dto := &dto.BookDto{
+func createBookForBindError() *BookDtoForBindError {
+	return &BookDtoForBindError{
+		Title:      "Test1",
+		Isbn:       "123-123-123-1",
+		CategoryID: "Test",
+		FormatID:   "Test",
+	}
+}
+
+func createResultForBindError() *dto.BookDto {
+	return &dto.BookDto{
+		Title:      "Test1",
+		Isbn:       "123-123-123-1",
+		CategoryID: 0,
+		FormatID:   0,
+	}
+}
+
+func createBookForUpdate() *dto.BookDto {
+	return &dto.BookDto{
 		Title:      "Test2",
 		Isbn:       "123-123-123-2",
 		CategoryID: 2,
 		FormatID:   2,
 	}
-	return dto
 }
