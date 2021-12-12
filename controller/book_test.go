@@ -41,6 +41,24 @@ func TestGetBook_Success(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
+func TestGetBook_Failure(t *testing.T) {
+	router, container := test.Prepare(false)
+
+	book := NewBookController(container)
+	router.GET(APIBooksID, func(c echo.Context) error { return book.GetBook(c) })
+
+	setUpTestData(container)
+
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("9999").Build().GetRequestURL()
+	req := httptest.NewRequest("GET", uri, nil)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.Equal(t, "\"failed to fetch data\"\n", rec.Body.String())
+}
+
 func TestGetBookList_Success(t *testing.T) {
 	router, container := test.Prepare(false)
 
@@ -98,6 +116,23 @@ func TestCreateBook_BindError(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(result), rec.Body.String())
 }
 
+func TestCreateBook_ValidationError(t *testing.T) {
+	router, container := test.Prepare(false)
+
+	book := NewBookController(container)
+	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
+
+	param := createBookForValidationError()
+	req := test.NewJsonRequest("POST", APIBooks, param)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	result := createResultForValidationError()
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.JSONEq(t, test.ConvertToString(result), rec.Body.String())
+}
+
 func TestUpdateBook_Success(t *testing.T) {
 	router, container := test.Prepare(false)
 
@@ -140,6 +175,26 @@ func TestUpdateBook_BindError(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(result), rec.Body.String())
 }
 
+func TestUpdateBook_ValidationError(t *testing.T) {
+	router, container := test.Prepare(false)
+
+	book := NewBookController(container)
+	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
+
+	setUpTestData(container)
+
+	param := createBookForValidationError()
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	req := test.NewJsonRequest("PUT", uri, param)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	result := createResultForValidationError()
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.JSONEq(t, test.ConvertToString(result), rec.Body.String())
+}
+
 func TestDeleteBook_Success(t *testing.T) {
 	router, container := test.Prepare(false)
 
@@ -161,6 +216,24 @@ func TestDeleteBook_Success(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
 }
 
+func TestDeleteBook_Failure(t *testing.T) {
+	router, container := test.Prepare(false)
+
+	book := NewBookController(container)
+	router.DELETE(APIBooksID, func(c echo.Context) error { return book.DeleteBook(c) })
+
+	setUpTestData(container)
+
+	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("9999").Build().GetRequestURL()
+	req := test.NewJsonRequest("DELETE", uri, nil)
+	rec := httptest.NewRecorder()
+
+	router.ServeHTTP(rec, req)
+
+	assert.Equal(t, http.StatusBadRequest, rec.Code)
+	assert.JSONEq(t, test.ConvertToString(createResultForDeleteError()), rec.Body.String())
+}
+
 func setUpTestData(container container.Container) {
 	model := model.NewBook("Test1", "123-123-123-1", 1, 1)
 	repo := container.GetRepository()
@@ -171,6 +244,15 @@ func createBookForCreate() *dto.BookDto {
 	return &dto.BookDto{
 		Title:      "Test1",
 		Isbn:       "123-123-123-1",
+		CategoryID: 1,
+		FormatID:   1,
+	}
+}
+
+func createBookForValidationError() *dto.BookDto {
+	return &dto.BookDto{
+		Title:      "T",
+		Isbn:       "123",
 		CategoryID: 1,
 		FormatID:   1,
 	}
@@ -192,6 +274,17 @@ func createResultForBindError() *dto.BookDto {
 		CategoryID: 0,
 		FormatID:   0,
 	}
+}
+
+func createResultForValidationError() map[string]string {
+	return map[string]string{
+		"isbn":  "ISBNは、10文字以上20文字以下で入力してください",
+		"title": "書籍タイトルは、3文字以上50文字以下で入力してください",
+	}
+}
+
+func createResultForDeleteError() map[string]string {
+	return map[string]string{"error": "Failed to the delete"}
 }
 
 func createBookForUpdate() *dto.BookDto {
