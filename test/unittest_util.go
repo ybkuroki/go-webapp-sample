@@ -18,21 +18,12 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// Prepare func is to prepare for unit test.
-func Prepare(securityEnabled bool) (*echo.Echo, container.Container) {
+// PrepareForControllerTest func is to prepare for unit test.
+func PrepareForControllerTest(isSecurity bool) (*echo.Echo, container.Container) {
 	e := echo.New()
 
-	conf := &config.Config{}
-	conf.Database.Dialect = "sqlite3"
-	conf.Database.Host = "file::memory:?cache=shared"
-	conf.Database.Migration = true
-	conf.Extension.MasterGenerator = true
-	conf.Extension.SecurityEnabled = securityEnabled
-	conf.Log.RequestLogFormat = "${remote_ip} ${account_name} ${uri} ${method} ${status}"
-
-	logger := initTestLogger()
-	rep := repository.NewBookRepository(logger, conf)
-	container := container.NewContainer(rep, conf, logger, "test")
+	conf := createConfig(isSecurity)
+	container := initContainer(conf)
 
 	middleware.InitLoggerMiddleware(e, container)
 
@@ -41,6 +32,34 @@ func Prepare(securityEnabled bool) (*echo.Echo, container.Container) {
 
 	middleware.InitSessionMiddleware(e, container)
 	return e, container
+}
+
+func PrepareForServiceTest() container.Container {
+	conf := createConfig(false)
+	container := initContainer(conf)
+
+	migration.CreateDatabase(container)
+	migration.InitMasterData(container)
+
+	return container
+}
+
+func createConfig(isSecurity bool) *config.Config {
+	conf := &config.Config{}
+	conf.Database.Dialect = "sqlite3"
+	conf.Database.Host = "file::memory:?cache=shared"
+	conf.Database.Migration = true
+	conf.Extension.MasterGenerator = true
+	conf.Extension.SecurityEnabled = isSecurity
+	conf.Log.RequestLogFormat = "${remote_ip} ${account_name} ${uri} ${method} ${status}"
+	return conf
+}
+
+func initContainer(conf *config.Config) container.Container {
+	logger := initTestLogger()
+	rep := repository.NewBookRepository(logger, conf)
+	container := container.NewContainer(rep, conf, logger, "test")
+	return container
 }
 
 func initTestLogger() *logger.Logger {

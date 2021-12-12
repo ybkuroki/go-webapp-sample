@@ -10,7 +10,7 @@ import (
 )
 
 func TestJSONError(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	errorHandler := NewErrorController(container)
 	router.HTTPErrorHandler = errorHandler.JSONError

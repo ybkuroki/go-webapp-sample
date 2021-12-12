@@ -12,7 +12,7 @@ import (
 )
 
 func TestGetFormatList(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	format := NewFormatController(container)
 	router.GET(APIFormats, func(c echo.Context) error { return format.GetFormatList(c) })

@@ -21,7 +21,7 @@ type BookDtoForBindError struct {
 }
 
 func TestGetBook_Success(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.GET(APIBooksID, func(c echo.Context) error { return book.GetBook(c) })
@@ -42,7 +42,7 @@ func TestGetBook_Success(t *testing.T) {
 }
 
 func TestGetBook_Failure(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.GET(APIBooksID, func(c echo.Context) error { return book.GetBook(c) })
@@ -60,7 +60,7 @@ func TestGetBook_Failure(t *testing.T) {
 }
 
 func TestGetBookList_Success(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.GET(APIBooks, func(c echo.Context) error { return book.GetBookList(c) })
@@ -81,7 +81,7 @@ func TestGetBookList_Success(t *testing.T) {
 }
 
 func TestCreateBook_Success(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
@@ -100,7 +100,7 @@ func TestCreateBook_Success(t *testing.T) {
 }
 
 func TestCreateBook_BindError(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
@@ -117,7 +117,7 @@ func TestCreateBook_BindError(t *testing.T) {
 }
 
 func TestCreateBook_ValidationError(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
@@ -134,7 +134,7 @@ func TestCreateBook_ValidationError(t *testing.T) {
 }
 
 func TestUpdateBook_Success(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
@@ -156,7 +156,7 @@ func TestUpdateBook_Success(t *testing.T) {
 }
 
 func TestUpdateBook_BindError(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
@@ -176,7 +176,7 @@ func TestUpdateBook_BindError(t *testing.T) {
 }
 
 func TestUpdateBook_ValidationError(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.PUT(APIBooksID, func(c echo.Context) error { return book.UpdateBook(c) })
@@ -196,7 +196,7 @@ func TestUpdateBook_ValidationError(t *testing.T) {
 }
 
 func TestDeleteBook_Success(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.DELETE(APIBooksID, func(c echo.Context) error { return book.DeleteBook(c) })
@@ -217,7 +217,7 @@ func TestDeleteBook_Success(t *testing.T) {
 }
 
 func TestDeleteBook_Failure(t *testing.T) {
-	router, container := test.Prepare(false)
+	router, container := test.PrepareForControllerTest(false)
 
 	book := NewBookController(container)
 	router.DELETE(APIBooksID, func(c echo.Context) error { return book.DeleteBook(c) })

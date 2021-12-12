@@ -12,8 +12,8 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
 
-func TestGetLoginStatus(t *testing.T) {
-	router, container := test.Prepare(false)
+func TestGetLoginStatus_Success(t *testing.T) {
+	router, container := test.PrepareForControllerTest(false)
 
 	account := NewAccountController(container)
 	router.GET(APIAccountLoginStatus, func(c echo.Context) error { return account.GetLoginStatus(c) })
@@ -27,8 +27,8 @@ func TestGetLoginStatus(t *testing.T) {
 	assert.JSONEq(t, "true", rec.Body.String())
 }
 
-func TestGetLoginAccount(t *testing.T) {
-	router, container := test.Prepare(false)
+func TestGetLoginAccount_Success(t *testing.T) {
+	router, container := test.PrepareForControllerTest(false)
 
 	account := NewAccountController(container)
 	router.GET(APIAccountLoginAccount, func(c echo.Context) error { return account.GetLoginAccount(c) })
@@ -43,8 +43,8 @@ func TestGetLoginAccount(t *testing.T) {
 	assert.JSONEq(t, test.ConvertToString(entity), rec.Body.String())
 }
 
-func TestLoginSuccess(t *testing.T) {
-	router, container := test.Prepare(true)
+func TestLogin_Success(t *testing.T) {
+	router, container := test.PrepareForControllerTest(true)
 
 	account := NewAccountController(container)
 	router.POST(APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
@@ -59,8 +59,8 @@ func TestLoginSuccess(t *testing.T) {
 	assert.NotEmpty(t, test.GetCookie(rec, "GSESSION"))
 }
 
-func TestLoginAuthenticationFailure(t *testing.T) {
-	router, container := test.Prepare(true)
+func TestLogin_AuthenticationFailure(t *testing.T) {
+	router, container := test.PrepareForControllerTest(true)
 
 	account := NewAccountController(container)
 	router.POST(APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
@@ -75,8 +75,8 @@ func TestLoginAuthenticationFailure(t *testing.T) {
 	assert.Empty(t, test.GetCookie(rec, "GSESSION"))
 }
 
-func TestLogoutSuccess(t *testing.T) {
-	router, container := test.Prepare(true)
+func TestLogout_Success(t *testing.T) {
+	router, container := test.PrepareForControllerTest(true)
 
 	account := NewAccountController(container)
 	router.POST(APIAccountLogout, func(c echo.Context) error { return account.Logout(c) })
