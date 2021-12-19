@@ -63,10 +63,24 @@ func initContainer(conf *config.Config) container.Container {
 }
 
 func initTestLogger() *logger.Logger {
+	myConfig := createLoggerConfig()
+	zap, err := myConfig.Build()
+	if err != nil {
+		fmt.Printf("Error")
+	}
+	sugar := zap.Sugar()
+	// set package varriable logger.
+	logger := &logger.Logger{Zap: sugar}
+	logger.GetZapLogger().Infof("Success to read zap logger configuration")
+	_ = zap.Sync()
+	return logger
+}
+
+func createLoggerConfig() zap.Config {
 	level := zap.NewAtomicLevel()
 	level.SetLevel(zapcore.DebugLevel)
 
-	myConfig := zap.Config{
+	return zap.Config{
 		Level:       level,
 		Encoding:    "console",
 		Development: true,
@@ -85,16 +99,6 @@ func initTestLogger() *logger.Logger {
 		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
 	}
-	zap, err := myConfig.Build()
-	if err != nil {
-		fmt.Printf("Error")
-	}
-	sugar := zap.Sugar()
-	// set package varriable logger.
-	logger := &logger.Logger{Zap: sugar}
-	logger.GetZapLogger().Infof("Success to read zap logger configuration")
-	_ = zap.Sync()
-	return logger
 }
 
 // ConvertToString func is convert model to string.
