@@ -105,44 +105,14 @@ func TestCreateBook_Success(t *testing.T) {
 	assert.Equal(t, map[string]string(map[string]string(nil)), err)
 }
 
-func TestCreateBook_IsbnLess_ValidationError(t *testing.T) {
+func TestCreateBook_ValidationError(t *testing.T) {
 	container := test.PrepareForServiceTest()
 
 	service := NewBookService(container)
-	result, err := service.CreateBook(createBookForIsbnLessValidationError())
+	result, err := service.CreateBook(createBookForValidationError())
 
 	assert.Equal(t, (*model.Book)(nil), result)
-	assert.Equal(t, "ISBNは、10文字以上20文字以下で入力してください", err["isbn"])
-}
-
-func TestCreateBook_IsbnMore_ValidationError(t *testing.T) {
-	container := test.PrepareForServiceTest()
-
-	service := NewBookService(container)
-	result, err := service.CreateBook(createBookForIsbnMoreValidationError())
-
-	assert.Equal(t, (*model.Book)(nil), result)
-	assert.Equal(t, "ISBNは、10文字以上20文字以下で入力してください", err["isbn"])
-}
-
-func TestCreateBook_TitleLess_ValidationError(t *testing.T) {
-	container := test.PrepareForServiceTest()
-
-	service := NewBookService(container)
-	result, err := service.CreateBook(createBookForTitleLessValidationError())
-
-	assert.Equal(t, (*model.Book)(nil), result)
-	assert.Equal(t, "書籍タイトルは、3文字以上50文字以下で入力してください", err["title"])
-}
-
-func TestCreateBook_TitleMore_ValidationError(t *testing.T) {
-	container := test.PrepareForServiceTest()
-
-	service := NewBookService(container)
-	result, err := service.CreateBook(createBookForTitleMoreValidationError())
-
-	assert.Equal(t, (*model.Book)(nil), result)
-	assert.Equal(t, "書籍タイトルは、3文字以上50文字以下で入力してください", err["title"])
+	assert.NotEmpty(t, err)
 }
 
 func TestCreateBook_NotCategory(t *testing.T) {
@@ -178,6 +148,18 @@ func TestUpdateBook_Success(t *testing.T) {
 
 	assert.Equal(t, data, result)
 	assert.Equal(t, map[string]string(map[string]string(nil)), err)
+}
+
+func TestUpdateBook_ValidationError(t *testing.T) {
+	container := test.PrepareForServiceTest()
+
+	setUpTestData(container)
+
+	service := NewBookService(container)
+	result, err := service.UpdateBook(createBookForValidationError(), "1")
+
+	assert.Equal(t, (*model.Book)(nil), result)
+	assert.NotEmpty(t, err)
 }
 
 func TestUpdateBook_NotEntity(t *testing.T) {
@@ -261,37 +243,10 @@ func createBookForCreate() *dto.BookDto {
 	}
 }
 
-func createBookForIsbnLessValidationError() *dto.BookDto {
-	return &dto.BookDto{
-		Title:      "Test",
-		Isbn:       "123",
-		CategoryID: 1,
-		FormatID:   1,
-	}
-}
-
-func createBookForIsbnMoreValidationError() *dto.BookDto {
-	return &dto.BookDto{
-		Title:      "Test",
-		Isbn:       "123-123-123-123-123-123",
-		CategoryID: 1,
-		FormatID:   1,
-	}
-}
-
-func createBookForTitleLessValidationError() *dto.BookDto {
+func createBookForValidationError() *dto.BookDto {
 	return &dto.BookDto{
 		Title:      "T",
-		Isbn:       "123-123-123-1",
-		CategoryID: 1,
-		FormatID:   1,
-	}
-}
-
-func createBookForTitleMoreValidationError() *dto.BookDto {
-	return &dto.BookDto{
-		Title:      "TestTestTestTestTestTestTestTestTestTestTestTestTest",
-		Isbn:       "123-123-123-1",
+		Isbn:       "1",
 		CategoryID: 1,
 		FormatID:   1,
 	}
