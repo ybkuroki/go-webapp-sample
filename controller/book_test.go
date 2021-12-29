@@ -87,7 +87,7 @@ func TestCreateBook_Success(t *testing.T) {
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
 
 	param := createBookForCreate()
-	req := test.NewJsonRequest("POST", APIBooks, param)
+	req := test.NewJSONRequest("POST", APIBooks, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -106,7 +106,7 @@ func TestCreateBook_BindError(t *testing.T) {
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
 
 	param := createBookForBindError()
-	req := test.NewJsonRequest("POST", APIBooks, param)
+	req := test.NewJSONRequest("POST", APIBooks, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -123,7 +123,7 @@ func TestCreateBook_ValidationError(t *testing.T) {
 	router.POST(APIBooks, func(c echo.Context) error { return book.CreateBook(c) })
 
 	param := createBookForValidationError()
-	req := test.NewJsonRequest("POST", APIBooks, param)
+	req := test.NewJSONRequest("POST", APIBooks, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -143,7 +143,7 @@ func TestUpdateBook_Success(t *testing.T) {
 
 	param := createBookForUpdate()
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
-	req := test.NewJsonRequest("PUT", uri, param)
+	req := test.NewJSONRequest("PUT", uri, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -165,7 +165,7 @@ func TestUpdateBook_BindError(t *testing.T) {
 
 	param := createBookForBindError()
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
-	req := test.NewJsonRequest("PUT", uri, param)
+	req := test.NewJSONRequest("PUT", uri, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -185,7 +185,7 @@ func TestUpdateBook_ValidationError(t *testing.T) {
 
 	param := createBookForValidationError()
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
-	req := test.NewJsonRequest("PUT", uri, param)
+	req := test.NewJSONRequest("PUT", uri, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -207,7 +207,7 @@ func TestDeleteBook_Success(t *testing.T) {
 	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
-	req := test.NewJsonRequest("DELETE", uri, nil)
+	req := test.NewJSONRequest("DELETE", uri, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -225,7 +225,7 @@ func TestDeleteBook_Failure(t *testing.T) {
 	setUpTestData(container)
 
 	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("9999").Build().GetRequestURL()
-	req := test.NewJsonRequest("DELETE", uri, nil)
+	req := test.NewJSONRequest("DELETE", uri, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)

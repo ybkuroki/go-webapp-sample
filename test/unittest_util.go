@@ -107,7 +107,7 @@ func ConvertToString(model interface{}) string {
 	return string(bytes)
 }
 
-func NewJsonRequest(method string, target string, param interface{}) *http.Request {
+func NewJSONRequest(method string, target string, param interface{}) *http.Request {
 	req := httptest.NewRequest(method, target, strings.NewReader(ConvertToString(param)))
 	req.Header.Add("Content-Type", "application/json")
 	req.Header.Add("Accept", "application/json")

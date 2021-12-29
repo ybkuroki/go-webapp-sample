@@ -102,7 +102,7 @@ func TestCreateBook_Success(t *testing.T) {
 	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	assert.Equal(t, data, result)
-	assert.Equal(t, map[string]string(map[string]string(nil)), err)
+	assert.Equal(t, map[string]string(nil), err)
 }
 
 func TestCreateBook_ValidationError(t *testing.T) {
@@ -147,7 +147,7 @@ func TestUpdateBook_Success(t *testing.T) {
 	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	assert.Equal(t, data, result)
-	assert.Equal(t, map[string]string(map[string]string(nil)), err)
+	assert.Equal(t, map[string]string(nil), err)
 }
 
 func TestUpdateBook_ValidationError(t *testing.T) {
@@ -210,7 +210,7 @@ func TestDeleteBook_Success(t *testing.T) {
 	result, err := service.DeleteBook("1")
 
 	assert.Equal(t, data, result)
-	assert.Equal(t, map[string]string(map[string]string(nil)), err)
+	assert.Equal(t, map[string]string(nil), err)
 }
 
 func TestDeleteBook_Error(t *testing.T) {
