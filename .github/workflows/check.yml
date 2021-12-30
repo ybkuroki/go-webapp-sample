@@ -36,4 +36,4 @@ jobs:
           reporter: github-pr-review
       # Run test
       - name: test
-        run: go test ./... -v
+        run: go test -cover ./...
