@@ -54,11 +54,6 @@ func createErrorMessages(errors validator.ValidationErrors) map[string]string {
 	result := make(map[string]string)
 	for i := range errors {
 		switch errors[i].StructField() {
-		case "ID":
-			switch errors[i].Tag() {
-			case required:
-				result["id"] = "書籍IDが存在しません"
-			}
 		case "Title":
 			switch errors[i].Tag() {
 			case required, min, max:

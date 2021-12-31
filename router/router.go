@@ -24,9 +24,7 @@ func Init(e *echo.Echo, container container.Container) {
 	setAccountController(e, container)
 	setHealthController(e, container)
 
-	if container.GetEnv() == config.DEV {
-		e.GET("/swagger/*", echoSwagger.WrapHandler)
-	}
+	setSwagger(container, e)
 }
 
 func setCORSConfig(e *echo.Echo, container container.Container) {
@@ -90,4 +88,10 @@ func setAccountController(e *echo.Echo, container container.Container) {
 func setHealthController(e *echo.Echo, container container.Container) {
 	health := controller.NewHealthController(container)
 	e.GET(controller.APIHealth, func(c echo.Context) error { return health.GetHealthCheck(c) })
+}
+
+func setSwagger(container container.Container, e *echo.Echo) {
+	if container.GetEnv() == config.DEV {
+		e.GET("/swagger/*", echoSwagger.WrapHandler)
+	}
 }
