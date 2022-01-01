@@ -13,5 +13,5 @@ func TestFindAllFormats_Success(t *testing.T) {
 	service := NewFormatService(container)
 	result := service.FindAllFormats()
 
-	assert.Equal(t, 2, len(*result))
+	assert.Len(t, *result, 2)
 }

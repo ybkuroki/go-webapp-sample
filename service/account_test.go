@@ -18,7 +18,7 @@ func TestAuthenticateByUsernameAndPassword_Success(t *testing.T) {
 	data, _ := a.FindByName(container.GetRepository(), "test")
 
 	assert.Equal(t, data, account)
-	assert.Equal(t, true, result)
+	assert.True(t, result)
 }
 
 func TestAuthenticateByUsernameAndPassword_EntityNotFound(t *testing.T) {
@@ -28,7 +28,7 @@ func TestAuthenticateByUsernameAndPassword_EntityNotFound(t *testing.T) {
 	result, account := service.AuthenticateByUsernameAndPassword("abcde", "abcde")
 
 	assert.Equal(t, (*model.Account)(nil), account)
-	assert.Equal(t, false, result)
+	assert.False(t, result)
 }
 
 func TestAuthenticateByUsernameAndPassword_AuthenticationFailure(t *testing.T) {
@@ -38,5 +38,5 @@ func TestAuthenticateByUsernameAndPassword_AuthenticationFailure(t *testing.T) {
 	result, account := service.AuthenticateByUsernameAndPassword("test", "abcde")
 
 	assert.Equal(t, (*model.Account)(nil), account)
-	assert.Equal(t, false, result)
+	assert.False(t, result)
 }

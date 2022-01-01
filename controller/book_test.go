@@ -11,6 +11,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
 	"github.com/ybkuroki/go-webapp-sample/test"
+	"github.com/ybkuroki/go-webapp-sample/util"
 )
 
 type BookDtoForBindError struct {
@@ -28,7 +29,7 @@ func TestGetBook_Success(t *testing.T) {
 
 	setUpTestData(container)
 
-	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
 	rec := httptest.NewRecorder()
 
@@ -49,7 +50,7 @@ func TestGetBook_Failure(t *testing.T) {
 
 	setUpTestData(container)
 
-	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("9999").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("9999").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
 	rec := httptest.NewRecorder()
 
@@ -67,7 +68,7 @@ func TestGetBookList_Success(t *testing.T) {
 
 	setUpTestData(container)
 
-	uri := test.NewRequestBuilder().URL(APIBooks).RequestParams("query", "Test").RequestParams("page", "0").RequestParams("size", "5").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(APIBooks).RequestParams("query", "Test").RequestParams("page", "0").RequestParams("size", "5").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
 	rec := httptest.NewRecorder()
 
@@ -142,7 +143,7 @@ func TestUpdateBook_Success(t *testing.T) {
 	setUpTestData(container)
 
 	param := createBookForUpdate()
-	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := test.NewJSONRequest("PUT", uri, param)
 	rec := httptest.NewRecorder()
 
@@ -164,7 +165,7 @@ func TestUpdateBook_BindError(t *testing.T) {
 	setUpTestData(container)
 
 	param := createBookForBindError()
-	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := test.NewJSONRequest("PUT", uri, param)
 	rec := httptest.NewRecorder()
 
@@ -184,7 +185,7 @@ func TestUpdateBook_ValidationError(t *testing.T) {
 	setUpTestData(container)
 
 	param := createBookForValidationError()
-	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := test.NewJSONRequest("PUT", uri, param)
 	rec := httptest.NewRecorder()
 
@@ -206,7 +207,7 @@ func TestDeleteBook_Success(t *testing.T) {
 	entity := &model.Book{}
 	data, _ := entity.FindByID(container.GetRepository(), 1)
 
-	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := test.NewJSONRequest("DELETE", uri, nil)
 	rec := httptest.NewRecorder()
 
@@ -224,7 +225,7 @@ func TestDeleteBook_Failure(t *testing.T) {
 
 	setUpTestData(container)
 
-	uri := test.NewRequestBuilder().URL(APIBooks).PathParams("9999").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("9999").Build().GetRequestURL()
 	req := test.NewJSONRequest("DELETE", uri, nil)
 	rec := httptest.NewRecorder()
 

@@ -20,7 +20,7 @@ func TestFindByID_Success(t *testing.T) {
 	result, err := service.FindByID("1")
 
 	assert.Equal(t, uint(1), result.ID)
-	assert.Equal(t, nil, err)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, result)
 }
 
@@ -45,7 +45,7 @@ func TestFindByID_EntityNotFound(t *testing.T) {
 	result, err := service.FindByID("9999")
 
 	assert.Equal(t, (*model.Book)(nil), result)
-	assert.Equal(t, errors.New("failed to fetch data"), err)
+	assert.Error(t, err, "failed to fetch data")
 }
 
 func TestFindAllBooks_Success(t *testing.T) {
@@ -56,8 +56,8 @@ func TestFindAllBooks_Success(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.FindAllBooks()
 
-	assert.Equal(t, 2, len(*result))
-	assert.Equal(t, nil, err)
+	assert.Len(t, *result, 2)
+	assert.NoError(t, err)
 }
 
 func TestFindAllBooksByPage_Success(t *testing.T) {
@@ -72,8 +72,8 @@ func TestFindAllBooksByPage_Success(t *testing.T) {
 	assert.Equal(t, 1, result.TotalPages)
 	assert.Equal(t, 0, result.Page)
 	assert.Equal(t, 5, result.Size)
-	assert.Equal(t, 2, len(*result.Content))
-	assert.Equal(t, nil, err)
+	assert.Len(t, *result.Content, 2)
+	assert.NoError(t, err)
 }
 
 func TestFindBooksByTitle_Success(t *testing.T) {
@@ -88,8 +88,8 @@ func TestFindBooksByTitle_Success(t *testing.T) {
 	assert.Equal(t, 1, result.TotalPages)
 	assert.Equal(t, 0, result.Page)
 	assert.Equal(t, 5, result.Size)
-	assert.Equal(t, 1, len(*result.Content))
-	assert.Equal(t, nil, err)
+	assert.Len(t, *result.Content, 1)
+	assert.NoError(t, err)
 }
 
 func TestCreateBook_Success(t *testing.T) {

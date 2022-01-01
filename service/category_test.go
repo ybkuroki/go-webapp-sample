@@ -13,5 +13,5 @@ func TestFindAllCategories_Success(t *testing.T) {
 	service := NewCategoryService(container)
 	result := service.FindAllCategories()
 
-	assert.Equal(t, 3, len(*result))
+	assert.Len(t, *result, 3)
 }
