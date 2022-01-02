@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -32,8 +31,8 @@ func TestFindByID_IdNotNumeric(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.FindByID("ABCD")
 
-	assert.Equal(t, (*model.Book)(nil), result)
-	assert.Equal(t, errors.New("failed to fetch data"), err)
+	assert.Nil(t, result)
+	assert.Error(t, err, "failed to fetch data")
 }
 
 func TestFindByID_EntityNotFound(t *testing.T) {
@@ -44,7 +43,7 @@ func TestFindByID_EntityNotFound(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.FindByID("9999")
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.Error(t, err, "failed to fetch data")
 }
 
@@ -102,7 +101,7 @@ func TestCreateBook_Success(t *testing.T) {
 	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	assert.Equal(t, data, result)
-	assert.Equal(t, map[string]string(nil), err)
+	assert.Empty(t, err)
 }
 
 func TestCreateBook_ValidationError(t *testing.T) {
@@ -111,7 +110,7 @@ func TestCreateBook_ValidationError(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.CreateBook(createBookForValidationError())
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.NotEmpty(t, err)
 }
 
@@ -121,7 +120,7 @@ func TestCreateBook_NotCategory(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.CreateBook(createBookForNotCategory())
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.Equal(t, "Failed to the registration", err["error"])
 }
 
@@ -131,7 +130,7 @@ func TestCreateBook_NotFormat(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.CreateBook(createBookForNotFormat())
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.Equal(t, "Failed to the registration", err["error"])
 }
 
@@ -147,7 +146,7 @@ func TestUpdateBook_Success(t *testing.T) {
 	data, _ := entity.FindByID(container.GetRepository(), 1)
 
 	assert.Equal(t, data, result)
-	assert.Equal(t, map[string]string(nil), err)
+	assert.Empty(t, err)
 }
 
 func TestUpdateBook_ValidationError(t *testing.T) {
@@ -158,7 +157,7 @@ func TestUpdateBook_ValidationError(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.UpdateBook(createBookForValidationError(), "1")
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.NotEmpty(t, err)
 }
 
@@ -170,7 +169,7 @@ func TestUpdateBook_NotEntity(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.UpdateBook(createBookForNotCategory(), "99")
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.Equal(t, "Failed to the update", err["error"])
 }
 
@@ -182,7 +181,7 @@ func TestUpdateBook_NotCategory(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.UpdateBook(createBookForNotCategory(), "1")
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.Equal(t, "Failed to the update", err["error"])
 }
 
@@ -194,7 +193,7 @@ func TestUpdateBook_NotFormat(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.UpdateBook(createBookForNotFormat(), "1")
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.Equal(t, "Failed to the update", err["error"])
 }
 
@@ -210,7 +209,7 @@ func TestDeleteBook_Success(t *testing.T) {
 	result, err := service.DeleteBook("1")
 
 	assert.Equal(t, data, result)
-	assert.Equal(t, map[string]string(nil), err)
+	assert.Empty(t, err)
 }
 
 func TestDeleteBook_Error(t *testing.T) {
@@ -221,7 +220,7 @@ func TestDeleteBook_Error(t *testing.T) {
 	service := NewBookService(container)
 	result, err := service.DeleteBook("99")
 
-	assert.Equal(t, (*model.Book)(nil), result)
+	assert.Nil(t, result)
 	assert.Equal(t, "Failed to the delete", err["error"])
 }
 

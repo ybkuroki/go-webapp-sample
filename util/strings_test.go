@@ -18,8 +18,7 @@ func TestIsNumeric_False(t *testing.T) {
 
 func TestConvertToInt_Number(t *testing.T) {
 	result := ConvertToInt("123")
-	assert.Equal(t, int(123), result)
-	assert.IsType(t, int(123), result)
+	assert.Exactly(t, int(123), result)
 }
 
 func TestConvertToInt_NotNumber(t *testing.T) {
@@ -29,6 +28,5 @@ func TestConvertToInt_NotNumber(t *testing.T) {
 
 func TestConvertToUint_Number(t *testing.T) {
 	result := ConvertToUint("123")
-	assert.Equal(t, uint(123), result)
-	assert.IsType(t, uint(123), result)
+	assert.Exactly(t, uint(123), result)
 }

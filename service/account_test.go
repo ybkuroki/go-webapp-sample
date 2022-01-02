@@ -27,7 +27,7 @@ func TestAuthenticateByUsernameAndPassword_EntityNotFound(t *testing.T) {
 	service := NewAccountService(container)
 	result, account := service.AuthenticateByUsernameAndPassword("abcde", "abcde")
 
-	assert.Equal(t, (*model.Account)(nil), account)
+	assert.Nil(t, account)
 	assert.False(t, result)
 }
 
@@ -37,6 +37,6 @@ func TestAuthenticateByUsernameAndPassword_AuthenticationFailure(t *testing.T) {
 	service := NewAccountService(container)
 	result, account := service.AuthenticateByUsernameAndPassword("test", "abcde")
 
-	assert.Equal(t, (*model.Account)(nil), account)
+	assert.Nil(t, account)
 	assert.False(t, result)
 }

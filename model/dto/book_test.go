@@ -15,25 +15,25 @@ func TestValidate_Title2Error(t *testing.T) {
 func TestValidate_Title3Success(t *testing.T) {
 	dto := createBookForTitle3()
 	result := dto.Validate()
-	assert.Equal(t, map[string]string(nil), result)
+	assert.Empty(t, result)
 }
 
 func TestValidate_Title4Success(t *testing.T) {
 	dto := createBookForTitle4()
 	result := dto.Validate()
-	assert.Equal(t, map[string]string(nil), result)
+	assert.Empty(t, result)
 }
 
 func TestValidate_Title49Success(t *testing.T) {
 	dto := createBookForTitle49()
 	result := dto.Validate()
-	assert.Equal(t, map[string]string(nil), result)
+	assert.Empty(t, result)
 }
 
 func TestValidate_Title50Success(t *testing.T) {
 	dto := createBookForTitle50()
 	result := dto.Validate()
-	assert.Equal(t, map[string]string(nil), result)
+	assert.Empty(t, result)
 }
 
 func TestValidate_Title51Error(t *testing.T) {
@@ -51,25 +51,25 @@ func TestValidate_Isbn9Error(t *testing.T) {
 func TestValidate_Isbn10Success(t *testing.T) {
 	dto := createBookForIsbn10()
 	result := dto.Validate()
-	assert.Equal(t, map[string]string(nil), result)
+	assert.Empty(t, result)
 }
 
 func TestValidate_Isbn11Success(t *testing.T) {
 	dto := createBookForIsbn11()
 	result := dto.Validate()
-	assert.Equal(t, map[string]string(nil), result)
+	assert.Empty(t, result)
 }
 
 func TestValidate_Isbn19Success(t *testing.T) {
 	dto := createBookForIsbn19()
 	result := dto.Validate()
-	assert.Equal(t, map[string]string(nil), result)
+	assert.Empty(t, result)
 }
 
 func TestValidate_Isbn20Success(t *testing.T) {
 	dto := createBookForIsbn20()
 	result := dto.Validate()
-	assert.Equal(t, map[string]string(nil), result)
+	assert.Empty(t, result)
 }
 
 func TestValidate_Isbn21Error(t *testing.T) {
