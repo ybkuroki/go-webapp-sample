@@ -157,6 +157,9 @@ There are the following services in the Master management.
 |Category List Service|GET|``/api/categories``|Nothing|Get a list of categories.|
 |Format List Service|GET|``/api/formats``|Nothing|Get a list of formats.|
 
+## Tests
+Create the unit tests only for the packages such as controller, service, model/dto and util. The test cases is included the regular cases and irregular cases. Please refer to the source code in each packages for more detail.
+
 ## Libraries
 This sample uses the following libraries.
 

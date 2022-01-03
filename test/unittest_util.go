@@ -34,6 +34,7 @@ func PrepareForControllerTest(isSecurity bool) (*echo.Echo, container.Container)
 	return e, container
 }
 
+// PrepareForServiceTest func is to prepare for unit test.
 func PrepareForServiceTest() container.Container {
 	conf := createConfig(false)
 	container := initContainer(conf)
@@ -101,12 +102,13 @@ func createLoggerConfig() zap.Config {
 	}
 }
 
-// ConvertToString func is convert model to string.
+// ConvertToString func converts model to string.
 func ConvertToString(model interface{}) string {
 	bytes, _ := json.Marshal(model)
 	return string(bytes)
 }
 
+// NewJSONRequest func creates a new request using JSON format.
 func NewJSONRequest(method string, target string, param interface{}) *http.Request {
 	req := httptest.NewRequest(method, target, strings.NewReader(ConvertToString(param)))
 	req.Header.Add("Content-Type", "application/json")
@@ -114,6 +116,7 @@ func NewJSONRequest(method string, target string, param interface{}) *http.Reque
 	return req
 }
 
+// GetCookie func gets a cookie from a HTTP request.
 func GetCookie(rec *httptest.ResponseRecorder, cookieName string) string {
 	parser := &http.Request{Header: http.Header{"Cookie": rec.Header()["Set-Cookie"]}}
 	if cookie, err := parser.Cookie(cookieName); cookie != nil && err == nil {
