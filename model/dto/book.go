@@ -37,35 +37,36 @@ func (b *BookDto) Validate() map[string]string {
 }
 
 func validateDto(b interface{}) map[string]string {
-	result := make(map[string]string)
 	err := validator.New().Struct(b)
+	if err == nil {
+		return nil
+	}
 
-	if err != nil {
-		errors := err.(validator.ValidationErrors)
-		if len(errors) != 0 {
-			for i := range errors {
-				switch errors[i].StructField() {
-				case "ID":
-					switch errors[i].Tag() {
-					case required:
-						result["id"] = "書籍IDが存在しません"
-					}
-				case "Title":
-					switch errors[i].Tag() {
-					case required, min, max:
-						result["title"] = "書籍タイトルは、3文字以上50文字以下で入力してください"
-					}
-				case "Isbn":
-					switch errors[i].Tag() {
-					case required, min, max:
-						result["isbn"] = "ISBNは、10文字以上20文字以下で入力してください"
-					}
-				}
+	errors := err.(validator.ValidationErrors)
+	if len(errors) == 0 {
+		return nil
+	}
+
+	return createErrorMessages(errors)
+}
+
+func createErrorMessages(errors validator.ValidationErrors) map[string]string {
+	result := make(map[string]string)
+	for i := range errors {
+		switch errors[i].StructField() {
+		case "Title":
+			switch errors[i].Tag() {
+			case required, min, max:
+				result["title"] = "書籍タイトルは、3文字以上50文字以下で入力してください"
+			}
+		case "Isbn":
+			switch errors[i].Tag() {
+			case required, min, max:
+				result["isbn"] = "ISBNは、10文字以上20文字以下で入力してください"
 			}
 		}
-		return result
 	}
-	return nil
+	return result
 }
 
 // ToString is return string of object

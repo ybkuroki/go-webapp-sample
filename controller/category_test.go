@@ -12,7 +12,7 @@ import (
 )
 
 func TestGetCategoryList(t *testing.T) {
-	router, container := test.Prepare()
+	router, container := test.PrepareForControllerTest(false)
 
 	category := NewCategoryController(container)
 	router.GET(APICategories, func(c echo.Context) error { return category.GetCategoryList(c) })

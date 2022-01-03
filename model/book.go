@@ -56,7 +56,7 @@ func (b *Book) FindByID(rep repository.Repository, id uint) (*Book, error) {
 	args := []interface{}{id}
 
 	createRaw(rep, selectBook+findByID, "", "", args).Scan(&rec)
-	return converToBook(&rec)
+	return convertToBook(&rec)
 }
 
 // FindAll returns all books of the book table.
@@ -109,7 +109,7 @@ func findRows(rep repository.Repository, sqlquery string, page string, size stri
 		if err = rep.ScanRows(rows, &rec); err != nil {
 			return nil, err
 		}
-		book, err := converToBook(&rec)
+		book, err := convertToBook(&rec)
 		if err != nil {
 			return nil, err
 		}
@@ -178,7 +178,7 @@ func (b *Book) Delete(rep repository.Repository) (*Book, error) {
 	return b, nil
 }
 
-func converToBook(rec *RecordBook) (*Book, error) {
+func convertToBook(rec *RecordBook) (*Book, error) {
 	if rec.ID == 0 {
 		return nil, errors.New("failed to fetch data")
 	}

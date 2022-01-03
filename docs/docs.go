@@ -225,7 +225,7 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Sccess to create a new book.",
+                        "description": "Success to create a new book.",
                         "schema": {
                             "$ref": "#/definitions/model.Book"
                         }

@@ -1,4 +1,4 @@
-package test
+package util
 
 import "strings"
 
@@ -46,7 +46,11 @@ type RequestURL struct {
 
 // GetRequestURL returns request url builded by request builder.
 func (r *RequestURL) GetRequestURL() string {
-	return r.url + r.getPathParams() + "?" + r.getRequestParams()
+	result := r.url + r.getPathParams()
+	if r.getRequestParams() != "" {
+		result = result + "?" + r.getRequestParams()
+	}
+	return result
 }
 
 func (r *RequestURL) getPathParams() string {

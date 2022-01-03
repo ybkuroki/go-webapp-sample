@@ -67,7 +67,7 @@ func (controller *BookController) GetBookList(c echo.Context) error {
 // @Accept  json
 // @Produce  json
 // @Param data body dto.BookDto true "a new book data for creating"
-// @Success 200 {object} model.Book "Sccess to create a new book."
+// @Success 200 {object} model.Book "Success to create a new book."
 // @Failure 400 {string} message "Failed to the registration."
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books [post]

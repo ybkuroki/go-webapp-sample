@@ -73,16 +73,17 @@ func (controller *AccountController) Login(c echo.Context) error {
 	}
 
 	account := session.GetAccount(c)
-	if account == nil {
-		authenticate, a := controller.service.AuthenticateByUsernameAndPassword(dto.UserName, dto.Password)
-		if authenticate {
-			_ = session.SetAccount(c, a)
-			_ = session.Save(c)
-			return c.JSON(http.StatusOK, a)
-		}
-		return c.NoContent(http.StatusUnauthorized)
+	if account != nil {
+		return c.JSON(http.StatusOK, account)
 	}
-	return c.JSON(http.StatusOK, account)
+
+	authenticate, a := controller.service.AuthenticateByUsernameAndPassword(dto.UserName, dto.Password)
+	if authenticate {
+		_ = session.SetAccount(c, a)
+		_ = session.Save(c)
+		return c.JSON(http.StatusOK, a)
+	}
+	return c.NoContent(http.StatusUnauthorized)
 }
 
 // Logout is the method to logout by http post.

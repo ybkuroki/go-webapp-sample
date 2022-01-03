@@ -50,7 +50,7 @@ func (a *Account) FindByName(rep repository.Repository, name string) (*Account, 
 
 	var rec RecordAccount
 	rep.Raw(selectAccount+" where a.name = ?", name).Scan(&rec)
-	account = converToAccount(&rec)
+	account = convertToAccount(&rec)
 
 	return account, nil
 }
@@ -63,7 +63,7 @@ func (a *Account) Create(rep repository.Repository) (*Account, error) {
 	return a, nil
 }
 
-func converToAccount(rec *RecordAccount) *Account {
+func convertToAccount(rec *RecordAccount) *Account {
 	r := &Authority{ID: rec.AuthorityID, Name: rec.AuthorityName}
 	return &Account{ID: rec.ID, Name: rec.Name, Password: rec.Password, AuthorityID: rec.AuthorityID, Authority: r}
 }
