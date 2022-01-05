@@ -160,6 +160,11 @@ There are the following services in the Master management.
 ## Tests
 Create the unit tests only for the packages such as controller, service, model/dto and util. The test cases is included the regular cases and irregular cases. Please refer to the source code in each packages for more detail.
 
+The command for testing is the following:
+```bash
+go test ./... -v
+```
+
 ## Libraries
 This sample uses the following libraries.
 
