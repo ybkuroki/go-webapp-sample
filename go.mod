@@ -21,7 +21,7 @@ require (
 	github.com/swaggo/echo-swagger v1.1.4
 	github.com/swaggo/swag v1.7.8
 	github.com/valyala/fasttemplate v1.2.1
-	go.uber.org/zap v1.19.1
+	go.uber.org/zap v1.20.0
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
 	golang.org/x/net v0.0.0-20210913180222-943fd674d43e // indirect
 	golang.org/x/sys v0.0.0-20210910150752-751e447fb3d0 // indirect
