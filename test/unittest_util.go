@@ -16,6 +16,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"go.uber.org/zap/zaptest/observer"
 )
 
 // PrepareForControllerTest func is to prepare for unit test.
@@ -23,7 +24,8 @@ func PrepareForControllerTest(isSecurity bool) (*echo.Echo, container.Container)
 	e := echo.New()
 
 	conf := createConfig(isSecurity)
-	container := initContainer(conf)
+	logger := initTestLogger()
+	container := initContainer(conf, logger)
 
 	middleware.InitLoggerMiddleware(e, container)
 
@@ -37,12 +39,28 @@ func PrepareForControllerTest(isSecurity bool) (*echo.Echo, container.Container)
 // PrepareForServiceTest func is to prepare for unit test.
 func PrepareForServiceTest() container.Container {
 	conf := createConfig(false)
-	container := initContainer(conf)
+	logger := initTestLogger()
+	container := initContainer(conf, logger)
 
 	migration.CreateDatabase(container)
 	migration.InitMasterData(container)
 
 	return container
+}
+
+func PrepareForLoggerTest() (*echo.Echo, container.Container, *observer.ObservedLogs) {
+	e := echo.New()
+
+	conf := createConfig(false)
+	logger, observedLogs := initObservedLogger()
+	container := initContainer(conf, logger)
+
+	migration.CreateDatabase(container)
+	migration.InitMasterData(container)
+
+	middleware.InitSessionMiddleware(e, container)
+	middleware.InitLoggerMiddleware(e, container)
+	return e, container, observedLogs
 }
 
 func createConfig(isSecurity bool) *config.Config {
@@ -56,8 +74,7 @@ func createConfig(isSecurity bool) *config.Config {
 	return conf
 }
 
-func initContainer(conf *config.Config) container.Container {
-	logger := initTestLogger()
+func initContainer(conf *config.Config, logger *logger.Logger) container.Container {
 	rep := repository.NewBookRepository(logger, conf)
 	container := container.NewContainer(rep, conf, logger, "test")
 	return container
@@ -75,6 +92,15 @@ func initTestLogger() *logger.Logger {
 	logger.GetZapLogger().Infof("Success to read zap logger configuration")
 	_ = zap.Sync()
 	return logger
+}
+
+func initObservedLogger() (*logger.Logger, *observer.ObservedLogs) {
+	observedZapCore, observedLogs := observer.New(zap.DebugLevel)
+	sugar := zap.New(observedZapCore).Sugar()
+
+	// set package varriable logger.
+	logger := &logger.Logger{Zap: sugar}
+	return logger, observedLogs
 }
 
 func createLoggerConfig() zap.Config {
