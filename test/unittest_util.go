@@ -19,7 +19,7 @@ import (
 	"go.uber.org/zap/zaptest/observer"
 )
 
-// PrepareForControllerTest func is to prepare for unit test.
+// PrepareForControllerTest func prepares the controllers for testing.
 func PrepareForControllerTest(isSecurity bool) (*echo.Echo, container.Container) {
 	e := echo.New()
 
@@ -36,7 +36,7 @@ func PrepareForControllerTest(isSecurity bool) (*echo.Echo, container.Container)
 	return e, container
 }
 
-// PrepareForServiceTest func is to prepare for unit test.
+// PrepareForServiceTest func prepares the services for testing.
 func PrepareForServiceTest() container.Container {
 	conf := createConfig(false)
 	logger := initTestLogger()
@@ -48,6 +48,7 @@ func PrepareForServiceTest() container.Container {
 	return container
 }
 
+// PrepareForLoggerTest func prepares the loggers for testing.
 func PrepareForLoggerTest() (*echo.Echo, container.Container, *observer.ObservedLogs) {
 	e := echo.New()
 
