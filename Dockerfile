@@ -1,20 +1,13 @@
 FROM golang:latest
 
-RUN mkdir /build
-WORKDIR /build
+RUN mkdir /app
 
-RUN export GO111MODULE=on 
-RUN go get -u github.com/ybkuroki/go-webapp-sample
-RUN cd /build && git clone https://github.com/AdminTurnedDevOps/go-webapp-sample.git
+ADD . /app
 
-# Download all the dependencies
-RUN cd /build/go-webapp-sample && go get -d -v ./...
+WORKDIR /app
 
-# Install the package
-RUN cd /build/go-webapp-sample && go install -v ./...
-
-RUN cd /build/go-webapp-sample && go build
+RUN go build -o main .
 
 EXPOSE 8080
 
-ENTRYPOINT [ "/build/go-webapp-sample/go-webapp-sample" ]
+CMD [ "/app/main" ]
