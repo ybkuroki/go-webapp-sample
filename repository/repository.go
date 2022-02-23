@@ -46,7 +46,7 @@ type bookRepository struct {
 }
 
 // NewBookRepository is constructor for bookRepository.
-func NewBookRepository(logger *logger.Logger, conf *config.Config) Repository {
+func NewBookRepository(logger logger.Logger, conf *config.Config) Repository {
 	logger.GetZapLogger().Infof("Try database connection")
 	db, err := connectDatabase(logger, conf)
 	if err != nil {
@@ -66,7 +66,7 @@ const (
 	MYSQL = "mysql"
 )
 
-func connectDatabase(logger *logger.Logger, config *config.Config) (*gorm.DB, error) {
+func connectDatabase(logger logger.Logger, config *config.Config) (*gorm.DB, error) {
 	var dsn string
 	gormConfig := &gorm.Config{Logger: logger}
 

@@ -24,7 +24,7 @@ func main() {
 	e := echo.New()
 
 	conf, env := config.Load()
-	logger := logger.NewLogger(env)
+	logger := logger.InitLogger(env)
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
 
 	rep := repository.NewBookRepository(logger, conf)

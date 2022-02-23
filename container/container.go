@@ -10,7 +10,7 @@ import (
 type Container interface {
 	GetRepository() repository.Repository
 	GetConfig() *config.Config
-	GetLogger() *logger.Logger
+	GetLogger() logger.Logger
 	GetEnv() string
 }
 
@@ -18,12 +18,12 @@ type Container interface {
 type container struct {
 	rep    repository.Repository
 	config *config.Config
-	logger *logger.Logger
+	logger logger.Logger
 	env    string
 }
 
 // NewContainer is constructor.
-func NewContainer(rep repository.Repository, config *config.Config, logger *logger.Logger, env string) Container {
+func NewContainer(rep repository.Repository, config *config.Config, logger logger.Logger, env string) Container {
 	return &container{rep: rep, config: config, logger: logger, env: env}
 }
 
@@ -38,7 +38,7 @@ func (c *container) GetConfig() *config.Config {
 }
 
 // GetLogger returns the object of logger.
-func (c *container) GetLogger() *logger.Logger {
+func (c *container) GetLogger() logger.Logger {
 	return c.logger
 }
 

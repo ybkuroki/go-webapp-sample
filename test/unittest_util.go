@@ -75,13 +75,13 @@ func createConfig(isSecurity bool) *config.Config {
 	return conf
 }
 
-func initContainer(conf *config.Config, logger *logger.Logger) container.Container {
+func initContainer(conf *config.Config, logger logger.Logger) container.Container {
 	rep := repository.NewBookRepository(logger, conf)
 	container := container.NewContainer(rep, conf, logger, "test")
 	return container
 }
 
-func initTestLogger() *logger.Logger {
+func initTestLogger() logger.Logger {
 	myConfig := createLoggerConfig()
 	zap, err := myConfig.Build()
 	if err != nil {
@@ -89,18 +89,18 @@ func initTestLogger() *logger.Logger {
 	}
 	sugar := zap.Sugar()
 	// set package varriable logger.
-	logger := &logger.Logger{Zap: sugar}
+	logger := logger.NewLogger(sugar)
 	logger.GetZapLogger().Infof("Success to read zap logger configuration")
 	_ = zap.Sync()
 	return logger
 }
 
-func initObservedLogger() (*logger.Logger, *observer.ObservedLogs) {
+func initObservedLogger() (logger.Logger, *observer.ObservedLogs) {
 	observedZapCore, observedLogs := observer.New(zap.DebugLevel)
 	sugar := zap.New(observedZapCore).Sugar()
 
 	// set package varriable logger.
-	logger := &logger.Logger{Zap: sugar}
+	logger := logger.NewLogger(sugar)
 	return logger, observedLogs
 }
 
