@@ -19,7 +19,7 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/echo-swagger v1.2.0
-	github.com/swaggo/swag v1.7.8
+	github.com/swaggo/swag v1.8.0
 	github.com/valyala/fasttemplate v1.2.1
 	go.uber.org/zap v1.20.0
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519
