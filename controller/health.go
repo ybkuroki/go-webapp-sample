@@ -8,13 +8,17 @@ import (
 )
 
 // HealthController is a controller returns the current status of this application.
-type HealthController struct {
+type HealthController interface {
+	GetHealthCheck(c echo.Context) error
+}
+
+type healthController struct {
 	container container.Container
 }
 
 // NewHealthController is constructor.
-func NewHealthController(container container.Container) *HealthController {
-	return &HealthController{container: container}
+func NewHealthController(container container.Container) HealthController {
+	return &healthController{container: container}
 }
 
 // GetHealthCheck returns whether this application is alive or not.
@@ -26,6 +30,6 @@ func NewHealthController(container container.Container) *HealthController {
 // @Success 200 {string} message "healthy: This application is started."
 // @Failure 404 {string} message "None: This application is stopped."
 // @Router /health [get]
-func (controller *HealthController) GetHealthCheck(c echo.Context) error {
+func (controller *healthController) GetHealthCheck(c echo.Context) error {
 	return c.JSON(http.StatusOK, "healthy")
 }

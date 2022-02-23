@@ -1,13 +1,16 @@
 package logger
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"os"
+	"time"
 
 	"go.uber.org/zap"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v2"
+	gormLogger "gorm.io/gorm/logger"
 )
 
 // Config represents the setting for zap logger.
@@ -17,12 +20,26 @@ type Config struct {
 }
 
 // Logger is an alternative implementation of *gorm.Logger
-type Logger struct {
+type Logger interface {
+	GetZapLogger() *zap.SugaredLogger
+	LogMode(level gormLogger.LogLevel) gormLogger.Interface
+	Info(ctx context.Context, msg string, data ...interface{})
+	Warn(ctx context.Context, msg string, data ...interface{})
+	Error(ctx context.Context, msg string, data ...interface{})
+	Trace(ctx context.Context, begin time.Time, fc func() (string, int64), err error)
+}
+
+type logger struct {
 	Zap *zap.SugaredLogger
 }
 
-// NewLogger create logger object for *gorm.DB from *echo.Logger
-func NewLogger(env string) *Logger {
+// NewLogger is constructor for logger
+func NewLogger(sugar *zap.SugaredLogger) Logger {
+	return &logger{Zap: sugar}
+}
+
+// InitLogger create logger object for *gorm.DB from *echo.Logger
+func InitLogger(env string) Logger {
 	configYaml, err := ioutil.ReadFile("./zaplogger." + env + ".yml")
 	if err != nil {
 		fmt.Printf("Failed to read logger configuration: %s", err)
@@ -41,13 +58,13 @@ func NewLogger(env string) *Logger {
 	}
 	sugar := zap.Sugar()
 	// set package varriable logger.
-	logger := &Logger{Zap: sugar}
-	logger.Zap.Infof("Success to read zap logger configuration: zaplogger." + env + ".yml")
+	log := NewLogger(sugar)
+	log.GetZapLogger().Infof("Success to read zap logger configuration: zaplogger." + env + ".yml")
 	_ = zap.Sync()
-	return logger
+	return log
 }
 
 // GetZapLogger returns zapSugaredLogger
-func (log *Logger) GetZapLogger() *zap.SugaredLogger {
+func (log *logger) GetZapLogger() *zap.SugaredLogger {
 	return log.Zap
 }

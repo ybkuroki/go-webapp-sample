@@ -12,15 +12,22 @@ import (
 )
 
 // AccountController is a controller for managing user account.
-type AccountController struct {
+type AccountController interface {
+	GetLoginStatus(c echo.Context) error
+	GetLoginAccount(c echo.Context) error
+	Login(c echo.Context) error
+	Logout(c echo.Context) error
+}
+
+type accountController struct {
 	context      container.Container
-	service      *service.AccountService
+	service      service.AccountService
 	dummyAccount *model.Account
 }
 
 // NewAccountController is constructor.
-func NewAccountController(container container.Container) *AccountController {
-	return &AccountController{
+func NewAccountController(container container.Container) AccountController {
+	return &accountController{
 		context:      container,
 		service:      service.NewAccountService(container),
 		dummyAccount: model.NewAccountWithPlainPassword("test", "test", 1),
@@ -36,7 +43,7 @@ func NewAccountController(container container.Container) *AccountController {
 // @Success 200 {boolean} bool "The current user have already logged-in. Returns true."
 // @Failure 401 {boolean} bool "The current user haven't logged-in yet. Returns false."
 // @Router /auth/loginStatus [get]
-func (controller *AccountController) GetLoginStatus(c echo.Context) error {
+func (controller *accountController) GetLoginStatus(c echo.Context) error {
 	return c.JSON(http.StatusOK, true)
 }
 
@@ -49,7 +56,7 @@ func (controller *AccountController) GetLoginStatus(c echo.Context) error {
 // @Success 200 {object} model.Account "Success to fetch the account data. If the security function is disable, it returns the dummy data."
 // @Failure 401 {boolean} bool "The current user haven't logged-in yet. Returns false."
 // @Router /auth/loginAccount [get]
-func (controller *AccountController) GetLoginAccount(c echo.Context) error {
+func (controller *accountController) GetLoginAccount(c echo.Context) error {
 	if !controller.context.GetConfig().Extension.SecurityEnabled {
 		return c.JSON(http.StatusOK, controller.dummyAccount)
 	}
@@ -66,7 +73,7 @@ func (controller *AccountController) GetLoginAccount(c echo.Context) error {
 // @Success 200 {object} model.Account "Success to the authentication."
 // @Failure 401 {boolean} bool "Failed to the authentication."
 // @Router /auth/login [post]
-func (controller *AccountController) Login(c echo.Context) error {
+func (controller *accountController) Login(c echo.Context) error {
 	dto := dto.NewLoginDto()
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
@@ -94,7 +101,7 @@ func (controller *AccountController) Login(c echo.Context) error {
 // @Produce  json
 // @Success 200
 // @Router /auth/logout [post]
-func (controller *AccountController) Logout(c echo.Context) error {
+func (controller *accountController) Logout(c echo.Context) error {
 	_ = session.SetAccount(c, nil)
 	_ = session.Delete(c)
 	return c.NoContent(http.StatusOK)

@@ -7,17 +7,21 @@ import (
 )
 
 // AccountService is a service for managing user account.
-type AccountService struct {
+type AccountService interface {
+	AuthenticateByUsernameAndPassword(username string, password string) (bool, *model.Account)
+}
+
+type accountService struct {
 	container container.Container
 }
 
 // NewAccountService is constructor.
-func NewAccountService(container container.Container) *AccountService {
-	return &AccountService{container: container}
+func NewAccountService(container container.Container) AccountService {
+	return &accountService{container: container}
 }
 
 // AuthenticateByUsernameAndPassword authenticates by using username and plain text password.
-func (a *AccountService) AuthenticateByUsernameAndPassword(username string, password string) (bool, *model.Account) {
+func (a *accountService) AuthenticateByUsernameAndPassword(username string, password string) (bool, *model.Account) {
 	rep := a.container.GetRepository()
 	logger := a.container.GetLogger()
 	account := model.Account{}

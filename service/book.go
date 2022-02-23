@@ -11,17 +11,27 @@ import (
 )
 
 // BookService is a service for managing books.
-type BookService struct {
+type BookService interface {
+	FindByID(id string) (*model.Book, error)
+	FindAllBooks() (*[]model.Book, error)
+	FindAllBooksByPage(page string, size string) (*model.Page, error)
+	FindBooksByTitle(title string, page string, size string) (*model.Page, error)
+	CreateBook(dto *dto.BookDto) (*model.Book, map[string]string)
+	UpdateBook(dto *dto.BookDto, id string) (*model.Book, map[string]string)
+	DeleteBook(id string) (*model.Book, map[string]string)
+}
+
+type bookService struct {
 	container container.Container
 }
 
 // NewBookService is constructor.
-func NewBookService(container container.Container) *BookService {
-	return &BookService{container: container}
+func NewBookService(container container.Container) BookService {
+	return &bookService{container: container}
 }
 
 // FindByID returns one record matched book's id.
-func (b *BookService) FindByID(id string) (*model.Book, error) {
+func (b *bookService) FindByID(id string) (*model.Book, error) {
 	if !util.IsNumeric(id) {
 		return nil, errors.New("failed to fetch data")
 	}
@@ -37,7 +47,7 @@ func (b *BookService) FindByID(id string) (*model.Book, error) {
 }
 
 // FindAllBooks returns the list of all books.
-func (b *BookService) FindAllBooks() (*[]model.Book, error) {
+func (b *bookService) FindAllBooks() (*[]model.Book, error) {
 	rep := b.container.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAll(rep)
@@ -49,7 +59,7 @@ func (b *BookService) FindAllBooks() (*[]model.Book, error) {
 }
 
 // FindAllBooksByPage returns the page object of all books.
-func (b *BookService) FindAllBooksByPage(page string, size string) (*model.Page, error) {
+func (b *bookService) FindAllBooksByPage(page string, size string) (*model.Page, error) {
 	rep := b.container.GetRepository()
 	book := model.Book{}
 	result, err := book.FindAllByPage(rep, page, size)
@@ -61,7 +71,7 @@ func (b *BookService) FindAllBooksByPage(page string, size string) (*model.Page,
 }
 
 // FindBooksByTitle returns the page object of books matched given book title.
-func (b *BookService) FindBooksByTitle(title string, page string, size string) (*model.Page, error) {
+func (b *bookService) FindBooksByTitle(title string, page string, size string) (*model.Page, error) {
 	rep := b.container.GetRepository()
 	book := model.Book{}
 	result, err := book.FindByTitle(rep, title, page, size)
@@ -73,7 +83,7 @@ func (b *BookService) FindBooksByTitle(title string, page string, size string) (
 }
 
 // CreateBook register the given book data.
-func (b *BookService) CreateBook(dto *dto.BookDto) (*model.Book, map[string]string) {
+func (b *bookService) CreateBook(dto *dto.BookDto) (*model.Book, map[string]string) {
 	if errors := dto.Validate(); errors != nil {
 		return nil, errors
 	}
@@ -115,7 +125,7 @@ func txCreateBook(txrep repository.Repository, dto *dto.BookDto) (*model.Book, e
 }
 
 // UpdateBook updates the given book data.
-func (b *BookService) UpdateBook(dto *dto.BookDto, id string) (*model.Book, map[string]string) {
+func (b *bookService) UpdateBook(dto *dto.BookDto, id string) (*model.Book, map[string]string) {
 	if errors := dto.Validate(); errors != nil {
 		return nil, errors
 	}
@@ -166,7 +176,7 @@ func txUpdateBook(txrep repository.Repository, dto *dto.BookDto, id string) (*mo
 }
 
 // DeleteBook deletes the given book data.
-func (b *BookService) DeleteBook(id string) (*model.Book, map[string]string) {
+func (b *bookService) DeleteBook(id string) (*model.Book, map[string]string) {
 	rep := b.container.GetRepository()
 	var result *model.Book
 	var err error
