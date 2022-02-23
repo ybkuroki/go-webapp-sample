@@ -14,17 +14,21 @@ type APIError struct {
 }
 
 // ErrorController is a controller for handling errors.
-type ErrorController struct {
+type ErrorController interface {
+	JSONError(err error, c echo.Context)
+}
+
+type errorController struct {
 	container container.Container
 }
 
 // NewErrorController is constructor.
-func NewErrorController(container container.Container) *ErrorController {
-	return &ErrorController{container: container}
+func NewErrorController(container container.Container) ErrorController {
+	return &errorController{container: container}
 }
 
 // JSONError is cumstomize error handler
-func (controller *ErrorController) JSONError(err error, c echo.Context) {
+func (controller *errorController) JSONError(err error, c echo.Context) {
 	logger := controller.container.GetLogger()
 	code := http.StatusInternalServerError
 	msg := http.StatusText(code)

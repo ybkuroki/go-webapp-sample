@@ -10,14 +10,22 @@ import (
 )
 
 // BookController is a controller for managing books.
-type BookController struct {
+type BookController interface {
+	GetBook(c echo.Context) error
+	GetBookList(c echo.Context) error
+	CreateBook(c echo.Context) error
+	UpdateBook(c echo.Context) error
+	DeleteBook(c echo.Context) error
+}
+
+type bookController struct {
 	container container.Container
-	service   *service.BookService
+	service   service.BookService
 }
 
 // NewBookController is constructor.
-func NewBookController(container container.Container) *BookController {
-	return &BookController{container: container, service: service.NewBookService(container)}
+func NewBookController(container container.Container) BookController {
+	return &bookController{container: container, service: service.NewBookService(container)}
 }
 
 // GetBook returns one record matched book's id.
@@ -31,7 +39,7 @@ func NewBookController(container container.Container) *BookController {
 // @Failure 400 {string} message "Failed to fetch data."
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books/{book_id} [get]
-func (controller *BookController) GetBook(c echo.Context) error {
+func (controller *bookController) GetBook(c echo.Context) error {
 	book, err := controller.service.FindByID(c.Param("id"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -52,7 +60,7 @@ func (controller *BookController) GetBook(c echo.Context) error {
 // @Failure 400 {string} message "Failed to fetch data."
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books [get]
-func (controller *BookController) GetBookList(c echo.Context) error {
+func (controller *bookController) GetBookList(c echo.Context) error {
 	book, err := controller.service.FindBooksByTitle(c.QueryParam("query"), c.QueryParam("page"), c.QueryParam("size"))
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
@@ -71,7 +79,7 @@ func (controller *BookController) GetBookList(c echo.Context) error {
 // @Failure 400 {string} message "Failed to the registration."
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books [post]
-func (controller *BookController) CreateBook(c echo.Context) error {
+func (controller *bookController) CreateBook(c echo.Context) error {
 	dto := dto.NewBookDto()
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
@@ -95,7 +103,7 @@ func (controller *BookController) CreateBook(c echo.Context) error {
 // @Failure 400 {string} message "Failed to the update."
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books/{book_id} [put]
-func (controller *BookController) UpdateBook(c echo.Context) error {
+func (controller *bookController) UpdateBook(c echo.Context) error {
 	dto := dto.NewBookDto()
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
@@ -118,7 +126,7 @@ func (controller *BookController) UpdateBook(c echo.Context) error {
 // @Failure 400 {string} message "Failed to the delete."
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books/{book_id} [delete]
-func (controller *BookController) DeleteBook(c echo.Context) error {
+func (controller *bookController) DeleteBook(c echo.Context) error {
 	book, result := controller.service.DeleteBook(c.Param("id"))
 	if result != nil {
 		return c.JSON(http.StatusBadRequest, result)

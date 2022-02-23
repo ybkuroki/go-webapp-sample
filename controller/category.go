@@ -9,14 +9,18 @@ import (
 )
 
 // CategoryController is a controller for managing category data.
-type CategoryController struct {
+type CategoryController interface {
+	GetCategoryList(c echo.Context) error
+}
+
+type categoryController struct {
 	container container.Container
-	service   *service.CategoryService
+	service   service.CategoryService
 }
 
 // NewCategoryController is constructor.
-func NewCategoryController(container container.Container) *CategoryController {
-	return &CategoryController{container: container, service: service.NewCategoryService(container)}
+func NewCategoryController(container container.Container) CategoryController {
+	return &categoryController{container: container, service: service.NewCategoryService(container)}
 }
 
 // GetCategoryList returns the list of all categories.
@@ -28,6 +32,6 @@ func NewCategoryController(container container.Container) *CategoryController {
 // @Success 200 {array} model.Category "Success to fetch a category list."
 // @Failure 401 {string} false "Failed to the authentication."
 // @Router /categories [get]
-func (controller *CategoryController) GetCategoryList(c echo.Context) error {
+func (controller *categoryController) GetCategoryList(c echo.Context) error {
 	return c.JSON(http.StatusOK, controller.service.FindAllCategories())
 }

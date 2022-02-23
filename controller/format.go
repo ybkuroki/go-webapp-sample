@@ -9,14 +9,18 @@ import (
 )
 
 // FormatController is a controller for managing format data.
-type FormatController struct {
+type FormatController interface {
+	GetFormatList(c echo.Context) error
+}
+
+type formatController struct {
 	container container.Container
-	service   *service.FormatService
+	service   service.FormatService
 }
 
 // NewFormatController is constructor.
-func NewFormatController(container container.Container) *FormatController {
-	return &FormatController{container: container, service: service.NewFormatService(container)}
+func NewFormatController(container container.Container) FormatController {
+	return &formatController{container: container, service: service.NewFormatService(container)}
 }
 
 // GetFormatList returns the list of all formats.
@@ -28,6 +32,6 @@ func NewFormatController(container container.Container) *FormatController {
 // @Success 200 {array} model.Format "Success to fetch a format list."
 // @Failure 401 {string} false "Failed to the authentication."
 // @Router /formats [get]
-func (controller *FormatController) GetFormatList(c echo.Context) error {
+func (controller *formatController) GetFormatList(c echo.Context) error {
 	return c.JSON(http.StatusOK, controller.service.FindAllFormats())
 }
