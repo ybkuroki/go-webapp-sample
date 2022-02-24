@@ -42,7 +42,7 @@ func main() {
 		logger.GetZapLogger().Infof("Served the static contents. path: " + conf.StaticContents.Path)
 	}
 
-	if err := e.Start(":8080"); err != nil {
+	if err := e.Start(":8000"); err != nil {
 		logger.GetZapLogger().Errorf(err.Error())
 	}
 
