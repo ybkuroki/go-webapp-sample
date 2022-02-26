@@ -22,6 +22,7 @@ func NewCategory(name string) *Category {
 	return &Category{Name: name}
 }
 
+// Exist returns true if a given category exits.
 func (c *Category) Exist(rep repository.Repository, id uint) (bool, error) {
 	var count int64
 	if error := rep.Where("id = ?", id).Count(&count).Error; error != nil {
