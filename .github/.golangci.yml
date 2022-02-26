@@ -1,5 +1,12 @@
 # ref: https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
 # all available settings of specific linters
+run:
+  # The default concurrency value is the number of available CPU.
+  concurrency: 4
+  # Timeout for analysis, e.g. 30s, 5m.
+  # Default: 1m
+  timeout: 3m
+
 linters-settings:
   dupl:
     # tokens count to trigger issue, 150 by default

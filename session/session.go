@@ -83,8 +83,7 @@ func SetAccount(c echo.Context, account *model.Account) error {
 
 // GetAccount returns account object of session.
 func GetAccount(c echo.Context) *model.Account {
-	v := GetValue(c, Account)
-	if v != "" {
+	if v := GetValue(c, Account); v != "" {
 		a := &model.Account{}
 		_ = json.Unmarshal([]byte(v), a)
 		return a
