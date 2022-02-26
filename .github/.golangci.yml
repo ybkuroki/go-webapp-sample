@@ -1,5 +1,12 @@
 # ref: https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
 # all available settings of specific linters
+run:
+  # The default concurrency value is the number of available CPU.
+  concurrency: 4
+  # Timeout for analysis, e.g. 30s, 5m.
+  # Default: 1m
+  timeout: 3m
+
 linters-settings:
   dupl:
     # tokens count to trigger issue, 150 by default
@@ -15,9 +22,6 @@ linters-settings:
   gofmt:
     # simplify code: gofmt with `-s` option, true by default
     simplify: true
-  golint:
-    # minimal confidence for issues, default is 0.8
-    min-confidence: 0.8
   govet:
     # report about shadowed variables
     check-shadowing: true
@@ -35,6 +39,37 @@ linters-settings:
   nakedret:
     # make an issue if func has more lines of code than this setting and it has naked returns; default is 30
     max-func-lines: 20
+  revive:
+    ignore-generated-header: true
+    severity: warning
+    confidence: 0.8
+    errorCode: 0
+    warningCode: 0
+    rules:
+      - name: blank-imports
+      - name: context-as-argument
+      - name: context-keys-type
+      - name: dot-imports
+      - name: error-return
+      - name: error-strings
+      - name: error-naming
+      - name: exported
+      - name: if-return
+      - name: increment-decrement
+      - name: var-naming
+      - name: var-declaration
+      - name: package-comments
+      - name: range
+      - name: receiver-naming
+      - name: time-naming
+      - name: unexported-return
+      - name: indent-error-flow
+      - name: errorf
+      - name: empty-block
+      - name: superfluous-else
+      - name: unused-parameter
+      - name: unreachable-code
+      - name: redefines-builtin-id
 
 linters:
   disable-all: true
@@ -53,7 +88,6 @@ linters:
     # add
     - dupl
     - goconst
-    - golint
     - govet
     - gofmt
     - goimports
@@ -62,8 +96,9 @@ linters:
     - unparam
     - ifshort
     - nakedret
+    - revive
 
 # https://github.com/golangci/golangci/wiki/Configuration
 # latest version: https://github.com/golangci/golangci-lint
 service:
-  golangci-lint-version: 1.44.0
+  golangci-lint-version: 1.44.2
