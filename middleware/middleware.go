@@ -11,9 +11,7 @@ import (
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/valyala/fasttemplate"
-	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/container"
-	mySession "github.com/ybkuroki/go-webapp-sample/session"
 	"gopkg.in/boj/redistore.v1"
 )
 
@@ -40,7 +38,7 @@ func InitSessionMiddleware(e *echo.Echo, container container.Container) {
 		} else {
 			e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
 		}
-		e.Use(AuthenticationMiddleware(conf))
+		e.Use(AuthenticationMiddleware(container))
 	}
 }
 
@@ -60,7 +58,7 @@ func RequestLoggerMiddleware(container container.Container) echo.MiddlewareFunc 
 				case "remote_ip":
 					return w.Write([]byte(c.RealIP()))
 				case "account_name":
-					if account := mySession.GetAccount(c); account != nil {
+					if account := container.GetSession().GetAccount(); account != nil {
 						return w.Write([]byte(account.Name))
 					}
 					return w.Write([]byte("None"))
@@ -97,10 +95,11 @@ func ActionLoggerMiddleware(container container.Container) echo.MiddlewareFunc {
 }
 
 // AuthenticationMiddleware is the middleware of session authentication for echo.
-func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
+func AuthenticationMiddleware(container container.Container) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			if !hasAuthorization(c, conf) {
+			container.GetSession().SetContext(c)
+			if !hasAuthorization(c, container) {
 				return c.JSON(http.StatusUnauthorized, false)
 			}
 			if err := next(c); err != nil {
@@ -112,22 +111,22 @@ func AuthenticationMiddleware(conf *config.Config) echo.MiddlewareFunc {
 }
 
 // hasAuthorization judges whether the user has the right to access the path.
-func hasAuthorization(c echo.Context, conf *config.Config) bool {
+func hasAuthorization(c echo.Context, container container.Container) bool {
 	currentPath := c.Path()
-	if equalPath(currentPath, conf.Security.AuthPath) {
-		if equalPath(currentPath, conf.Security.ExculdePath) {
+	if equalPath(currentPath, container.GetConfig().Security.AuthPath) {
+		if equalPath(currentPath, container.GetConfig().Security.ExculdePath) {
 			return true
 		}
-		account := mySession.GetAccount(c)
+		account := container.GetSession().GetAccount()
 		if account == nil {
 			return false
 		}
-		if account.Authority.Name == "Admin" && equalPath(currentPath, conf.Security.AdminPath) {
-			_ = mySession.Save(c)
+		if account.Authority.Name == "Admin" && equalPath(currentPath, container.GetConfig().Security.AdminPath) {
+			_ = container.GetSession().Save()
 			return true
 		}
-		if account.Authority.Name == "User" && equalPath(currentPath, conf.Security.UserPath) {
-			_ = mySession.Save(c)
+		if account.Authority.Name == "User" && equalPath(currentPath, container.GetConfig().Security.UserPath) {
+			_ = container.GetSession().Save()
 			return true
 		}
 		return false

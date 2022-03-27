@@ -8,7 +8,6 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
 	"github.com/ybkuroki/go-webapp-sample/service"
-	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
 // AccountController is a controller for managing user account.
@@ -60,7 +59,7 @@ func (controller *accountController) GetLoginAccount(c echo.Context) error {
 	if !controller.context.GetConfig().Extension.SecurityEnabled {
 		return c.JSON(http.StatusOK, controller.dummyAccount)
 	}
-	return c.JSON(http.StatusOK, session.GetAccount(c))
+	return c.JSON(http.StatusOK, controller.context.GetSession().GetAccount())
 }
 
 // Login is the method to login using username and password by http post.
@@ -79,15 +78,16 @@ func (controller *accountController) Login(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, dto)
 	}
 
-	account := session.GetAccount(c)
+	sess := controller.context.GetSession()
+	account := sess.GetAccount()
 	if account != nil {
 		return c.JSON(http.StatusOK, account)
 	}
 
 	authenticate, a := controller.service.AuthenticateByUsernameAndPassword(dto.UserName, dto.Password)
 	if authenticate {
-		_ = session.SetAccount(c, a)
-		_ = session.Save(c)
+		_ = sess.SetAccount(a)
+		_ = sess.Save()
 		return c.JSON(http.StatusOK, a)
 	}
 	return c.NoContent(http.StatusUnauthorized)
@@ -102,7 +102,8 @@ func (controller *accountController) Login(c echo.Context) error {
 // @Success 200
 // @Router /auth/logout [post]
 func (controller *accountController) Logout(c echo.Context) error {
-	_ = session.SetAccount(c, nil)
-	_ = session.Delete(c)
+	sess := controller.context.GetSession()
+	_ = sess.SetAccount(nil)
+	_ = sess.Delete()
 	return c.NoContent(http.StatusOK)
 }

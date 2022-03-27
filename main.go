@@ -9,6 +9,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/migration"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"github.com/ybkuroki/go-webapp-sample/router"
+	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
 // @title go-webapp-sample API
@@ -28,7 +29,8 @@ func main() {
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
 
 	rep := repository.NewBookRepository(logger, conf)
-	container := container.NewContainer(rep, conf, logger, env)
+	sess := session.NewSession()
+	container := container.NewContainer(rep, sess, conf, logger, env)
 
 	migration.CreateDatabase(container)
 	migration.InitMasterData(container)
