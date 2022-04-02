@@ -42,11 +42,8 @@ func (s *session) SetContext(c echo.Context) {
 
 // Get returns a session for the current request.
 func (s *session) Get() *sessions.Session {
-	if s.context != nil {
-		sess, _ := echoSession.Get(sessionStr, s.context)
-		return sess
-	}
-	return nil
+	sess, _ := echoSession.Get(sessionStr, s.context)
+	return sess
 }
 
 // Save saves the current session.

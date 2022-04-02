@@ -25,6 +25,9 @@ func InitLoggerMiddleware(e *echo.Echo, container container.Container) {
 func InitSessionMiddleware(e *echo.Echo, container container.Container) {
 	conf := container.GetConfig()
 	logger := container.GetLogger()
+
+	e.Use(SessionMiddleware(container))
+
 	if conf.Extension.SecurityEnabled {
 		if conf.Redis.Enabled {
 			logger.GetZapLogger().Infof("Try redis connection")
@@ -94,11 +97,23 @@ func ActionLoggerMiddleware(container container.Container) echo.MiddlewareFunc {
 	}
 }
 
+// SessionMiddleware is a middleware for setting a context to a session.
+func SessionMiddleware(container container.Container) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			container.GetSession().SetContext(c)
+			if err := next(c); err != nil {
+				c.Error(err)
+			}
+			return nil
+		}
+	}
+}
+
 // AuthenticationMiddleware is the middleware of session authentication for echo.
 func AuthenticationMiddleware(container container.Container) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			container.GetSession().SetContext(c)
 			if !hasAuthorization(c, container) {
 				return c.JSON(http.StatusUnauthorized, false)
 			}
