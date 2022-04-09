@@ -79,8 +79,7 @@ func (controller *accountController) Login(c echo.Context) error {
 	}
 
 	sess := controller.context.GetSession()
-	account := sess.GetAccount()
-	if account != nil {
+	if account := sess.GetAccount(); account != nil {
 		return c.JSON(http.StatusOK, account)
 	}
 

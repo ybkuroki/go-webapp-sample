@@ -21,6 +21,7 @@ type session struct {
 	context echo.Context
 }
 
+// Session represents a interface for accessing the session on the application.
 type Session interface {
 	SetContext(c echo.Context)
 	Get() *sessions.Session
@@ -32,10 +33,12 @@ type Session interface {
 	GetAccount() *model.Account
 }
 
+// NewSession is constructor.
 func NewSession() Session {
 	return &session{context: nil}
 }
 
+// SetContext sets the context of echo framework to the session.
 func (s *session) SetContext(c echo.Context) {
 	s.context = c
 }
