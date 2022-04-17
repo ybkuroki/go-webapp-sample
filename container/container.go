@@ -4,11 +4,13 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/logger"
 	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/session"
 )
 
 // Container represents a interface for accessing the data which sharing in overall application.
 type Container interface {
 	GetRepository() repository.Repository
+	GetSession() session.Session
 	GetConfig() *config.Config
 	GetLogger() logger.Logger
 	GetEnv() string
@@ -16,20 +18,26 @@ type Container interface {
 
 // container struct is for sharing data which such as database setting, the setting of application and logger in overall this application.
 type container struct {
-	rep    repository.Repository
-	config *config.Config
-	logger logger.Logger
-	env    string
+	rep     repository.Repository
+	session session.Session
+	config  *config.Config
+	logger  logger.Logger
+	env     string
 }
 
 // NewContainer is constructor.
-func NewContainer(rep repository.Repository, config *config.Config, logger logger.Logger, env string) Container {
-	return &container{rep: rep, config: config, logger: logger, env: env}
+func NewContainer(rep repository.Repository, s session.Session, config *config.Config, logger logger.Logger, env string) Container {
+	return &container{rep: rep, session: s, config: config, logger: logger, env: env}
 }
 
 // GetRepository returns the object of repository.
 func (c *container) GetRepository() repository.Repository {
 	return c.rep
+}
+
+// GetSession returns the object of session.
+func (c *container) GetSession() session.Session {
+	return c.session
 }
 
 // GetConfig returns the object of configuration.

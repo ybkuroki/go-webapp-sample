@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/sessions"
-	"github.com/labstack/echo-contrib/session"
+	echoSession "github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/model"
 )
@@ -17,54 +17,80 @@ const (
 	Account = "Account"
 )
 
+type session struct {
+	context echo.Context
+}
+
+// Session represents a interface for accessing the session on the application.
+type Session interface {
+	SetContext(c echo.Context)
+	Get() *sessions.Session
+	Save() error
+	Delete() error
+	SetValue(key string, value interface{}) error
+	GetValue(key string) string
+	SetAccount(account *model.Account) error
+	GetAccount() *model.Account
+}
+
+// NewSession is constructor.
+func NewSession() Session {
+	return &session{context: nil}
+}
+
+// SetContext sets the context of echo framework to the session.
+func (s *session) SetContext(c echo.Context) {
+	s.context = c
+}
+
 // Get returns a session for the current request.
-func Get(c echo.Context) *sessions.Session {
-	sess, _ := session.Get(sessionStr, c)
+func (s *session) Get() *sessions.Session {
+	sess, _ := echoSession.Get(sessionStr, s.context)
 	return sess
 }
 
 // Save saves the current session.
-func Save(c echo.Context) error {
-	sess := Get(c)
+func (s *session) Save() error {
+	sess := s.Get()
 	sess.Options = &sessions.Options{
 		Path:     "/",
 		HttpOnly: true,
 	}
-	return saveSession(c, sess)
+	return s.saveSession(sess)
 }
 
 // Delete the current session.
-func Delete(c echo.Context) error {
-	sess := Get(c)
+func (s *session) Delete() error {
+	sess := s.Get()
 	sess.Options = &sessions.Options{
 		Path:     "/",
 		HttpOnly: true,
 		MaxAge:   -1,
 	}
-	return saveSession(c, sess)
+	return s.saveSession(sess)
 }
 
-func saveSession(c echo.Context, sess *sessions.Session) error {
-	if err := sess.Save(c.Request(), c.Response()); err != nil {
-		return c.NoContent(http.StatusInternalServerError)
+func (s *session) saveSession(sess *sessions.Session) error {
+	if err := sess.Save(s.context.Request(), s.context.Response()); err != nil {
+		return s.context.NoContent(http.StatusInternalServerError)
 	}
 	return nil
 }
 
 // SetValue sets a key and a value.
-func SetValue(c echo.Context, key string, value interface{}) error {
-	sess := Get(c)
+func (s *session) SetValue(key string, value interface{}) error {
+	sess := s.Get()
 	bytes, err := json.Marshal(value)
 	if err != nil {
-		return c.NoContent(http.StatusInternalServerError)
+		return s.context.NoContent(http.StatusInternalServerError)
 	}
 	sess.Values[key] = string(bytes)
 	return nil
 }
 
 // GetValue returns value of session.
-func GetValue(c echo.Context, key string) string {
-	sess := Get(c)
+func (s *session) GetValue(key string) string {
+	sess := s.Get()
 	if sess != nil {
 		if v, ok := sess.Values[key]; ok {
 			data, result := v.(string)
@@ -77,13 +103,13 @@ func GetValue(c echo.Context, key string) string {
 }
 
 // SetAccount sets account data in session.
-func SetAccount(c echo.Context, account *model.Account) error {
-	return SetValue(c, Account, account)
+func (s *session) SetAccount(account *model.Account) error {
+	return s.SetValue(Account, account)
 }
 
 // GetAccount returns account object of session.
-func GetAccount(c echo.Context) *model.Account {
-	if v := GetValue(c, Account); v != "" {
+func (s *session) GetAccount() *model.Account {
+	if v := s.GetValue(Account); v != "" {
 		a := &model.Account{}
 		_ = json.Unmarshal([]byte(v), a)
 		return a

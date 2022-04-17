@@ -14,6 +14,7 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/middleware"
 	"github.com/ybkuroki/go-webapp-sample/migration"
 	"github.com/ybkuroki/go-webapp-sample/repository"
+	"github.com/ybkuroki/go-webapp-sample/session"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"go.uber.org/zap/zaptest/observer"
@@ -77,7 +78,8 @@ func createConfig(isSecurity bool) *config.Config {
 
 func initContainer(conf *config.Config, logger logger.Logger) container.Container {
 	rep := repository.NewBookRepository(logger, conf)
-	container := container.NewContainer(rep, conf, logger, "test")
+	sess := session.NewSession()
+	container := container.NewContainer(rep, sess, conf, logger, "test")
 	return container
 }
 

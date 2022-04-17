@@ -14,6 +14,8 @@ func InitMasterData(container container.Container) {
 		_, _ = r.Create(rep)
 		a := model.NewAccountWithPlainPassword("test", "test", r.ID)
 		_, _ = a.Create(rep)
+		a = model.NewAccountWithPlainPassword("test2", "test2", r.ID)
+		_, _ = a.Create(rep)
 
 		c := model.NewCategory("Technical Book")
 		_, _ = c.Create(rep)
