@@ -34,7 +34,8 @@ type RecordBook struct {
 }
 
 const (
-	selectBook = "select b.*, c.id as category_id, c.name as category_name, f.id as format_id, f.name as format_name " +
+	selectBook = "select b.id as id, b.title as title, b.isbn as isbn, " +
+		"c.id as category_id, c.name as category_name, f.id as format_id, f.name as format_name " +
 		"from book b inner join category_master c on c.id = b.category_id inner join format_master f on f.id = b.format_id "
 	findByID    = " where b.id = ?"
 	findByTitle = " where title like ? "

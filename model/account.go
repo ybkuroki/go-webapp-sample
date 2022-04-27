@@ -25,7 +25,8 @@ type RecordAccount struct {
 	AuthorityName string
 }
 
-const selectAccount = "select a.*, r.id as authority_id, r.name as authority_name " +
+const selectAccount = "select a.id as id, a.name as name, a.password as password," +
+	" r.id as authority_id, r.name as authority_name " +
 	" from account_master a inner join authority_master r on a.authority_id = r.id "
 
 // TableName returns the table name of account struct and it is used by gorm.
