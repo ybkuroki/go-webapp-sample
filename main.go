@@ -1,6 +1,8 @@
 package main
 
 import (
+	"embed"
+
 	"github.com/labstack/echo/v4"
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/container"
@@ -11,6 +13,12 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/router"
 	"github.com/ybkuroki/go-webapp-sample/session"
 )
+
+//go:embed application.*.yml
+var yamlFile embed.FS
+
+//go:embed zaplogger.*.yml
+var zapYamlFile embed.FS
 
 // @title go-webapp-sample API
 // @version 1.5.1
@@ -24,8 +32,8 @@ import (
 func main() {
 	e := echo.New()
 
-	conf, env := config.Load()
-	logger := logger.InitLogger(env)
+	conf, env := config.Load(yamlFile)
+	logger := logger.InitLogger(env, zapYamlFile)
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
 
 	rep := repository.NewBookRepository(logger, conf)

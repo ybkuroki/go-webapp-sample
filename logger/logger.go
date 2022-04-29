@@ -2,8 +2,8 @@ package logger
 
 import (
 	"context"
+	"embed"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"time"
 
@@ -39,8 +39,8 @@ func NewLogger(sugar *zap.SugaredLogger) Logger {
 }
 
 // InitLogger create logger object for *gorm.DB from *echo.Logger
-func InitLogger(env string) Logger {
-	configYaml, err := ioutil.ReadFile("./zaplogger." + env + ".yml")
+func InitLogger(env string, yamlFile embed.FS) Logger {
+	configYaml, err := yamlFile.ReadFile("zaplogger." + env + ".yml")
 	if err != nil {
 		fmt.Printf("Failed to read logger configuration: %s", err)
 		os.Exit(2)
