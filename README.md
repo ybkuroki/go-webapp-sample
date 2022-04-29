@@ -171,7 +171,7 @@ This sample uses the following libraries.
 |Library Name|Version|
 |:---|:---:|
 |echo|4.7.2|
-|gorm|1.23.4|
+|gorm|1.23.5|
 |go-playground/validator.v9|9.31.0|
 |zap|1.21.0|
 

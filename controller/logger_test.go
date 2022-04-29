@@ -30,7 +30,7 @@ func TestLogging(t *testing.T) {
 	assert.True(t, assertLogger("/api/books/:id Action Start", allLogs))
 	assert.True(t, assertLogger("/api/books/:id Action End", allLogs))
 	assert.True(t, assertLogger("/api/books/1 GET 200", allLogs))
-	assert.True(t, assertLogger("[gorm] select b.*, c.id as category_id, c.name as category_name, f.id as format_id, f.name as format_name from book b inner join category_master c on c.id = b.category_id inner join format_master f on f.id = b.format_id  where b.id = 1", allLogs))
+	assert.True(t, assertLogger("[gorm] ", allLogs))
 }
 
 func assertLogger(message string, logs []observer.LoggedEntry) bool {
