@@ -24,7 +24,7 @@ Perform the following steps:
 1. Download and install [Golang](https://golang.org/).
 1. Get the source code of this repository by the following command.
     ```bash
-    go get -u github.com/ybkuroki/go-webapp-sample
+    go install github.com/ybkuroki/go-webapp-sample@latest
     ```
 
 ## Starting Server
@@ -92,7 +92,7 @@ Swagger isn't enabled on the another environments in default.
 1. Update some comments of some controllers.
 2. Download Swag library. (Only first time)
     ```bash
-    go get github.com/swaggo/swag/cmd/swag
+    go install github.com/swaggo/swag/cmd/swag@latest
     ```
 3. Update ``docs/docs.go``.
     ```bash
