@@ -191,10 +191,10 @@ github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PKk=
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
-github.com/swaggo/echo-swagger v1.3.2 h1:D+3BNl8JMC6pKhA+egjh4LGI0jNesqlt77WahTHfTXQ=
-github.com/swaggo/echo-swagger v1.3.2/go.mod h1:Sjj0O7Puf939HXhxhfZdR49MIrtcg3mLgdg3/qVcbyw=
-github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2 h1:+iNTcqQJy0OZ5jk6a5NLib47eqXK8uYcPX+O4+cBpEM=
-github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2/go.mod h1:lKJPbtWzJ9JhsTN1k1gZgleJWY/cqq0psdoMmaThG3w=
+github.com/swaggo/echo-swagger v1.3.3 h1:Fx8kQ8IcIIEL3ZE20wzvcT8gFnPo/4U+fsnS3I1wvCw=
+github.com/swaggo/echo-swagger v1.3.3/go.mod h1:vbKcEBeJgOexLuPcsdZhrRAV508fsE79xaKIqmvse98=
+github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe h1:K8pHPVoTgxFJt1lXuIzzOX7zZhZFldJQK/CgKx9BFIc=
+github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe/go.mod h1:lKJPbtWzJ9JhsTN1k1gZgleJWY/cqq0psdoMmaThG3w=
 github.com/swaggo/swag v1.8.1/go.mod h1:ugemnJsPZm/kRwFUnzBlbHRd0JY9zE1M4F+uy2pAaPQ=
 github.com/swaggo/swag v1.8.3 h1:3pZSSCQ//gAH88lfmxM3Cd1+JCsxV8Md6f36b9hrZ5s=
 github.com/swaggo/swag v1.8.3/go.mod h1:jMLeXOOmYyjk8PvHTsXBdrubsNd9gUJTTCzL5iBnseg=

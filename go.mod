@@ -18,7 +18,7 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/stretchr/testify v1.8.0
-	github.com/swaggo/echo-swagger v1.3.2
+	github.com/swaggo/echo-swagger v1.3.3
 	github.com/swaggo/swag v1.8.3
 	github.com/valyala/fasttemplate v1.2.1
 	go.uber.org/zap v1.21.0
@@ -63,7 +63,7 @@ require (
 	github.com/labstack/gommon v0.3.1 // indirect
 	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2 // indirect
+	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
