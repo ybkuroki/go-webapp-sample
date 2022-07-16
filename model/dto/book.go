@@ -71,6 +71,6 @@ func createErrorMessages(errors validator.ValidationErrors) map[string]string {
 
 // ToString is return string of object
 func (b *BookDto) ToString() (string, error) {
-	bytes, error := json.Marshal(b)
-	return string(bytes), error
+	bytes, err := json.Marshal(b)
+	return string(bytes), err
 }

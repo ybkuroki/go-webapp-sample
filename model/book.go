@@ -149,32 +149,32 @@ func createPage(books *[]Book, page string, size string) *Page {
 
 // Save persists this book data.
 func (b *Book) Save(rep repository.Repository) (*Book, error) {
-	if error := rep.Save(b).Error; error != nil {
-		return nil, error
+	if err := rep.Save(b).Error; err != nil {
+		return nil, err
 	}
 	return b, nil
 }
 
 // Update updates this book data.
 func (b *Book) Update(rep repository.Repository) (*Book, error) {
-	if error := rep.Model(Book{}).Where("id = ?", b.ID).Select("title", "isbn", "category_id", "format_id").Updates(b).Error; error != nil {
-		return nil, error
+	if err := rep.Model(Book{}).Where("id = ?", b.ID).Select("title", "isbn", "category_id", "format_id").Updates(b).Error; err != nil {
+		return nil, err
 	}
 	return b, nil
 }
 
 // Create persists this book data.
 func (b *Book) Create(rep repository.Repository) (*Book, error) {
-	if error := rep.Select("title", "isbn", "category_id", "format_id").Create(b).Error; error != nil {
-		return nil, error
+	if err := rep.Select("title", "isbn", "category_id", "format_id").Create(b).Error; err != nil {
+		return nil, err
 	}
 	return b, nil
 }
 
 // Delete deletes this book data.
 func (b *Book) Delete(rep repository.Repository) (*Book, error) {
-	if error := rep.Delete(b).Error; error != nil {
-		return nil, error
+	if err := rep.Delete(b).Error; err != nil {
+		return nil, err
 	}
 	return b, nil
 }
@@ -190,6 +190,6 @@ func convertToBook(rec *RecordBook) (*Book, error) {
 
 // ToString is return string of object
 func (b *Book) ToString() (string, error) {
-	bytes, error := json.Marshal(b)
-	return string(bytes), error
+	bytes, err := json.Marshal(b)
+	return string(bytes), err
 }
