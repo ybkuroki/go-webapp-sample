@@ -15,6 +15,6 @@ func NewLoginDto() *LoginDto {
 
 // ToString is return string of object
 func (l *LoginDto) ToString() (string, error) {
-	bytes, error := json.Marshal(l)
-	return string(bytes), error
+	bytes, err := json.Marshal(l)
+	return string(bytes), err
 }
