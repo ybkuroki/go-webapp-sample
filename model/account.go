@@ -58,8 +58,8 @@ func (a *Account) FindByName(rep repository.Repository, name string) (*Account, 
 
 // Create persists this account data.
 func (a *Account) Create(rep repository.Repository) (*Account, error) {
-	if error := rep.Select("name", "password", "authority_id").Create(a).Error; error != nil {
-		return nil, error
+	if err := rep.Select("name", "password", "authority_id").Create(a).Error; err != nil {
+		return nil, err
 	}
 	return a, nil
 }
@@ -71,6 +71,6 @@ func convertToAccount(rec *RecordAccount) *Account {
 
 // ToString is return string of object
 func (a *Account) ToString() (string, error) {
-	bytes, error := json.Marshal(a)
-	return string(bytes), error
+	bytes, err := json.Marshal(a)
+	return string(bytes), err
 }
