@@ -24,14 +24,14 @@ func NewAuthority(name string) *Authority {
 
 // Create persists this authority data.
 func (a *Authority) Create(rep repository.Repository) (*Authority, error) {
-	if error := rep.Create(a).Error; error != nil {
-		return nil, error
+	if err := rep.Create(a).Error; err != nil {
+		return nil, err
 	}
 	return a, nil
 }
 
 // ToString is return string of object
 func (a *Authority) ToString() (string, error) {
-	bytes, error := json.Marshal(a)
-	return string(bytes), error
+	bytes, err := json.Marshal(a)
+	return string(bytes), err
 }

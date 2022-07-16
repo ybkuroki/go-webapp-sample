@@ -25,8 +25,8 @@ func NewFormat(name string) *Format {
 // FindByID returns a format full matched given format's ID.
 func (f *Format) FindByID(rep repository.Repository, id uint) (*Format, error) {
 	var format Format
-	if error := rep.Where("id = ?", id).First(&format).Error; error != nil {
-		return nil, error
+	if err := rep.Where("id = ?", id).First(&format).Error; err != nil {
+		return nil, err
 	}
 	return &format, nil
 }
@@ -34,22 +34,22 @@ func (f *Format) FindByID(rep repository.Repository, id uint) (*Format, error) {
 // FindAll returns all formats of the format table.
 func (f *Format) FindAll(rep repository.Repository) (*[]Format, error) {
 	var formats []Format
-	if error := rep.Find(&formats).Error; error != nil {
-		return nil, error
+	if err := rep.Find(&formats).Error; err != nil {
+		return nil, err
 	}
 	return &formats, nil
 }
 
 // Create persists this category data.
 func (f *Format) Create(rep repository.Repository) (*Format, error) {
-	if error := rep.Create(f).Error; error != nil {
-		return nil, error
+	if err := rep.Create(f).Error; err != nil {
+		return nil, err
 	}
 	return f, nil
 }
 
 // ToString is return string of object
 func (f *Format) ToString() (string, error) {
-	bytes, error := json.Marshal(f)
-	return string(bytes), error
+	bytes, err := json.Marshal(f)
+	return string(bytes), err
 }

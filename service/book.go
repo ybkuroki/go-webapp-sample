@@ -92,11 +92,11 @@ func (b *bookService) CreateBook(dto *dto.BookDto) (*model.Book, map[string]stri
 	var result *model.Book
 	var err error
 
-	if error := rep.Transaction(func(txrep repository.Repository) error {
+	if trerr := rep.Transaction(func(txrep repository.Repository) error {
 		result, err = txCreateBook(txrep, dto)
 		return err
-	}); error != nil {
-		b.container.GetLogger().GetZapLogger().Errorf(error.Error())
+	}); trerr != nil {
+		b.container.GetLogger().GetZapLogger().Errorf(trerr.Error())
 		return nil, map[string]string{"error": "Failed to the registration"}
 	}
 	return result, nil
@@ -134,11 +134,11 @@ func (b *bookService) UpdateBook(dto *dto.BookDto, id string) (*model.Book, map[
 	var result *model.Book
 	var err error
 
-	if error := rep.Transaction(func(txrep repository.Repository) error {
+	if trerr := rep.Transaction(func(txrep repository.Repository) error {
 		result, err = txUpdateBook(txrep, dto, id)
 		return err
-	}); error != nil {
-		b.container.GetLogger().GetZapLogger().Errorf(error.Error())
+	}); trerr != nil {
+		b.container.GetLogger().GetZapLogger().Errorf(trerr.Error())
 		return nil, map[string]string{"error": "Failed to the update"}
 	}
 	return result, nil
@@ -181,11 +181,11 @@ func (b *bookService) DeleteBook(id string) (*model.Book, map[string]string) {
 	var result *model.Book
 	var err error
 
-	if error := rep.Transaction(func(txrep repository.Repository) error {
+	if trerr := rep.Transaction(func(txrep repository.Repository) error {
 		result, err = txDeleteBook(txrep, id)
 		return err
-	}); error != nil {
-		b.container.GetLogger().GetZapLogger().Errorf(error.Error())
+	}); trerr != nil {
+		b.container.GetLogger().GetZapLogger().Errorf(trerr.Error())
 		return nil, map[string]string{"error": "Failed to the delete"}
 	}
 	return result, nil
