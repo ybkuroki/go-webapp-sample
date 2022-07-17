@@ -35,7 +35,7 @@ type Config struct {
 		RequestLogFormat string `yaml:"request_log_format" default:"${remote_ip} ${account_name} ${uri} ${method} ${status}"`
 	}
 	StaticContents struct {
-		Path string `yaml:"path"`
+		Enabled bool `default:"false"`
 	}
 	Security struct {
 		AuthPath    []string `yaml:"auth_path"`
