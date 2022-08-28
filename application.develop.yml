@@ -16,7 +16,7 @@ log:
   request_log_format: ${remote_ip} ${account_name} ${uri} ${method} ${status}
 
 staticcontents:
-  path: ./public/
+  enabled: true
 
 security:
   auth_path:

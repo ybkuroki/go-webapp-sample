@@ -1,11 +1,12 @@
 package config
 
 import (
+	"embed"
 	"flag"
 	"fmt"
 	"os"
 
-	"github.com/jinzhu/configor"
+	"gopkg.in/yaml.v2"
 )
 
 // Config represents the composition of yml settings.
@@ -34,7 +35,7 @@ type Config struct {
 		RequestLogFormat string `yaml:"request_log_format" default:"${remote_ip} ${account_name} ${uri} ${method} ${status}"`
 	}
 	StaticContents struct {
-		Path string `yaml:"path"`
+		Enabled bool `default:"false"`
 	}
 	Security struct {
 		AuthPath    []string `yaml:"auth_path"`
@@ -54,7 +55,7 @@ const (
 )
 
 // Load reads the settings written to the yml file
-func Load() (*Config, string) {
+func Load(yamlFile embed.FS) (*Config, string) {
 	var env *string
 	if value := os.Getenv("WEB_APP_ENV"); value != "" {
 		env = &value
@@ -63,10 +64,17 @@ func Load() (*Config, string) {
 		flag.Parse()
 	}
 
-	config := &Config{}
-	if err := configor.Load(config, "application."+*env+".yml"); err != nil {
+	file, err := yamlFile.ReadFile("application." + *env + ".yml")
+	if err != nil {
 		fmt.Printf("Failed to read application.%s.yml: %s", *env, err)
 		os.Exit(2)
 	}
+
+	config := &Config{}
+	if err := yaml.Unmarshal(file, config); err != nil {
+		fmt.Printf("Failed to read application.%s.yml: %s", *env, err)
+		os.Exit(2)
+	}
+
 	return config, *env
 }
