@@ -1,8 +1,6 @@
 package model
 
 import (
-	"encoding/json"
-
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -70,7 +68,6 @@ func convertToAccount(rec *RecordAccount) *Account {
 }
 
 // ToString is return string of object
-func (a *Account) ToString() (string, error) {
-	bytes, err := json.Marshal(a)
-	return string(bytes), err
+func (a *Account) ToString() string {
+	return toString(a)
 }

@@ -2,7 +2,6 @@ package model
 
 import (
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"math"
 
@@ -189,7 +188,6 @@ func convertToBook(rec *RecordBook) (*Book, error) {
 }
 
 // ToString is return string of object
-func (b *Book) ToString() (string, error) {
-	bytes, err := json.Marshal(b)
-	return string(bytes), err
+func (b *Book) ToString() string {
+	return toString(b)
 }

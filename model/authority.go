@@ -1,8 +1,6 @@
 package model
 
 import (
-	"encoding/json"
-
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
@@ -31,7 +29,6 @@ func (a *Authority) Create(rep repository.Repository) (*Authority, error) {
 }
 
 // ToString is return string of object
-func (a *Authority) ToString() (string, error) {
-	bytes, err := json.Marshal(a)
-	return string(bytes), err
+func (a *Authority) ToString() string {
+	return toString(a)
 }

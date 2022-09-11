@@ -1,8 +1,6 @@
 package model
 
 import (
-	"encoding/json"
-
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
@@ -61,7 +59,6 @@ func (c *Category) Create(rep repository.Repository) (*Category, error) {
 }
 
 // ToString is return string of object
-func (c *Category) ToString() (string, error) {
-	bytes, err := json.Marshal(c)
-	return string(bytes), err
+func (c *Category) ToString() string {
+	return toString(c)
 }
