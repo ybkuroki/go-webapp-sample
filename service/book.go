@@ -38,12 +38,12 @@ func (b *bookService) FindByID(id string) (*model.Book, error) {
 
 	rep := b.container.GetRepository()
 	book := model.Book{}
-	result, err := book.FindByID(rep, util.ConvertToUint(id))
-	if err != nil {
-		b.container.GetLogger().GetZapLogger().Errorf(err.Error())
-		return nil, err
+	opt := book.FindByID(rep, util.ConvertToUint(id))
+	if opt.IsNone() {
+		b.container.GetLogger().GetZapLogger().Errorf("failed to fetch data")
+		return nil, errors.New("failed to fetch data")
 	}
-	return result, nil
+	return opt.Take()
 }
 
 // FindAllBooks returns the list of all books.
@@ -149,9 +149,11 @@ func txUpdateBook(txrep repository.Repository, dto *dto.BookDto, id string) (*mo
 	var err error
 
 	b := model.Book{}
-	if book, err = b.FindByID(txrep, util.ConvertToUint(id)); err != nil {
-		return nil, err
+	opt := b.FindByID(txrep, util.ConvertToUint(id))
+	if opt.IsNone() {
+		return nil, errors.New("failed to fetch data")
 	}
+	book, _ = opt.Take()
 
 	book.Title = dto.Title
 	book.Isbn = dto.Isbn
@@ -196,9 +198,11 @@ func txDeleteBook(txrep repository.Repository, id string) (*model.Book, error) {
 	var err error
 
 	b := model.Book{}
-	if book, err = b.FindByID(txrep, util.ConvertToUint(id)); err != nil {
-		return nil, err
+	opt := b.FindByID(txrep, util.ConvertToUint(id))
+	if opt.IsNone() {
+		return nil, errors.New("failed to fetch data")
 	}
+	book, _ = opt.Take()
 
 	if result, err = book.Delete(txrep); err != nil {
 		return nil, err

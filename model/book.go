@@ -5,6 +5,7 @@ import (
 	"errors"
 	"math"
 
+	"github.com/moznion/go-optional"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"github.com/ybkuroki/go-webapp-sample/util"
 	"gorm.io/gorm"
@@ -51,7 +52,7 @@ func NewBook(title string, isbn string, categoryID uint, formatID uint) *Book {
 }
 
 // FindByID returns a book full matched given book's ID.
-func (b *Book) FindByID(rep repository.Repository, id uint) (*Book, error) {
+func (b *Book) FindByID(rep repository.Repository, id uint) optional.Option[*Book] {
 	var rec RecordBook
 	args := []interface{}{id}
 
@@ -109,10 +110,12 @@ func findRows(rep repository.Repository, sqlquery string, page string, size stri
 		if err = rep.ScanRows(rows, &rec); err != nil {
 			return nil, err
 		}
-		book, err := convertToBook(&rec)
-		if err != nil {
-			return nil, err
+
+		opt := convertToBook(&rec)
+		if opt.IsNone() {
+			return nil, errors.New("failed to fetch data")
 		}
+		book, _ := opt.Take()
 		books = append(books, *book)
 	}
 	return books, nil
@@ -178,13 +181,14 @@ func (b *Book) Delete(rep repository.Repository) (*Book, error) {
 	return b, nil
 }
 
-func convertToBook(rec *RecordBook) (*Book, error) {
+func convertToBook(rec *RecordBook) optional.Option[*Book] {
 	if rec.ID == 0 {
-		return nil, errors.New("failed to fetch data")
+		return optional.None[*Book]()
 	}
 	c := &Category{ID: rec.CategoryID, Name: rec.CategoryName}
 	f := &Format{ID: rec.FormatID, Name: rec.FormatName}
-	return &Book{ID: rec.ID, Title: rec.Title, Isbn: rec.Isbn, CategoryID: rec.CategoryID, Category: c, FormatID: rec.FormatID, Format: f}, nil
+	return optional.Some(
+		&Book{ID: rec.ID, Title: rec.Title, Isbn: rec.Isbn, CategoryID: rec.CategoryID, Category: c, FormatID: rec.FormatID, Format: f})
 }
 
 // ToString is return string of object

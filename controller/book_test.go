@@ -36,7 +36,8 @@ func TestGetBook_Success(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	opt := entity.FindByID(container.GetRepository(), 1)
+	data, _ := opt.Take()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -94,7 +95,8 @@ func TestCreateBook_Success(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	opt := entity.FindByID(container.GetRepository(), 1)
+	data, _ := opt.Take()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -150,7 +152,8 @@ func TestUpdateBook_Success(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	opt := entity.FindByID(container.GetRepository(), 1)
+	data, _ := opt.Take()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -205,7 +208,8 @@ func TestDeleteBook_Success(t *testing.T) {
 	setUpTestData(container)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	opt := entity.FindByID(container.GetRepository(), 1)
+	data, _ := opt.Take()
 
 	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := test.NewJSONRequest("DELETE", uri, nil)
