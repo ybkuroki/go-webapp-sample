@@ -19,7 +19,7 @@ require (
 	github.com/moznion/go-optional v0.5.0
 	github.com/stretchr/testify v1.8.0
 	github.com/swaggo/echo-swagger v1.3.4
-	github.com/swaggo/swag v1.8.5
+	github.com/swaggo/swag v1.8.6
 	github.com/valyala/fasttemplate v1.2.1
 	go.uber.org/zap v1.23.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
@@ -34,7 +34,7 @@ require (
 	gorm.io/driver/mysql v1.3.6
 	gorm.io/driver/postgres v1.3.9
 	gorm.io/driver/sqlite v1.3.6
-	gorm.io/gorm v1.23.8
+	gorm.io/gorm v1.23.9
 )
 
 require (
