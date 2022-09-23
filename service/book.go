@@ -108,12 +108,12 @@ func txCreateBook(txrep repository.Repository, dto *dto.BookDto) (*model.Book, e
 	book := dto.Create()
 
 	category := model.Category{}
-	if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
+	if book.Category, err = category.FindByID(txrep, dto.CategoryID).Take(); err != nil {
 		return nil, err
 	}
 
 	format := model.Format{}
-	if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
+	if book.Format, err = format.FindByID(txrep, dto.FormatID).Take(); err != nil {
 		return nil, err
 	}
 
@@ -159,12 +159,12 @@ func txUpdateBook(txrep repository.Repository, dto *dto.BookDto, id string) (*mo
 	book.FormatID = dto.FormatID
 
 	category := model.Category{}
-	if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
+	if book.Category, err = category.FindByID(txrep, dto.CategoryID).Take(); err != nil {
 		return nil, err
 	}
 
 	format := model.Format{}
-	if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
+	if book.Format, err = format.FindByID(txrep, dto.FormatID).Take(); err != nil {
 		return nil, err
 	}
 

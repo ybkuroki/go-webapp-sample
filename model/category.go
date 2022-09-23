@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/moznion/go-optional"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
@@ -33,12 +34,12 @@ func (c *Category) Exist(rep repository.Repository, id uint) (bool, error) {
 }
 
 // FindByID returns a category full matched given category's ID.
-func (c *Category) FindByID(rep repository.Repository, id uint) (*Category, error) {
+func (c *Category) FindByID(rep repository.Repository, id uint) optional.Option[*Category] {
 	var category Category
 	if err := rep.Where("id = ?", id).First(&category).Error; err != nil {
-		return nil, err
+		return optional.None[*Category]()
 	}
-	return &category, nil
+	return optional.Some(&category)
 }
 
 // FindAll returns all categories of the category table.
