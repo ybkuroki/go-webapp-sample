@@ -58,7 +58,7 @@ func TestGetBook_Failure(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
-	assert.Equal(t, "\"failed to fetch data\"\n", rec.Body.String())
+	assert.Equal(t, "\"none value taken\"\n", rec.Body.String())
 }
 
 func TestGetBookList_Success(t *testing.T) {
