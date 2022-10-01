@@ -98,7 +98,7 @@ func TestCreateBook_Success(t *testing.T) {
 	result, err := service.CreateBook(createBookForCreate())
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	data, _ := entity.FindByID(container.GetRepository(), 1).Take()
 
 	assert.Equal(t, data, result)
 	assert.Empty(t, err)
@@ -143,7 +143,7 @@ func TestUpdateBook_Success(t *testing.T) {
 	result, err := service.UpdateBook(createBookForCreate(), "1")
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	data, _ := entity.FindByID(container.GetRepository(), 1).Take()
 
 	assert.Equal(t, data, result)
 	assert.Empty(t, err)
@@ -203,7 +203,7 @@ func TestDeleteBook_Success(t *testing.T) {
 	setUpTestData(container)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	data, _ := entity.FindByID(container.GetRepository(), 1).Take()
 
 	service := NewBookService(container)
 	result, err := service.DeleteBook("1")

@@ -1,8 +1,7 @@
 package model
 
 import (
-	"encoding/json"
-
+	"github.com/moznion/go-optional"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 )
 
@@ -35,12 +34,12 @@ func (c *Category) Exist(rep repository.Repository, id uint) (bool, error) {
 }
 
 // FindByID returns a category full matched given category's ID.
-func (c *Category) FindByID(rep repository.Repository, id uint) (*Category, error) {
+func (c *Category) FindByID(rep repository.Repository, id uint) optional.Option[*Category] {
 	var category Category
 	if err := rep.Where("id = ?", id).First(&category).Error; err != nil {
-		return nil, err
+		return optional.None[*Category]()
 	}
-	return &category, nil
+	return optional.Some(&category)
 }
 
 // FindAll returns all categories of the category table.
@@ -61,7 +60,6 @@ func (c *Category) Create(rep repository.Repository) (*Category, error) {
 }
 
 // ToString is return string of object
-func (c *Category) ToString() (string, error) {
-	bytes, err := json.Marshal(c)
-	return string(bytes), err
+func (c *Category) ToString() string {
+	return toString(c)
 }

@@ -36,7 +36,8 @@ func TestGetBook_Success(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	opt := entity.FindByID(container.GetRepository(), 1)
+	data, _ := opt.Take()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -57,7 +58,7 @@ func TestGetBook_Failure(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusBadRequest, rec.Code)
-	assert.Equal(t, "\"failed to fetch data\"\n", rec.Body.String())
+	assert.Equal(t, "\"none value taken\"\n", rec.Body.String())
 }
 
 func TestGetBookList_Success(t *testing.T) {
@@ -94,7 +95,8 @@ func TestCreateBook_Success(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	opt := entity.FindByID(container.GetRepository(), 1)
+	data, _ := opt.Take()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -150,7 +152,8 @@ func TestUpdateBook_Success(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	opt := entity.FindByID(container.GetRepository(), 1)
+	data, _ := opt.Take()
 
 	assert.Equal(t, http.StatusOK, rec.Code)
 	assert.JSONEq(t, test.ConvertToString(data), rec.Body.String())
@@ -205,7 +208,8 @@ func TestDeleteBook_Success(t *testing.T) {
 	setUpTestData(container)
 
 	entity := &model.Book{}
-	data, _ := entity.FindByID(container.GetRepository(), 1)
+	opt := entity.FindByID(container.GetRepository(), 1)
+	data, _ := opt.Take()
 
 	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
 	req := test.NewJSONRequest("DELETE", uri, nil)
@@ -279,8 +283,8 @@ func createResultForBindError() *dto.BookDto {
 
 func createResultForValidationError() map[string]string {
 	return map[string]string{
-		"isbn":  "ISBNは、10文字以上20文字以下で入力してください",
-		"title": "書籍タイトルは、3文字以上50文字以下で入力してください",
+		"isbn":  dto.ValidationErrMessageBookISBN,
+		"title": dto.ValidationErrMessageBookTitle,
 	}
 }
 

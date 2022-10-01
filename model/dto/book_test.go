@@ -9,7 +9,7 @@ import (
 func TestValidate_Title2Error(t *testing.T) {
 	dto := createBookForTitle2()
 	result := dto.Validate()
-	assert.Equal(t, "書籍タイトルは、3文字以上50文字以下で入力してください", result["title"])
+	assert.Equal(t, ValidationErrMessageBookTitle, result["title"])
 }
 
 func TestValidate_Title3Success(t *testing.T) {
@@ -39,13 +39,13 @@ func TestValidate_Title50Success(t *testing.T) {
 func TestValidate_Title51Error(t *testing.T) {
 	dto := createBookForTitle51()
 	result := dto.Validate()
-	assert.Equal(t, "書籍タイトルは、3文字以上50文字以下で入力してください", result["title"])
+	assert.Equal(t, ValidationErrMessageBookTitle, result["title"])
 }
 
 func TestValidate_Isbn9Error(t *testing.T) {
 	dto := createBookForIsbn9()
 	result := dto.Validate()
-	assert.Equal(t, "ISBNは、10文字以上20文字以下で入力してください", result["isbn"])
+	assert.Equal(t, ValidationErrMessageBookISBN, result["isbn"])
 }
 
 func TestValidate_Isbn10Success(t *testing.T) {
@@ -75,7 +75,7 @@ func TestValidate_Isbn20Success(t *testing.T) {
 func TestValidate_Isbn21Error(t *testing.T) {
 	dto := createBookForIsbn21()
 	result := dto.Validate()
-	assert.Equal(t, "ISBNは、10文字以上20文字以下で入力してください", result["isbn"])
+	assert.Equal(t, ValidationErrMessageBookISBN, result["isbn"])
 }
 
 func TestToString(t *testing.T) {

@@ -38,9 +38,9 @@ func (b *bookService) FindByID(id string) (*model.Book, error) {
 
 	rep := b.container.GetRepository()
 	book := model.Book{}
-	result, err := book.FindByID(rep, util.ConvertToUint(id))
-	if err != nil {
-		b.container.GetLogger().GetZapLogger().Errorf(err.Error())
+	var result *model.Book
+	var err error
+	if result, err = book.FindByID(rep, util.ConvertToUint(id)).Take(); err != nil {
 		return nil, err
 	}
 	return result, nil
@@ -108,12 +108,12 @@ func txCreateBook(txrep repository.Repository, dto *dto.BookDto) (*model.Book, e
 	book := dto.Create()
 
 	category := model.Category{}
-	if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
+	if book.Category, err = category.FindByID(txrep, dto.CategoryID).Take(); err != nil {
 		return nil, err
 	}
 
 	format := model.Format{}
-	if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
+	if book.Format, err = format.FindByID(txrep, dto.FormatID).Take(); err != nil {
 		return nil, err
 	}
 
@@ -149,7 +149,7 @@ func txUpdateBook(txrep repository.Repository, dto *dto.BookDto, id string) (*mo
 	var err error
 
 	b := model.Book{}
-	if book, err = b.FindByID(txrep, util.ConvertToUint(id)); err != nil {
+	if book, err = b.FindByID(txrep, util.ConvertToUint(id)).Take(); err != nil {
 		return nil, err
 	}
 
@@ -159,12 +159,12 @@ func txUpdateBook(txrep repository.Repository, dto *dto.BookDto, id string) (*mo
 	book.FormatID = dto.FormatID
 
 	category := model.Category{}
-	if book.Category, err = category.FindByID(txrep, dto.CategoryID); err != nil {
+	if book.Category, err = category.FindByID(txrep, dto.CategoryID).Take(); err != nil {
 		return nil, err
 	}
 
 	format := model.Format{}
-	if book.Format, err = format.FindByID(txrep, dto.FormatID); err != nil {
+	if book.Format, err = format.FindByID(txrep, dto.FormatID).Take(); err != nil {
 		return nil, err
 	}
 
@@ -196,7 +196,7 @@ func txDeleteBook(txrep repository.Repository, id string) (*model.Book, error) {
 	var err error
 
 	b := model.Book{}
-	if book, err = b.FindByID(txrep, util.ConvertToUint(id)); err != nil {
+	if book, err = b.FindByID(txrep, util.ConvertToUint(id)).Take(); err != nil {
 		return nil, err
 	}
 

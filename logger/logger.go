@@ -9,7 +9,7 @@ import (
 
 	"go.uber.org/zap"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	gormLogger "gorm.io/gorm/logger"
 )
 
