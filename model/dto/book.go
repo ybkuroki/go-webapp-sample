@@ -13,6 +13,11 @@ const (
 	min      string = "min"
 )
 
+const (
+	ValidationErrMessageBookTitle string = "Please enter the title with 3 to 50 characters."
+	ValidationErrMessageBookISBN  string = "Please enter the ISBN with 10 to 20 characters."
+)
+
 // BookDto defines a data transfer object for book.
 type BookDto struct {
 	Title      string `validate:"required,min=3,max=50" json:"title"`
@@ -57,12 +62,12 @@ func createErrorMessages(errors validator.ValidationErrors) map[string]string {
 		case "Title":
 			switch errors[i].Tag() {
 			case required, min, max:
-				result["title"] = "書籍タイトルは、3文字以上50文字以下で入力してください"
+				result["title"] = ValidationErrMessageBookTitle
 			}
 		case "Isbn":
 			switch errors[i].Tag() {
 			case required, min, max:
-				result["isbn"] = "ISBNは、10文字以上20文字以下で入力してください"
+				result["isbn"] = ValidationErrMessageBookISBN
 			}
 		}
 	}
