@@ -283,8 +283,8 @@ func createResultForBindError() *dto.BookDto {
 
 func createResultForValidationError() map[string]string {
 	return map[string]string{
-		"isbn":  "ISBNは、10文字以上20文字以下で入力してください",
-		"title": "書籍タイトルは、3文字以上50文字以下で入力してください",
+		"isbn":  dto.ValidationErrMessageBookISBN,
+		"title": dto.ValidationErrMessageBookTitle,
 	}
 }
 
