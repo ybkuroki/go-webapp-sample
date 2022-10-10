@@ -2,10 +2,9 @@ package main
 
 import (
 	"embed"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
-	echomd "github.com/labstack/echo/v4/middleware"
+
 	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/logger"
@@ -51,17 +50,7 @@ func main() {
 	router.Init(e, container)
 	middleware.InitLoggerMiddleware(e, container)
 	middleware.InitSessionMiddleware(e, container)
-
-	if conf.StaticContents.Enabled {
-		e.Use(echomd.StaticWithConfig(echomd.StaticConfig{
-			Root:       "public",
-			Index:      "index.html",
-			Browse:     false,
-			HTML5:      true,
-			Filesystem: http.FS(staticFile),
-		}))
-		logger.GetZapLogger().Infof("Served the static contents.")
-	}
+	middleware.StaticContentsMiddleware(e, container, staticFile)
 
 	if err := e.Start(":8080"); err != nil {
 		logger.GetZapLogger().Errorf(err.Error())

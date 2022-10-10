@@ -18,7 +18,7 @@ require (
 	github.com/mattn/go-sqlite3 v2.0.3+incompatible // indirect
 	github.com/moznion/go-optional v0.5.0
 	github.com/stretchr/testify v1.8.0
-	github.com/swaggo/echo-swagger v1.3.4
+	github.com/swaggo/echo-swagger v1.3.5
 	github.com/swaggo/swag v1.8.6
 	github.com/valyala/fasttemplate v1.2.1
 	go.uber.org/zap v1.23.0
@@ -31,10 +31,10 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v3 v3.0.1
-	gorm.io/driver/mysql v1.3.6
-	gorm.io/driver/postgres v1.3.10
-	gorm.io/driver/sqlite v1.3.6
-	gorm.io/gorm v1.23.10
+	gorm.io/driver/mysql v1.4.1
+	gorm.io/driver/postgres v1.4.4
+	gorm.io/driver/sqlite v1.4.2
+	gorm.io/gorm v1.24.0
 )
 
 require (

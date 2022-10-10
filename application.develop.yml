@@ -18,6 +18,10 @@ log:
 staticcontents:
   enabled: true
 
+swagger:
+  enabled: true
+  path: /swagger/.*
+
 security:
   auth_path:
     - /api/.*

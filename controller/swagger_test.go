@@ -21,4 +21,5 @@ func TestSwagger(t *testing.T) {
 	router.ServeHTTP(rec, req)
 
 	assert.Equal(t, http.StatusOK, rec.Code)
+	assert.Regexp(t, "Swagger UI", rec.Body.String())
 }
