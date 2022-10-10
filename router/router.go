@@ -5,7 +5,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/container"
 	"github.com/ybkuroki/go-webapp-sample/controller"
 
@@ -91,7 +90,7 @@ func setHealthController(e *echo.Echo, container container.Container) {
 }
 
 func setSwagger(container container.Container, e *echo.Echo) {
-	if container.GetEnv() == config.DEV {
+	if container.GetConfig().Swagger.Enabled {
 		e.GET("/swagger/*", echoSwagger.WrapHandler)
 	}
 }

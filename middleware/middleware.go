@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"embed"
 	"fmt"
 	"io"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
+	echomd "github.com/labstack/echo/v4/middleware"
 	"github.com/valyala/fasttemplate"
 	"github.com/ybkuroki/go-webapp-sample/container"
 	"gopkg.in/boj/redistore.v1"
@@ -107,6 +109,27 @@ func SessionMiddleware(container container.Container) echo.MiddlewareFunc {
 			}
 			return nil
 		}
+	}
+}
+
+// StaticContentsMiddleware is the middleware for loading the static files.
+func StaticContentsMiddleware(e *echo.Echo, container container.Container, staticFile embed.FS) {
+	conf := container.GetConfig()
+	if conf.StaticContents.Enabled {
+		staticConfig := echomd.StaticConfig{
+			Root:       "public",
+			Index:      "index.html",
+			Browse:     false,
+			HTML5:      true,
+			Filesystem: http.FS(staticFile),
+		}
+		if conf.Swagger.Enabled {
+			staticConfig.Skipper = func(c echo.Context) bool {
+				return equalPath(c.Path(), []string{conf.Swagger.Path})
+			}
+		}
+		e.Use(echomd.StaticWithConfig(staticConfig))
+		container.GetLogger().GetZapLogger().Infof("Served the static contents.")
 	}
 }
 

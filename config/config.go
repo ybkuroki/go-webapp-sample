@@ -37,6 +37,10 @@ type Config struct {
 	StaticContents struct {
 		Enabled bool `default:"false"`
 	}
+	Swagger struct {
+		Enabled bool `default:"false"`
+		Path    string
+	}
 	Security struct {
 		AuthPath    []string `yaml:"auth_path"`
 		ExculdePath []string `yaml:"exclude_path"`
