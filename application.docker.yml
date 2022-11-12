@@ -1,14 +1,14 @@
 database:
   dialect: postgres
-  host: postgres-db
+  host: localhost
   port: 5432
   dbname: testdb
-  username: testusr
-  password: testusr
-  migration: false
+  username: admin
+  password: psltest
+  migration: true
 
 extension:
-  master_generator: false
+  master_generator: true
   cors_enabled: false
   security_enabled: true
 

@@ -1,0 +1,16 @@
+2022-11-12T12:02:00.367+0530	INFO	logger/logger.go:62	Success to read zap logger configuration: zaplogger.docker.yml
+2022-11-12T12:02:00.369+0530	INFO	go-webapp-sample/main.go:41	Loaded this configuration : application.docker.yml
+2022-11-12T12:02:00.369+0530	INFO	repository/repository.go:50	Try database connection
+2022-11-12T12:02:00.411+0530	INFO	repository/repository.go:56	Success database connection, localhost:5432
+2022-11-12T12:02:11.547+0530	INFO	middleware/middleware.go:80	::1 None /api/auth/loginStatus GET 401
+2022-11-12T12:02:11.693+0530	INFO	middleware/middleware.go:80	::1 None /service-worker.js GET 404
+2022-11-12T12:02:11.697+0530	INFO	middleware/middleware.go:80	::1 None /img/icons/favicon-32x32.png GET 404
+2022-11-12T12:02:11.704+0530	INFO	middleware/middleware.go:80	::1 None /img/icons/android-chrome-192x192.png GET 404
+2022-11-12T12:02:11.712+0530	INFO	middleware/middleware.go:80	::1 None /img/icons/favicon-16x16.png GET 404
+2022-11-12T12:02:13.774+0530	INFO	middleware/middleware.go:80	::1 test /api/auth/login POST 200
+2022-11-12T12:02:13.817+0530	INFO	middleware/middleware.go:80	::1 test /api/auth/loginStatus GET 200
+2022-11-12T12:02:13.849+0530	INFO	middleware/middleware.go:80	::1 test /api/auth/loginAccount GET 200
+2022-11-12T12:02:13.899+0530	INFO	middleware/middleware.go:80	::1 test /api/categories GET 200
+2022-11-12T12:02:13.951+0530	INFO	middleware/middleware.go:80	::1 test /api/formats GET 200
+2022-11-12T12:02:13.954+0530	INFO	middleware/middleware.go:80	::1 test /api/books GET 200
+2022-11-12T12:10:54.609+0530	INFO	middleware/middleware.go:80	::1 None /api/auth/logout POST 200
