@@ -153,8 +153,8 @@ github.com/mattn/go-isatty v0.0.14/go.mod h1:7GGIvUiUoEMVVmxf/4nioHXj79iQHKdU27k
 github.com/mattn/go-sqlite3 v1.14.15/go.mod h1:2eHXhiwb8IkHr+BDWZGa96P6+rkvnG63S2DGjv9HUNg=
 github.com/mattn/go-sqlite3 v1.14.16 h1:yOQRA0RpS5PFz/oikGwBEqvAWhWg5ufRz4ETLjwpU1Y=
 github.com/mattn/go-sqlite3 v1.14.16/go.mod h1:2eHXhiwb8IkHr+BDWZGa96P6+rkvnG63S2DGjv9HUNg=
-github.com/moznion/go-optional v0.8.0 h1:jkjjjGQOuUNo6cRY2RNdvIfQF+QoV/K45zlEBA8XU0g=
-github.com/moznion/go-optional v0.8.0/go.mod h1:l3mLmsyp2bWTvWKjEm5MT7lo3g5MRlNIflxFB0XTASA=
+github.com/moznion/go-optional v0.10.0 h1:YE42pzLDp6vc9zi/2hyaHYJesjahZEgFXEN1u5DMwMA=
+github.com/moznion/go-optional v0.10.0/go.mod h1:l3mLmsyp2bWTvWKjEm5MT7lo3g5MRlNIflxFB0XTASA=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
 github.com/otiai10/copy v1.7.0/go.mod h1:rmRl6QPdJj6EiUqXQ/4Nn2lLXoNQjFCQbbNrxgc/t3U=
