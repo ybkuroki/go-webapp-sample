@@ -9,7 +9,8 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/gorilla/sessions v1.2.1
-	github.com/labstack/echo-contrib v0.13.0
+	github.com/jackc/pgproto3/v2 v2.3.1 // indirect
+	github.com/labstack/echo-contrib v0.13.1
 	github.com/labstack/echo/v4 v4.9.1
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
@@ -30,10 +31,10 @@ require (
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0
 	gopkg.in/yaml.v3 v3.0.1
-	gorm.io/driver/mysql v1.4.4
 	gorm.io/driver/postgres v1.4.6
-	gorm.io/driver/sqlite v1.4.3
 	gorm.io/gorm v1.24.2
+	gorm.io/driver/mysql v1.4.5
+	gorm.io/driver/sqlite v1.4.4
 )
 
 require (
@@ -44,7 +45,7 @@ require (
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/spec v0.20.4 // indirect
 	github.com/go-playground/locales v0.13.0 // indirect
-	github.com/go-sql-driver/mysql v1.6.0 // indirect
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/securecookie v1.1.1 // indirect
