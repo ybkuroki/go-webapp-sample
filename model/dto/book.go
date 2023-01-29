@@ -13,22 +13,18 @@ const (
 	min      string = "min"
 )
 
-const (
-	ValidationErrMessageBookTitle string = "Please enter the title with 3 to 50 characters."
-	ValidationErrMessageBookISBN  string = "Please enter the ISBN with 10 to 20 characters."
-)
-
 // BookDto defines a data transfer object for book.
 type BookDto struct {
 	Title      string `validate:"required,min=3,max=50" json:"title"`
 	Isbn       string `validate:"required,min=10,max=20" json:"isbn"`
 	CategoryID uint   `json:"categoryId"`
 	FormatID   uint   `json:"formatId"`
+	messages   map[string]string
 }
 
 // NewBookDto is constructor.
-func NewBookDto() *BookDto {
-	return &BookDto{}
+func NewBookDto(messages map[string]string) *BookDto {
+	return &BookDto{messages: messages}
 }
 
 // Create creates a book model from this DTO.
@@ -41,7 +37,7 @@ func (b *BookDto) Validate() map[string]string {
 	return validateDto(b)
 }
 
-func validateDto(b interface{}) map[string]string {
+func validateDto(b *BookDto) map[string]string {
 	err := validator.New().Struct(b)
 	if err == nil {
 		return nil
@@ -52,22 +48,22 @@ func validateDto(b interface{}) map[string]string {
 		return nil
 	}
 
-	return createErrorMessages(errors)
+	return createErrorMessages(b, errors)
 }
 
-func createErrorMessages(errors validator.ValidationErrors) map[string]string {
+func createErrorMessages(b *BookDto, errors validator.ValidationErrors) map[string]string {
 	result := make(map[string]string)
 	for i := range errors {
 		switch errors[i].StructField() {
 		case "Title":
 			switch errors[i].Tag() {
 			case required, min, max:
-				result["title"] = ValidationErrMessageBookTitle
+				result["title"] = b.messages["ValidationErrMessageBookTitle"]
 			}
 		case "Isbn":
 			switch errors[i].Tag() {
 			case required, min, max:
-				result["isbn"] = ValidationErrMessageBookISBN
+				result["isbn"] = b.messages["ValidationErrMessageBookISBN"]
 			}
 		}
 	}

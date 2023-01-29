@@ -80,7 +80,7 @@ func (controller *bookController) GetBookList(c echo.Context) error {
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books [post]
 func (controller *bookController) CreateBook(c echo.Context) error {
-	dto := dto.NewBookDto()
+	dto := dto.NewBookDto(controller.container.GetMessages())
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
 	}
@@ -104,7 +104,7 @@ func (controller *bookController) CreateBook(c echo.Context) error {
 // @Failure 401 {boolean} bool "Failed to the authentication. Returns false."
 // @Router /books/{book_id} [put]
 func (controller *bookController) UpdateBook(c echo.Context) error {
-	dto := dto.NewBookDto()
+	dto := dto.NewBookDto(controller.container.GetMessages())
 	if err := c.Bind(dto); err != nil {
 		return c.JSON(http.StatusBadRequest, dto)
 	}
