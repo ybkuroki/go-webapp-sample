@@ -21,6 +21,11 @@ type BookDtoForBindError struct {
 	FormatID   string
 }
 
+const (
+	ValidationErrMessageBookTitle string = "Please enter the title with 3 to 50 characters."
+	ValidationErrMessageBookISBN  string = "Please enter the ISBN with 10 to 20 characters."
+)
+
 func TestGetBook_Success(t *testing.T) {
 	router, container := test.PrepareForControllerTest(false)
 
@@ -283,8 +288,8 @@ func createResultForBindError() *dto.BookDto {
 
 func createResultForValidationError() map[string]string {
 	return map[string]string{
-		"isbn":  dto.ValidationErrMessageBookISBN,
-		"title": dto.ValidationErrMessageBookTitle,
+		"isbn":  ValidationErrMessageBookISBN,
+		"title": ValidationErrMessageBookTitle,
 	}
 }
 
