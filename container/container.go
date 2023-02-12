@@ -49,6 +49,7 @@ func (c *container) GetConfig() *config.Config {
 	return c.config
 }
 
+// GetMessages returns the map has key and message.
 func (c *container) GetMessages() map[string]string {
 	return c.messages
 }

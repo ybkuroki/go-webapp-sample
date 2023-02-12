@@ -40,7 +40,7 @@ var propsFile embed.FS
 func main() {
 	e := echo.New()
 
-	messages := util.ReadPropertiesFile(propsFile)
+	messages := util.ReadPropertiesFile(propsFile, "messages.properties")
 	conf, env := config.Load(yamlFile)
 	logger := logger.InitLogger(env, zapYamlFile)
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")

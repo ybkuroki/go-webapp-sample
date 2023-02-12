@@ -12,10 +12,10 @@ const (
 )
 
 // ReadPropertiesFile reads a properties file and it returns a map has the keys and values in the file.
-func ReadPropertiesFile(fs embed.FS) map[string]string {
+func ReadPropertiesFile(fs embed.FS, fileName string) map[string]string {
 	config := make(map[string]string)
 
-	file, err := fs.Open("messages.properties")
+	file, err := fs.Open(fileName)
 	if err != nil {
 		return nil
 	}
