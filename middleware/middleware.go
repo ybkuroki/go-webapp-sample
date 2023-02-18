@@ -117,7 +117,7 @@ func StaticContentsMiddleware(e *echo.Echo, container container.Container, stati
 	conf := container.GetConfig()
 	if conf.StaticContents.Enabled {
 		staticConfig := echomd.StaticConfig{
-			Root:       "public",
+			Root:       "resources/public",
 			Index:      "index.html",
 			Browse:     false,
 			HTML5:      true,

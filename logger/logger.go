@@ -40,7 +40,7 @@ func NewLogger(sugar *zap.SugaredLogger) Logger {
 
 // InitLogger create logger object for *gorm.DB from *echo.Logger
 func InitLogger(env string, yamlFile embed.FS) Logger {
-	configYaml, err := yamlFile.ReadFile("zaplogger." + env + ".yml")
+	configYaml, err := yamlFile.ReadFile("resources/config/zaplogger." + env + ".yml")
 	if err != nil {
 		fmt.Printf("Failed to read logger configuration: %s", err)
 		os.Exit(2)

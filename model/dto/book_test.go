@@ -6,6 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const (
+	ValidationErrMessageBookTitle string = "Please enter the title with 3 to 50 characters."
+	ValidationErrMessageBookISBN  string = "Please enter the ISBN with 10 to 20 characters."
+)
+
 func TestValidate_Title2Error(t *testing.T) {
 	dto := createBookForTitle2()
 	result := dto.Validate()
@@ -84,12 +89,19 @@ func TestToString(t *testing.T) {
 	assert.Equal(t, "{\"title\":\"Test\",\"isbn\":\"123-123-123-1\",\"categoryId\":1,\"formatId\":1}", result)
 }
 
+func createValidationMessages() map[string]string {
+	return map[string]string{
+		"ValidationErrMessageBookTitle": "Please enter the title with 3 to 50 characters.",
+		"ValidationErrMessageBookISBN":  "Please enter the ISBN with 10 to 20 characters."}
+}
+
 func createBookForTitle2() *BookDto {
 	return &BookDto{
 		Title:      "Te",
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -99,6 +111,7 @@ func createBookForTitle3() *BookDto {
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -108,6 +121,7 @@ func createBookForTitle4() *BookDto {
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -117,6 +131,7 @@ func createBookForTitle49() *BookDto {
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -126,6 +141,7 @@ func createBookForTitle50() *BookDto {
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -135,6 +151,7 @@ func createBookForTitle51() *BookDto {
 		Isbn:       "123-123-123-1",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -144,6 +161,7 @@ func createBookForIsbn9() *BookDto {
 		Isbn:       "123456789",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -153,6 +171,7 @@ func createBookForIsbn10() *BookDto {
 		Isbn:       "1234567890",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -162,6 +181,7 @@ func createBookForIsbn19() *BookDto {
 		Isbn:       "1234567890123456789",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -171,6 +191,7 @@ func createBookForIsbn20() *BookDto {
 		Isbn:       "12345678901234567890",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -180,6 +201,7 @@ func createBookForIsbn21() *BookDto {
 		Isbn:       "123456789012345678901",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
 
@@ -189,5 +211,6 @@ func createBookForIsbn11() *BookDto {
 		Isbn:       "12345678901",
 		CategoryID: 1,
 		FormatID:   1,
+		messages:   createValidationMessages(),
 	}
 }
