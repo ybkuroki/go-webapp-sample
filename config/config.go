@@ -68,7 +68,7 @@ func Load(yamlFile embed.FS) (*Config, string) {
 		flag.Parse()
 	}
 
-	file, err := yamlFile.ReadFile("application." + *env + ".yml")
+	file, err := yamlFile.ReadFile("resources/config/application." + *env + ".yml")
 	if err != nil {
 		fmt.Printf("Failed to read application.%s.yml: %s", *env, err)
 		os.Exit(2)

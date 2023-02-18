@@ -16,16 +16,16 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/util"
 )
 
-//go:embed application.*.yml
+//go:embed resources/config/application.*.yml
 var yamlFile embed.FS
 
-//go:embed zaplogger.*.yml
+//go:embed resources/config/zaplogger.*.yml
 var zapYamlFile embed.FS
 
-//go:embed public/*
+//go:embed resources/public/*
 var staticFile embed.FS
 
-//go:embed messages.properties
+//go:embed resources/config/messages.properties
 var propsFile embed.FS
 
 // @title go-webapp-sample API
@@ -40,7 +40,7 @@ var propsFile embed.FS
 func main() {
 	e := echo.New()
 
-	messages := util.ReadPropertiesFile(propsFile, "messages.properties")
+	messages := util.ReadPropertiesFile(propsFile, "resources/config/messages.properties")
 	conf, env := config.Load(yamlFile)
 	logger := logger.InitLogger(env, zapYamlFile)
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
