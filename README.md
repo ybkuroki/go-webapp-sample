@@ -106,7 +106,7 @@ go build main.go
 ```
 
 ## Project Map
-The follwing figure is the map of this sample project.
+The following figure is the map of this sample project.
 
 ```
 - go-webapp-sample
