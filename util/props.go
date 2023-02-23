@@ -7,8 +7,10 @@ import (
 )
 
 const (
+	// CommentChar represents that the line is the comment line.
 	CommentChar = "#"
-	EqualsChar  = "="
+	// EqualsChar represents that the equals symbol.
+	EqualsChar = "="
 )
 
 // ReadPropertiesFile reads a properties file and it returns a map has the keys and values in the file.
@@ -19,6 +21,7 @@ func ReadPropertiesFile(fs embed.FS, fileName string) map[string]string {
 	if err != nil {
 		return nil
 	}
+	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
@@ -27,6 +30,10 @@ func ReadPropertiesFile(fs embed.FS, fileName string) map[string]string {
 			setPorperty(line, config)
 		}
 	}
+	if err := scanner.Err(); err != nil {
+		return nil
+	}
+
 	return config
 }
 
