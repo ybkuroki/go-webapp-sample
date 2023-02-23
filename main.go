@@ -2,6 +2,7 @@ package main
 
 import (
 	"embed"
+	"os"
 
 	"github.com/labstack/echo/v4"
 
@@ -40,10 +41,16 @@ var propsFile embed.FS
 func main() {
 	e := echo.New()
 
-	messages := util.ReadPropertiesFile(propsFile, "resources/config/messages.properties")
 	conf, env := config.Load(yamlFile)
 	logger := logger.InitLogger(env, zapYamlFile)
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
+
+	messages := util.ReadPropertiesFile(propsFile, "resources/config/messages.properties")
+	if messages == nil {
+		logger.GetZapLogger().Errorf("Failed to load the messages.properties.")
+		os.Exit(2)
+	}
+	logger.GetZapLogger().Infof("Loaded messages.properties")
 
 	rep := repository.NewBookRepository(logger, conf)
 	sess := session.NewSession()

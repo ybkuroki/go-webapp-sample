@@ -1,43 +1,43 @@
-# ref: https://github.com/golangci/golangci-lint/blob/master/.golangci.example.yml
+# ref: https://github.com/golangci/golangci-lint/blob/master/.golangci.yml
 # all available settings of specific linters
 run:
-  # The default concurrency value is the number of available CPU.
   concurrency: 4
-  # Timeout for analysis, e.g. 30s, 5m.
-  # Default: 1m
   timeout: 3m
 
 linters-settings:
   dupl:
-    # tokens count to trigger issue, 150 by default
     threshold: 150
+  funlen:
+    lines: 100
+    statements: 50
   goconst:
-    # minimal length of string constant, 3 by default
     min-len: 3
-    # minimal occurrences count to trigger, 3 by default
     min-occurrences: 2
   gocyclo:
-    # minimal code complexity to report, 30 by default (but we recommend 10-20)
     min-complexity: 15
+  gomnd:
+    # don't include the "operation" and "assign"
+    checks:
+      - argument
+      - case
+      - condition
+      - return
   gofmt:
-    # simplify code: gofmt with `-s` option, true by default
     simplify: true
   govet:
-    # report about shadowed variables
     check-shadowing: true
-  ifshort:
-    # Maximum length of variable declaration measured in number of lines, after which linter won't suggest using short syntax.
-    # Has higher priority than max-decl-chars.
-    max-decl-lines: 1
-    # Maximum length of variable declaration measured in number of characters, after which linter won't suggest using short syntax.
-    max-decl-chars: 30
+    settings:
+      printf:
+        funcs:
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+          - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+  lll:
+    line-length: 120
   misspell:
-    # Correct spellings using locale preferences for US or UK.
-    # Default is to use a neutral variety of English.
-    # Setting locale to US will correct the British spelling of 'colour' to 'color'.
     locale: US
   nakedret:
-    # make an issue if func has more lines of code than this setting and it has naked returns; default is 30
     max-func-lines: 20
   revive:
     ignore-generated-header: true
@@ -76,26 +76,37 @@ linters:
   enable:
     # default
     # ref: https://golangci-lint.run/usage/linters/
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - typecheck
-    - unused
+    #- deadcode
+    #- errcheck
+    #- gosimple
+    #- govet
+    #- ineffassign
+    #- staticcheck
+    #- structcheck
+    #- typecheck
+    #- unused
+    #- varcheck
     # add
     - dupl
+    - errcheck
+    - funlen
     - goconst
-    - govet
+    - gocyclo
     - gofmt
     - goimports
+    - gomnd
+    - govet
+    - lll
     - misspell
+    - nakedret
+    - staticcheck
+    - stylecheck
+    - typecheck
     - unconvert
     - unparam
-    - nakedret
     - revive
 
 # https://github.com/golangci/golangci/wiki/Configuration
 # latest version: https://github.com/golangci/golangci-lint
 service:
-  golangci-lint-version: 1.51.1
+  golangci-lint-version: 1.51.2
