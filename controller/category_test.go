@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/test"
 )
@@ -15,9 +16,9 @@ func TestGetCategoryList(t *testing.T) {
 	router, container := test.PrepareForControllerTest(false)
 
 	category := NewCategoryController(container)
-	router.GET(APICategories, func(c echo.Context) error { return category.GetCategoryList(c) })
+	router.GET(config.APICategories, func(c echo.Context) error { return category.GetCategoryList(c) })
 
-	req := httptest.NewRequest("GET", APICategories, nil)
+	req := httptest.NewRequest("GET", config.APICategories, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)

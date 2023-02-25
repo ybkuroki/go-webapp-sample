@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/model"
 	"github.com/ybkuroki/go-webapp-sample/model/dto"
 	"github.com/ybkuroki/go-webapp-sample/test"
@@ -16,9 +17,9 @@ func TestGetLoginStatus_Success(t *testing.T) {
 	router, container := test.PrepareForControllerTest(false)
 
 	account := NewAccountController(container)
-	router.GET(APIAccountLoginStatus, func(c echo.Context) error { return account.GetLoginStatus(c) })
+	router.GET(config.APIAccountLoginStatus, func(c echo.Context) error { return account.GetLoginStatus(c) })
 
-	req := httptest.NewRequest("GET", APIAccountLoginStatus, nil)
+	req := httptest.NewRequest("GET", config.APIAccountLoginStatus, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -31,9 +32,9 @@ func TestGetLoginAccount_Success(t *testing.T) {
 	router, container := test.PrepareForControllerTest(false)
 
 	account := NewAccountController(container)
-	router.GET(APIAccountLoginAccount, func(c echo.Context) error { return account.GetLoginAccount(c) })
+	router.GET(config.APIAccountLoginAccount, func(c echo.Context) error { return account.GetLoginAccount(c) })
 
-	req := httptest.NewRequest("GET", APIAccountLoginAccount, nil)
+	req := httptest.NewRequest("GET", config.APIAccountLoginAccount, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -47,10 +48,10 @@ func TestLogin_Success(t *testing.T) {
 	router, container := test.PrepareForControllerTest(true)
 
 	account := NewAccountController(container)
-	router.POST(APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
+	router.POST(config.APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
 
 	param := createLoginSuccessAccount()
-	req := test.NewJSONRequest("POST", APIAccountLogin, param)
+	req := test.NewJSONRequest("POST", config.APIAccountLogin, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -63,10 +64,10 @@ func TestLogin_AuthenticationFailure(t *testing.T) {
 	router, container := test.PrepareForControllerTest(true)
 
 	account := NewAccountController(container)
-	router.POST(APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
+	router.POST(config.APIAccountLogin, func(c echo.Context) error { return account.Login(c) })
 
 	param := createLoginFailureAccount()
-	req := test.NewJSONRequest("POST", APIAccountLogin, param)
+	req := test.NewJSONRequest("POST", config.APIAccountLogin, param)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)
@@ -79,9 +80,9 @@ func TestLogout_Success(t *testing.T) {
 	router, container := test.PrepareForControllerTest(true)
 
 	account := NewAccountController(container)
-	router.POST(APIAccountLogout, func(c echo.Context) error { return account.Logout(c) })
+	router.POST(config.APIAccountLogout, func(c echo.Context) error { return account.Logout(c) })
 
-	req := test.NewJSONRequest("POST", APIAccountLogout, nil)
+	req := test.NewJSONRequest("POST", config.APIAccountLogout, nil)
 	rec := httptest.NewRecorder()
 
 	router.ServeHTTP(rec, req)

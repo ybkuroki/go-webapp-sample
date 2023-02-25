@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -39,7 +40,7 @@ func NewAccount(name string, password string, authorityID uint) *Account {
 
 // NewAccountWithPlainPassword is constructor. And it is encoded plain text password by using bcrypt.
 func NewAccountWithPlainPassword(name string, password string, authorityID uint) *Account {
-	hashed, _ := bcrypt.GenerateFromPassword([]byte(password), 10)
+	hashed, _ := bcrypt.GenerateFromPassword([]byte(password), config.PasswordHashCost)
 	return &Account{Name: name, Password: string(hashed), AuthorityID: authorityID}
 }
 

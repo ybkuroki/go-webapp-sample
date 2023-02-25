@@ -7,6 +7,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/ybkuroki/go-webapp-sample/config"
 	"go.uber.org/zap"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"gopkg.in/yaml.v3"
@@ -40,21 +41,21 @@ func NewLogger(sugar *zap.SugaredLogger) Logger {
 
 // InitLogger create logger object for *gorm.DB from *echo.Logger
 func InitLogger(env string, yamlFile embed.FS) Logger {
-	configYaml, err := yamlFile.ReadFile("resources/config/zaplogger." + env + ".yml")
+	configYaml, err := yamlFile.ReadFile(fmt.Sprintf(config.LoggerConfigPath, env))
 	if err != nil {
 		fmt.Printf("Failed to read logger configuration: %s", err)
-		os.Exit(2)
+		os.Exit(config.ErrExitStatus)
 	}
 	var myConfig *Config
 	if err = yaml.Unmarshal(configYaml, &myConfig); err != nil {
 		fmt.Printf("Failed to read zap logger configuration: %s", err)
-		os.Exit(2)
+		os.Exit(config.ErrExitStatus)
 	}
 	var zap *zap.Logger
 	zap, err = build(myConfig)
 	if err != nil {
 		fmt.Printf("Failed to compose zap logger : %s", err)
-		os.Exit(2)
+		os.Exit(config.ErrExitStatus)
 	}
 	sugar := zap.Sugar()
 	// set package varriable logger.
