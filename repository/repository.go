@@ -51,7 +51,7 @@ func NewBookRepository(logger logger.Logger, conf *config.Config) Repository {
 	db, err := connectDatabase(logger, conf)
 	if err != nil {
 		logger.GetZapLogger().Errorf("Failure database connection")
-		os.Exit(2)
+		os.Exit(config.ErrExitStatus)
 	}
 	logger.GetZapLogger().Infof("Success database connection, %s:%s", conf.Database.Host, conf.Database.Port)
 	return &bookRepository{&repository{db: db}}

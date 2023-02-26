@@ -22,39 +22,39 @@ const (
 )
 
 // LogMode The log level of gorm logger is overwrited by the log level of Zap logger.
-func (l *logger) LogMode(_ gormLogger.LogLevel) gormLogger.Interface {
-	return l
+func (log *logger) LogMode(_ gormLogger.LogLevel) gormLogger.Interface {
+	return log
 }
 
 // Info prints a information log.
-func (l *logger) Info(_ context.Context, msg string, data ...interface{}) {
-	l.Zap.Infof(messageFormat, append([]interface{}{msg, gormUtils.FileWithLineNum()}, data...)...)
+func (log *logger) Info(_ context.Context, msg string, data ...interface{}) {
+	log.Zap.Infof(messageFormat, append([]interface{}{msg, gormUtils.FileWithLineNum()}, data...)...)
 }
 
 // Warn prints a warning log.
-func (l *logger) Warn(_ context.Context, msg string, data ...interface{}) {
-	l.Zap.Warnf(messageFormat, append([]interface{}{msg, gormUtils.FileWithLineNum()}, data...)...)
+func (log *logger) Warn(_ context.Context, msg string, data ...interface{}) {
+	log.Zap.Warnf(messageFormat, append([]interface{}{msg, gormUtils.FileWithLineNum()}, data...)...)
 }
 
 // Error prints a error log.
-func (l *logger) Error(_ context.Context, msg string, data ...interface{}) {
-	l.Zap.Errorf(messageFormat, append([]interface{}{msg, gormUtils.FileWithLineNum()}, data...)...)
+func (log *logger) Error(_ context.Context, msg string, data ...interface{}) {
+	log.Zap.Errorf(messageFormat, append([]interface{}{msg, gormUtils.FileWithLineNum()}, data...)...)
 }
 
 // Trace prints a trace log such as sql, source file and error.
-func (l *logger) Trace(_ context.Context, begin time.Time, fc func() (string, int64), err error) {
+func (log *logger) Trace(_ context.Context, begin time.Time, fc func() (string, int64), err error) {
 	elapsed := time.Since(begin)
 
 	switch {
 	case err != nil:
 		sql, _ := fc()
-		l.GetZapLogger().Errorf(errorFormat, gormUtils.FileWithLineNum(), err, sql)
+		log.GetZapLogger().Errorf(errorFormat, gormUtils.FileWithLineNum(), err, sql)
 	case elapsed > slowThreshold*time.Millisecond && slowThreshold*time.Millisecond != 0:
 		sql, _ := fc()
 		slowLog := fmt.Sprintf("SLOW SQL >= %v", slowThreshold)
-		l.GetZapLogger().Warnf(errorFormat, gormUtils.FileWithLineNum(), slowLog, sql)
+		log.GetZapLogger().Warnf(errorFormat, gormUtils.FileWithLineNum(), slowLog, sql)
 	default:
 		sql, _ := fc()
-		l.GetZapLogger().Debugf(sqlFormat, sql)
+		log.GetZapLogger().Debugf(sqlFormat, sql)
 	}
 }
