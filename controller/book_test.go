@@ -75,7 +75,9 @@ func TestGetBookList_Success(t *testing.T) {
 
 	setUpTestData(container)
 
-	uri := util.NewRequestBuilder().URL(config.APIBooks).RequestParams("query", "Test").RequestParams("page", "0").RequestParams("size", "5").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(config.APIBooks).
+		RequestParams("query", "Test").RequestParams("page", "0").RequestParams("size", "5").
+		Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
 	rec := httptest.NewRecorder()
 
