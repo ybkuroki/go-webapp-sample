@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	"os"
 
 	"github.com/labstack/echo/v4"
 
@@ -14,7 +13,6 @@ import (
 	"github.com/ybkuroki/go-webapp-sample/repository"
 	"github.com/ybkuroki/go-webapp-sample/router"
 	"github.com/ybkuroki/go-webapp-sample/session"
-	"github.com/ybkuroki/go-webapp-sample/util"
 )
 
 //go:embed resources/config/application.*.yml
@@ -41,15 +39,11 @@ var propsFile embed.FS
 func main() {
 	e := echo.New()
 
-	conf, env := config.Load(yamlFile)
+	conf, env := config.LoadAppConfig(yamlFile)
 	logger := logger.InitLogger(env, zapYamlFile)
 	logger.GetZapLogger().Infof("Loaded this configuration : application." + env + ".yml")
 
-	messages := util.ReadPropertiesFile(propsFile, "resources/config/messages.properties")
-	if messages == nil {
-		logger.GetZapLogger().Errorf("Failed to load the messages.properties.")
-		os.Exit(2)
-	}
+	messages := config.LoadMessagesConfig(propsFile)
 	logger.GetZapLogger().Infof("Loaded messages.properties")
 
 	rep := repository.NewBookRepository(logger, conf)

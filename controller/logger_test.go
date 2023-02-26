@@ -7,6 +7,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
+	"github.com/ybkuroki/go-webapp-sample/config"
 	"github.com/ybkuroki/go-webapp-sample/test"
 	"github.com/ybkuroki/go-webapp-sample/util"
 	"go.uber.org/zap/zaptest/observer"
@@ -16,11 +17,11 @@ func TestLogging(t *testing.T) {
 	router, container, logs := test.PrepareForLoggerTest()
 
 	book := NewBookController(container)
-	router.GET(APIBooksID, func(c echo.Context) error { return book.GetBook(c) })
+	router.GET(config.APIBooksID, func(c echo.Context) error { return book.GetBook(c) })
 
 	setUpTestData(container)
 
-	uri := util.NewRequestBuilder().URL(APIBooks).PathParams("1").Build().GetRequestURL()
+	uri := util.NewRequestBuilder().URL(config.APIBooks).PathParams("1").Build().GetRequestURL()
 	req := httptest.NewRequest("GET", uri, nil)
 	rec := httptest.NewRecorder()
 

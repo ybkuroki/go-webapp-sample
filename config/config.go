@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ybkuroki/go-webapp-sample/util"
 	"gopkg.in/yaml.v3"
 )
 
@@ -58,8 +59,8 @@ const (
 	DOC = "docker"
 )
 
-// Load reads the settings written to the yml file
-func Load(yamlFile embed.FS) (*Config, string) {
+// LoadAppConfig reads the settings written to the yml file
+func LoadAppConfig(yamlFile embed.FS) (*Config, string) {
 	var env *string
 	if value := os.Getenv("WEB_APP_ENV"); value != "" {
 		env = &value
@@ -68,17 +69,27 @@ func Load(yamlFile embed.FS) (*Config, string) {
 		flag.Parse()
 	}
 
-	file, err := yamlFile.ReadFile("resources/config/application." + *env + ".yml")
+	file, err := yamlFile.ReadFile(fmt.Sprintf(AppConfigPath, *env))
 	if err != nil {
 		fmt.Printf("Failed to read application.%s.yml: %s", *env, err)
-		os.Exit(2)
+		os.Exit(ErrExitStatus)
 	}
 
 	config := &Config{}
 	if err := yaml.Unmarshal(file, config); err != nil {
 		fmt.Printf("Failed to read application.%s.yml: %s", *env, err)
-		os.Exit(2)
+		os.Exit(ErrExitStatus)
 	}
 
 	return config, *env
+}
+
+// LoadMessagesConfig loads the messages.properties.
+func LoadMessagesConfig(propsFile embed.FS) map[string]string {
+	messages := util.ReadPropertiesFile(propsFile, MessagesConfigPath)
+	if messages == nil {
+		fmt.Printf("Failed to load the messages.properties.")
+		os.Exit(ErrExitStatus)
+	}
+	return messages
 }
