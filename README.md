@@ -170,10 +170,10 @@ This sample uses the following libraries.
 
 |Library Name|Version|
 |:---|:---:|
-|echo|4.9.0|
-|gorm|1.23.10|
+|echo|4.10.2|
+|gorm|1.24.6|
 |go-playground/validator.v9|9.31.0|
-|zap|1.23.0|
+|zap|1.24.0|
 
 ## Contribution
 Please read [CONTRIBUTING.md](https://github.com/ybkuroki/go-webapp-sample/blob/master/CONTRIBUTING.md) for proposing new functions, reporting bugs and submitting pull requests before contributing to this repository.
