@@ -30,8 +30,9 @@ func Init(e *echo.Echo, container container.Container) {
 func setCORSConfig(e *echo.Echo, container container.Container) {
 	if container.GetConfig().Extension.CorsEnabled {
 		e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
-			AllowCredentials: true,
-			AllowOrigins:     []string{"*"},
+			AllowCredentials:                         true,
+			UnsafeWildcardOriginWithAllowCredentials: true,
+			AllowOrigins:                             []string{"*"},
 			AllowHeaders: []string{
 				echo.HeaderAccessControlAllowHeaders,
 				echo.HeaderContentType,
