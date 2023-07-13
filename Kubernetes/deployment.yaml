@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: go-astrafy
-          image: europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:d850ac2
+          image: europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
           ports:
             - containerPort: 8080

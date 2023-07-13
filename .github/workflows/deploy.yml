@@ -26,6 +26,12 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
 
+      - name: Get cluster credentials
+        run: gcloud container clusters get-credentials go-application-cluster --region europe-west1 --project silver-tape-392620
+
+      - name: Verify cluster info
+        run: kubectl cluster-info
+
       - name: Build and push Docker image
         run: |
           gcloud auth configure-docker europe-west1-docker.pkg.dev
