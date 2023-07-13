@@ -25,6 +25,7 @@ jobs:
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
+          sudo ln -s /usr/local/bin/kubectl /usr/local/bin/gke-gcloud-auth-plugin
 
       - name: Get cluster credentials
         run: gcloud container clusters get-credentials go-application-cluster --region europe-west1 --project silver-tape-392620
@@ -38,6 +39,9 @@ jobs:
           docker build -t europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }} .
           docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
 
+      - name: Set image URL environment variable
+        run: echo "IMAGE_URL=europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}" >> $GITHUB_ENV
+        
       - name: Apply Kubernetes configuration
         run: |
           kubectl apply -f Kubernetes/deployment.yaml
