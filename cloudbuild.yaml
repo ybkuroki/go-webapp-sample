@@ -1,13 +1,11 @@
 steps:
-- name: 'golang:1.17'  # Utilizar la imagen oficial de Go desde Docker Hub
+- name: 'golang:1.20'
   args: ['go', 'mod', 'download', 'github.com/casbin/casbin/v2']
-- name: 'golang:1.17'
+- name: 'golang:1.20'
   args: ['go', 'build', '-o', 'app']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafygo/astrafygov1:latest', '.']
+  args: ['build', '-t', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${SHORT_SHA}', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafygo/astrafygov1:latest']
-- name: 'gcr.io/cloud-builders/gcloud'
-  args: ['artifacts', 'import', 'docker', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafygo/astrafygov1:latest', '--artifact-url=europe-west1-docker.pkg.dev']
+  args: ['push', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${SHORT_SHA}']
 options:
   logging: CLOUD_LOGGING_ONLY
