@@ -1,0 +1,11 @@
+steps:
+- name: 'gcr.io/cloud-builders/golang'
+  args: ['go', 'mod', 'download', 'github.com/casbin/casbin/v2']
+- name: 'gcr.io/cloud-builders/golang'
+  args: ['go', 'build', '-o', 'app']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/silver-tape-392620/astrafygov1', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/silver-tape-392620/astrafygov1']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args: ['artifacts', 'import', 'docker', 'gcr.io/silver-tape-392620/astrafygov1', '--repository=astrafygo']
