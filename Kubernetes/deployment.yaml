@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-astrafy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-astrafy
+  template:
+    metadata:
+      labels:
+        app: go-astrafy
+    spec:
+      containers:
+        - name: go-astrafy
+          image: europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:d850ac2
+          ports:
+            - containerPort: 8080
