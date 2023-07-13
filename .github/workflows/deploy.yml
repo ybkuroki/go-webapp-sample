@@ -34,4 +34,4 @@ jobs:
 
       - name: Apply Kubernetes configuration
         run: |
-          kubectl apply -f Kubernetes/*.yaml 
+          kubectl apply -f Kubernetes/*.yaml
