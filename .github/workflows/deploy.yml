@@ -30,10 +30,10 @@ jobs:
       - name: Get cluster credentials
         run: gcloud container clusters get-credentials go-application-cluster --region europe-west1 --project silver-tape-392620
 
-      - name: Verify cluster info
-        run: |
-          kubectl config use-context gke_silver-tape-392620_europe-west1_go-application-cluster
-          kubectl cluster-info
+      #- name: Verify cluster info
+      #  run: |
+      #    kubectl config use-context gke_silver-tape-392620_europe-west1_go-application-cluster
+      #    kubectl cluster-info
 
       - name: Build and push Docker image
         run: |
