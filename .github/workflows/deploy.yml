@@ -49,20 +49,20 @@ jobs:
       - name: Get cluster credentials
         run: gcloud container clusters get-credentials go-application-cluster --region europe-west1 --project silver-tape-392620
 
-      - name: Verify cluster info
-        run: |
-          kubectl version
+      #- name: Verify cluster info
+      #  run: |
+      #    kubectl version
 
-      - name: Build and push Docker image
-        run: |
-          gcloud auth configure-docker europe-west1-docker.pkg.dev
-          docker build -t europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }} .
-          docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
-
-      - name: Set image URL environment variable
-        run: echo "IMAGE_URL=europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}" >> $GITHUB_ENV
-
-      - name: Apply Kubernetes configuration
-        run: |
-          kubectl apply -f Kubernetes/deployment.yaml
-          kubectl apply -f Kubernetes/service.yaml
+      #- name: Build and push Docker image
+      #  run: |
+      #    gcloud auth configure-docker europe-west1-docker.pkg.dev
+      #    docker build -t europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }} .
+      #    docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
+#
+      #- name: Set image URL environment variable
+      #  run: echo "IMAGE_URL=europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}" >> $GITHUB_ENV
+#
+      #- name: Apply Kubernetes configuration
+      #  run: |
+      #    kubectl apply -f Kubernetes/deployment.yaml
+      #    kubectl apply -f Kubernetes/service.yaml
