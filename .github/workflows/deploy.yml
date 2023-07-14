@@ -13,11 +13,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      #- name: Configure Google Cloud credentials
+      #  uses: google-github-actions/auth@v0.6.0
+      #  with:
+      #    service_account_key: ${{ secrets.GCP_SA_KEY }}
+      #    export_default_credentials: true
+
       - name: Configure Google Cloud credentials
-        uses: google-github-actions/auth@v0.6.0
+        uses: google-github-actions/auth@1
         with:
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
 
       - name: Set up kubectl
         run: |
@@ -29,10 +37,10 @@ jobs:
       - name: Get cluster credentials
         run: gcloud container clusters get-credentials go-application-cluster --region europe-west1 --project silver-tape-392620
 
-      #- name: Verify cluster info
-      #  run: |
-      #    kubectl config use-context gke_silver-tape-392620_europe-west1_go-application-cluster
-      #    kubectl cluster-info
+      - name: Verify cluster info
+        run: |
+          kubectl config use-context gke_silver-tape-392620_europe-west1_go-application-cluster
+          kubectl cluster-info
 
       - name: Build and push Docker image
         run: |
