@@ -22,7 +22,6 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
           sudo ln -s /usr/local/bin/kubectl /usr/local/bin/gke-gcloud-auth-plugin
-          kubectl version
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
@@ -35,6 +34,9 @@ jobs:
         with:
           cluster_name: 'go-application-cluster'
           location: 'europe-west1'
+
+      - id: 'get-pods'
+        run: 'kubectl get pods'
       #- name: Configure Google Cloud credentials
       #  uses: google-github-actions/auth@v0.6.0
       #  with:
@@ -47,8 +49,8 @@ jobs:
       #    credentials_json: ${{ secrets.GCP_SA_KEY }}
       
 
-      - name: Get cluster credentials
-        run: gcloud container clusters get-credentials go-application-cluster --region europe-west1 --project silver-tape-392620
+      #- name: Get cluster credentials
+      #  run: gcloud container clusters get-credentials go-application-cluster --region europe-west1 --project silver-tape-392620
 
       #- name: Verify cluster info
       #  run: |
