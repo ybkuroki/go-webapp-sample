@@ -46,5 +46,5 @@ jobs:
 
       - name: Apply Kubernetes configuration
         run: |
+          kubectl apply -f Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/service.yaml
-          kubectl apply -f Kubernetes/ingress.yaml
