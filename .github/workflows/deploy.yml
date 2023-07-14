@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   deploy:
@@ -42,14 +45,23 @@ jobs:
         run: |
           kubectl cluster-info
 
-      - name: Build and push Docker image
+      - name: Build Docker image
         run: |
+          docker build -t astrafygov1:${{ github.sha }}
+          docker images
+  
+      - name: Publish Docker image
+        if: github.event_name == 'push'
+        run: |
+          docker tag astrafygov1:${{ github.sha }} europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
           gcloud auth configure-docker europe-west1-docker.pkg.dev
-          docker build -t europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }} .
           docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
 
-      #- name: Set image URL environment variable
-      #  run: echo "IMAGE_URL=europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}" >> $GITHUB_ENV
+      #- name: Build and push Docker image
+      #  run: |
+      #    gcloud auth configure-docker europe-west1-docker.pkg.dev
+      #    docker build -t europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }} .
+      #    docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
 
       - name: Apply Kubernetes configuration
         run: |
