@@ -18,7 +18,7 @@ spec:
       containers:
       - name: "astrafygov1-sha256-1"
         #image: "europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1@sha256:a535fd0cdc3d5d849abf07555c5afc1bd4188c3c64f239d22f555c6bdf3b582c" 
-        image: ${{ env.IMAGE_URL }}
+        image: europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
 ---
 apiVersion: "autoscaling/v2"
 kind: "HorizontalPodAutoscaler"
