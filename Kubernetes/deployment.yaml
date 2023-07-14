@@ -1,19 +1,42 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: "apps/v1"
+kind: "Deployment"
 metadata:
-  name: go-astrafy
+  name: "go-astrafy"
+  namespace: "default"
+  labels:
+    app: "go-astrafy"
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: go-astrafy
+      app: "go-astrafy"
   template:
     metadata:
       labels:
-        app: go-astrafy
+        app: "go-astrafy"
     spec:
       containers:
-        - name: go-astrafy
-          image: ${{ env.IMAGE_URL }}
-          ports:
-            - containerPort: 8080
+      - name: "astrafygov1-sha256-1"
+        image: "europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1@sha256:a535fd0cdc3d5d849abf07555c5afc1bd4188c3c64f239d22f555c6bdf3b582c"
+---
+apiVersion: "autoscaling/v2"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "go-astrafy-hpa-gdcb"
+  namespace: "default"
+  labels:
+    app: "go-astrafy"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "go-astrafy"
+    apiVersion: "apps/v1"
+  minReplicas: 1
+  maxReplicas: 5
+  metrics:
+  - type: "Resource"
+    resource:
+      name: "cpu"
+      target:
+        type: "Utilization"
+        averageUtilization: 80
