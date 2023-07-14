@@ -23,18 +23,11 @@ jobs:
           sudo mv kubectl /usr/local/bin/
           sudo ln -s /usr/local/bin/kubectl /usr/local/bin/gke-gcloud-auth-plugin
 
-      #- id: 'auth'
-      #  name: 'Authenticate to Google Cloud'
-      #  uses: 'google-github-actions/auth@v1'
-      #  with:
-      #    credentials_json: '${{ secrets.GCP_SA_KEY }}'
-
-      #- id: 'auth'
-      - name: 'Authenticate to Google Cloud'
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: 'silver-tape-392620.svc.id.goog'
-          service_account: '548636026919-compute@developer.gserviceaccount.com'
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - id: 'get-credentials'
         uses: 'google-github-actions/get-gke-credentials@v1'
@@ -58,7 +51,7 @@ jobs:
 
       - name: Verify cluster info
         run: |
-          kubectl cluster-info dump
+          kubectl version
 
       - name: Build and push Docker image
         run: |
