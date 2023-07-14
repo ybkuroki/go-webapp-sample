@@ -49,8 +49,10 @@ jobs:
 
       - name: Build Docker image
         run: |
-          DOCKER_TAG=$(basename "${{ github.ref }}")
-          if [ -z "${DOCKER_TAG}" ]; then
+          DOCKER_TAG=""
+          if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
+            DOCKER_TAG=$(basename "${{ github.ref }}")
+          else
             DOCKER_TAG=${{ github.sha }}
           fi
           docker build -t astrafygov1:${DOCKER_TAG} .
