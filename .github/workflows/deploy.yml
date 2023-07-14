@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - '*'
   pull_request:
     branches:
       - master
@@ -47,15 +49,20 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t astrafygov1:${{ github.sha }} .
+          if [ -n "${{ github.ref }}" ]; then
+            export DOCKER_TAG="${{ github.ref }}"
+          else
+            export DOCKER_TAG="${{ github.sha }}"
+          fi
+          docker build -t astrafygov1:${{ env.DOCKER_TAG }} .
           docker images
   
       - name: Publish Docker image
         if: github.event_name == 'push'
         run: |
-          docker tag astrafygov1:${{ github.sha }} europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
+          docker tag astrafygov1:${{ env.DOCKER_TAG }} europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}
           gcloud auth configure-docker europe-west1-docker.pkg.dev
-          docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
+          docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}
 
       #- name: Build and push Docker image
       #  run: |
@@ -65,7 +72,7 @@ jobs:
 
       - name: Apply Kubernetes configuration
         run: |
-          sed -i 's|IMAGE_URL|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}|' Kubernetes/deployment.yaml
+          sed -i 's|IMAGE_URL|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}|' Kubernetes/deployment.yaml
           cat Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/service.yaml
