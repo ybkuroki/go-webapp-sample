@@ -29,8 +29,8 @@ jobs:
       #  with:
       #    credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
+      #- id: 'auth'
+      - name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v1'
         with:
           workload_identity_provider: 'silver-tape-392620.svc.id.goog'
