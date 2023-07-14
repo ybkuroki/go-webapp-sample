@@ -47,14 +47,17 @@ jobs:
         run: |
           kubectl cluster-info
 
-      - name: Build Docker image
+      - name: Set DOCKER_TAG
         run: |
           if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
-            DOCKER_TAG=$(basename "${{ github.ref }}")
+            echo "DOCKER_TAG=$(basename "${{ github.ref }}")" >> $GITHUB_ENV
           else
-            DOCKER_TAG="${{ github.sha }}"
+            echo "DOCKER_TAG=${{ github.sha }}" >> $GITHUB_ENV
           fi
           echo "DOCKER_TAG: ${{ env.DOCKER_TAG }}"
+
+      - name: Build Docker image
+        run: |
           docker build -t astrafygov1:${{ env.DOCKER_TAG }} .
           docker images
   
