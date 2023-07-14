@@ -49,21 +49,21 @@ jobs:
 
       - name: Build Docker image
         run: |
-          DOCKER_TAG=""
           if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
             DOCKER_TAG=$(basename "${{ github.ref }}")
           else
-            DOCKER_TAG=${{ github.sha }}
+            DOCKER_TAG="${{ github.sha }}"
           fi
-          docker build -t astrafygov1:${DOCKER_TAG} .
+          echo "DOCKER_TAG: ${{ env.DOCKER_TAG }}"
+          docker build -t astrafygov1:${{ env.DOCKER_TAG }} .
           docker images
   
       - name: Publish Docker image
         if: github.event_name == 'push'
         run: |
-          docker tag astrafygov1:${DOCKER_TAG} europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${DOCKER_TAG}
+          docker tag astrafygov1:${{ env.DOCKER_TAG }} europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}
           gcloud auth configure-docker europe-west1-docker.pkg.dev
-          docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${DOCKER_TAG}
+          docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}
 
       #- name: Build and push Docker image
       #  run: |
@@ -73,7 +73,7 @@ jobs:
 
       - name: Apply Kubernetes configuration
         run: |
-          sed -i 's|IMAGE_URL|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${DOCKER_TAG}|' Kubernetes/deployment.yaml
+          sed -i 's|IMAGE_URL|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}|' Kubernetes/deployment.yaml
           cat Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/service.yaml
