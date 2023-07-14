@@ -57,15 +57,8 @@ jobs:
           gcloud auth configure-docker europe-west1-docker.pkg.dev
           docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
 
-      #- name: Build and push Docker image
-      #  run: |
-      #    gcloud auth configure-docker europe-west1-docker.pkg.dev
-      #    docker build -t europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }} .
-      #    docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
-
       - name: Apply Kubernetes configuration
         run: |
           sed -i 's|IMAGE_URL|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}|' Kubernetes/deployment.yaml
-          cat Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/service.yaml
