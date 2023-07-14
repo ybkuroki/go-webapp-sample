@@ -47,7 +47,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t astrafygov1:${{ github.sha }}
+          docker build -t astrafygov1:${{ github.sha }} .
           docker images
   
       - name: Publish Docker image
