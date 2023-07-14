@@ -22,6 +22,7 @@ jobs:
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
           sudo ln -s /usr/local/bin/kubectl /usr/local/bin/gke-gcloud-auth-plugin
+          kubectl version
 
       - id: 'auth'
         name: 'Authenticate to Google Cloud'
@@ -48,9 +49,6 @@ jobs:
 
       - name: Get cluster credentials
         run: gcloud container clusters get-credentials go-application-cluster --region europe-west1 --project silver-tape-392620
-
-      - name: Verify cluster info
-        run: kubectl version
 
       #- name: Verify cluster info
       #  run: |
