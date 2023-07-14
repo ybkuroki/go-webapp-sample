@@ -19,6 +19,11 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
+      - id: 'get-credentials'
+        uses: 'google-github-actions/get-gke-credentials@v1'
+        with:
+          cluster_name: 'go-application-cluster'
+          location: 'europe-west1'
       #- name: Configure Google Cloud credentials
       #  uses: google-github-actions/auth@v0.6.0
       #  with:
