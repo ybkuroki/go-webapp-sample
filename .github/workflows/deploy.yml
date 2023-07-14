@@ -54,5 +54,6 @@ jobs:
       - name: Apply Kubernetes configuration
         run: |
           sed -i 's|${{ env.IMAGE_URL }}|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}|' Kubernetes/deployment.yaml
+          cat Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/deployment.yaml
           kubectl apply -f Kubernetes/service.yaml
