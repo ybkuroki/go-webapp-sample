@@ -65,4 +65,4 @@ jobs:
         run: |
           sed -i 's|IMAGE_URL|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}|' Kubernetes/deployment.yaml # Replace IMAGE_URL in the Kubernetes configuration
           kubectl apply -f Kubernetes/deployment.yaml # Apply the Kubernetes configuration
-          kubectl apply -f Kubernetes/service.yaml # Apply the Kubernetes service configuration
+          kubectl apply -f Kubernetes/service.yaml # Apply the Kubernetes service configuration 
