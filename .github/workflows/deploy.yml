@@ -16,38 +16,32 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3 # Checkout the code
+
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v1' # Authenticate to Google Cloud
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v1'
+        uses: 'google-github-actions/setup-gcloud@v1' # Set up Cloud SDK
 
-      - name: Set up kubectl
+      - name: Set up kubectl # Set up kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           chmod +x kubectl
           sudo mv kubectl /usr/local/bin/
           sudo ln -s /usr/local/bin/kubectl /usr/local/bin/gke-gcloud-auth-plugin
 
-      - id: 'auth'
-        name: 'Authenticate to Google Cloud'
-        uses: 'google-github-actions/auth@v1'
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - id: 'get-credentials'
-        uses: 'google-github-actions/get-gke-credentials@v1'
+        uses: 'google-github-actions/get-gke-credentials@v1' # Get GKE credentials
         with:
           cluster_name: 'go-application-cluster'
           location: 'europe-west1'
 
-      - id: 'get-pods'
-        run: 'kubectl get pods'
-
-      - name: Verify cluster info
-        run: |
-          kubectl cluster-info
-
-      - name: Set DOCKER_TAG
+      - name: Set DOCKER_TAG # Set DOCKER_TAG based on the event type
         run: |
           if [[ "${{ github.ref }}" == "refs/tags/"* ]]; then
             echo "DOCKER_TAG=$(basename "${{ github.ref }}")" >> $GITHUB_ENV
@@ -56,27 +50,19 @@ jobs:
           fi
           echo "DOCKER_TAG: ${{ env.DOCKER_TAG }}"
 
-      - name: Build Docker image
+      - name: Build Docker image # Build Docker image
         run: |
           docker build -t astrafygov1:${{ env.DOCKER_TAG }} .
-          docker images
   
-      - name: Publish Docker image
+      - name: Publish Docker image # Push Docker image to the registry
         if: github.event_name == 'push'
         run: |
-          docker tag astrafygov1:${{ env.DOCKER_TAG }} europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}
-          gcloud auth configure-docker europe-west1-docker.pkg.dev
-          docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}
-
-      #- name: Build and push Docker image
-      #  run: |
-      #    gcloud auth configure-docker europe-west1-docker.pkg.dev
-      #    docker build -t europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }} .
-      #    docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ github.sha }}
+          docker tag astrafygov1:${{ env.DOCKER_TAG }} europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }} # Tag the Docker image
+          gcloud auth configure-docker europe-west1-docker.pkg.dev # Configure Docker authentication
+          docker push europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }} # Push Docker image to the registry
 
       - name: Apply Kubernetes configuration
         run: |
-          sed -i 's|IMAGE_URL|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}|' Kubernetes/deployment.yaml
-          cat Kubernetes/deployment.yaml
-          kubectl apply -f Kubernetes/deployment.yaml
-          kubectl apply -f Kubernetes/service.yaml
+          sed -i 's|IMAGE_URL|europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${{ env.DOCKER_TAG }}|' Kubernetes/deployment.yaml # Replace IMAGE_URL in the Kubernetes configuration
+          kubectl apply -f Kubernetes/deployment.yaml # Apply the Kubernetes configuration
+          kubectl apply -f Kubernetes/service.yaml # Apply the Kubernetes service configuration

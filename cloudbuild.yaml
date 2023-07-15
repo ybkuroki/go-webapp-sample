@@ -1,11 +1,11 @@
 steps:
 - name: 'golang:1.20'
-  args: ['go', 'mod', 'download', 'github.com/casbin/casbin/v2']
+  args: ['go', 'mod', 'download', 'github.com/casbin/casbin/v2'] # Download Go module dependencies
 - name: 'golang:1.20'
-  args: ['go', 'build', '-o', 'app']
+  args: ['go', 'build', '-o', 'app'] # Build the Go application
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${SHORT_SHA}', '.']
+  args: ['build', '-t', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${SHORT_SHA}', '.'] # Build the Docker image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${SHORT_SHA}']
+  args: ['push', 'europe-west1-docker.pkg.dev/silver-tape-392620/astrafydocker/astrafygov1:${SHORT_SHA}'] # Push the Docker image to the registry
 options:
-  logging: CLOUD_LOGGING_ONLY
+  logging: CLOUD_LOGGING_ONLY # Set logging options to CLOUD_LOGGING_ONLY

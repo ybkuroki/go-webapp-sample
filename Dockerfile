@@ -1,17 +1,17 @@
-# Imagen base
+# Base image
 FROM golang:1.20
 
-# Establecer directorio de trabajo
+# Set working directory
 WORKDIR /app
 
-# Copiar el código fuente al contenedor
+# Copy the source code to the container
 COPY . .
 
-# Compilar la aplicación Go
+# Build the Go application
 RUN go build -o app
 
-# Puerto expuesto por la aplicación
+# Port exposed by the application
 EXPOSE 8080
 
-# Comando para ejecutar la aplicación
+# Command to run the application
 CMD ["./app"]

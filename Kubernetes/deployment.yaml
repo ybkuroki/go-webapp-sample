@@ -1,49 +1,49 @@
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
-  name: "go-astrafy"
+  name: "go-astrafy" # Name of the deployment
   namespace: "default"
   labels:
-    app: "go-astrafy"
+    app: "go-astrafy" # Deployment label
 spec:
-  replicas: 3
+  replicas: 3 # Number of replicas
   selector:
     matchLabels:
-      app: "go-astrafy"
+      app: "go-astrafy" # Selector label for matching pods
   template:
     metadata:
       labels:
-        app: "go-astrafy"
+        app: "go-astrafy" # Labels for the pod template
     spec:
       containers:
-      - name: "astrafygov1-sha256-1"
-        image: "IMAGE_URL"
+      - name: "astrafygov1-sha256-1" # Container name
+        image: "IMAGE_URL" # Image URL
         resources:
           limits:
-            cpu: "0.1"
-            memory: "1Gi"
+            cpu: "0.1" # CPU limit
+            memory: "1Gi" # Memory limit
           requests:
-            cpu: "0.1"
-            memory: "512Mi"
+            cpu: "0.1" # CPU request
+            memory: "512Mi" # Memory request
 ---
 apiVersion: "autoscaling/v2"
 kind: "HorizontalPodAutoscaler"
 metadata:
-  name: "go-astrafy-hpa-gdcb"
+  name: "go-astrafy-hpa-gdcb" # Name of the HPA
   namespace: "default"
   labels:
-    app: "go-astrafy"
+    app: "go-astrafy" # HPA label
 spec:
   scaleTargetRef:
-    kind: "Deployment"
-    name: "go-astrafy"
-    apiVersion: "apps/v1"
-  minReplicas: 3
-  maxReplicas: 10
+    kind: "Deployment" # Kind of the target resource
+    name: "go-astrafy" # Name of the target deployment
+    apiVersion: "apps/v1"  #API version of the target resource
+  minReplicas: 3 # Minimum number of replicas
+  maxReplicas: 10 # Maximum number of replicas
   metrics:
   - type: "Resource"
     resource:
       name: "cpu"
       target:
-        type: "Utilization"
-        averageUtilization: 80
+        type: "Utilization" # Target type (Utilization)
+        averageUtilization: 80 # Target average utilization

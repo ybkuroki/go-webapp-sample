@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: go-astrafy-service
-  namespace: default
+  name: go-astrafy-service # Name of the service
+  namespace: default 
   labels:
-    app: go-astrafy
+    app: go-astrafy # Service label
 spec:
   ports:
   - protocol: TCP
-    port: 80
-    targetPort: 8080  # Actualiza el targetPort a 8080
+    port: 80 # Service port
+    targetPort: 8080  # Update the targetPort to 8080
   selector:
-    app: go-astrafy
-  type: LoadBalancer
-  loadBalancerIP: ""
+    app: go-astrafy # Selector label for matching pods
+  type: LoadBalancer # Service type (LoadBalancer)
+  loadBalancerIP: "" # Load balancer IP
