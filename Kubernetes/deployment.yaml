@@ -6,7 +6,7 @@ metadata:
   labels:
     app: "go-astrafy"
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: "go-astrafy"
@@ -38,8 +38,8 @@ spec:
     kind: "Deployment"
     name: "go-astrafy"
     apiVersion: "apps/v1"
-  minReplicas: 1
-  maxReplicas: 5
+  minReplicas: 3
+  maxReplicas: 6
   metrics:
   - type: "Resource"
     resource:
