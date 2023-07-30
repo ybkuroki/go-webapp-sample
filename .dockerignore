@@ -1,0 +1,19 @@
+# Development-related files
+.git
+.gitignore
+.idea
+.vscode
+
+# Editor-specific files
+*.*~
+
+# System-specific files
+.DS_Store
+Thumbs.db
+
+# GitHub directory
+.github
+
+# Exclude "build-time" ignore files.
+.dockerignore
+.gcloudignore
