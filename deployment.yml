@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: go-webapp
-          image: europe-west6-docker.pkg.dev/playground-394421/astrafy-docker/go-webapp:1.0
+          image: europe-west6-docker.pkg.dev/playground-394421/astrafy-docker/go-webapp:IMAGE_TAG
           ports:
             - containerPort: 8080
 ---

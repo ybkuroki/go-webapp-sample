@@ -52,7 +52,6 @@ jobs:
     - name: Build
       run: |-
         docker build \
-          --platform linux/amd64 \
           --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA" \
           --build-arg GITHUB_SHA="$GITHUB_SHA" \
           --build-arg GITHUB_REF="$GITHUB_REF" \
@@ -62,6 +61,10 @@ jobs:
     - name: Publish
       run: |-
         docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA"
+
+    - name: Update Deployment YAML
+      run: |
+        sed -i "s|IMAGE_TAG|$GITHUB_SHA|g" deployment.yml
 
     - name: Deploy
       run: |-
