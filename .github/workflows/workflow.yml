@@ -3,7 +3,9 @@ name: Build and Deploy to GKE
 on:
   push:
     branches:
-      - master
+      - main
+    tags:
+      - 'v*.*.*' # Match version tags like 'v1.2.3'
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -49,25 +51,45 @@ jobs:
         location: ${{ env.GKE_ZONE }}
 
     # Build the Docker image
-    - name: Build
+    - name: Build and Push
       run: |-
         docker build \
-          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA" \
-          --build-arg GITHUB_SHA="$GITHUB_SHA" \
-          --build-arg GITHUB_REF="$GITHUB_REF" \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${GITHUB_SHA}" \
+          --build-arg GITHUB_SHA="${GITHUB_SHA}" \
+          --build-arg GITHUB_REF="${GITHUB_REF}" \
           .
 
-    # Push the Docker image to Google Artifact Registry
-    - name: Publish
-      run: |-
-        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:$GITHUB_SHA"
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${GITHUB_SHA}"
 
-    - name: Update Deployment YAML
-      run: |
-        sed -i "s|IMAGE_TAG|$GITHUB_SHA|g" deployment.yml
-
-    - name: Deploy
+    # Handle git tag event to build, tag, publish, and deploy the image
+    - name: Build, Tag, Publish, and Deploy on Git Tag
+      if: startsWith(github.ref, 'refs/tags/v')
       run: |-
+        git_tag="${{ github.ref }}"
+        image_tag="${git_tag#refs/tags/}"
+        docker build \
+          --tag "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${image_tag}" \
+          --build-arg GITHUB_SHA="${GITHUB_SHA}" \
+          --build-arg GITHUB_REF="${GITHUB_REF}" \
+          .
+
+        docker push "$GAR_LOCATION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$IMAGE:${image_tag}"
+
+        # Update the deployment YAML file with the new image tag
+        sed -i "s|IMAGE_TAG|${image_tag}|g" deployment.yml
+
+        # Deploy the application
         kubectl apply -f deployment.yml
-        kubectl rollout status deployment/$DEPLOYMENT_NAME
+        kubectl rollout status deployment/${DEPLOYMENT_NAME}
+        kubectl get services -o wide
+
+    # Handle non-git tag event to update the deployment with the latest image
+    - name: Update Deployment with Latest Image
+      if: github.ref == 'refs/heads/main'
+      run: |-
+        sed -i "s|IMAGE_TAG|${GITHUB_SHA}|g" deployment.yml
+
+        # Deploy the application
+        kubectl apply -f deployment.yml
+        kubectl rollout status deployment/${DEPLOYMENT_NAME}
         kubectl get services -o wide

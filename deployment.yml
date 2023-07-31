@@ -17,6 +17,13 @@ spec:
           image: europe-west6-docker.pkg.dev/playground-394421/astrafy-docker/go-webapp:IMAGE_TAG
           ports:
             - containerPort: 8080
+          resources:
+            limits:
+              cpu: "1"
+              memory: "512Mi"
+            requests:
+              cpu: "0.5"
+              memory: "256Mi"
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
