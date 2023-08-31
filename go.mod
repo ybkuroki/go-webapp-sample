@@ -18,7 +18,7 @@ require (
 	github.com/moznion/go-optional v0.11.0
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/echo-swagger v1.4.0
-	github.com/swaggo/swag v1.16.1
+	github.com/swaggo/swag v1.16.2
 	github.com/valyala/fasttemplate v1.2.2
 	go.uber.org/zap v1.24.0
 	golang.org/x/crypto v0.12.0
