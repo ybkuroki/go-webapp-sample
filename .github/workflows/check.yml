@@ -17,10 +17,10 @@ jobs:
         id: go
       # Check out this repository
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       # Store cache
       - name: cache
-        uses: actions/cache@v3.3.1
+        uses: actions/cache@v3.3.2
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
