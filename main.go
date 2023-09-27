@@ -34,7 +34,7 @@ var propsFile embed.FS
 // @license.name MIT
 // @license.url https://opensource.org/licenses/mit-license.php
 
-// @host localhost:8080
+// @host localhost:8000
 // @BasePath /api
 func main() {
 	e := echo.New()
@@ -58,7 +58,7 @@ func main() {
 	middleware.InitSessionMiddleware(e, container)
 	middleware.StaticContentsMiddleware(e, container, staticFile)
 
-	if err := e.Start(":8080"); err != nil {
+	if err := e.Start(":8000"); err != nil {
 		logger.GetZapLogger().Errorf(err.Error())
 	}
 
