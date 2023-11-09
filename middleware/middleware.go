@@ -2,19 +2,16 @@ package middleware
 
 import (
 	"embed"
-	"fmt"
 	"io"
 	"net/http"
 	"regexp"
 	"strconv"
 
-	"github.com/gorilla/sessions"
 	"github.com/labstack/echo-contrib/session"
 	"github.com/labstack/echo/v4"
 	echomd "github.com/labstack/echo/v4/middleware"
 	"github.com/valyala/fasttemplate"
 	"github.com/ybkuroki/go-webapp-sample/container"
-	"gopkg.in/boj/redistore.v1"
 )
 
 // InitLoggerMiddleware initialize a middleware for logger.
@@ -26,23 +23,9 @@ func InitLoggerMiddleware(e *echo.Echo, container container.Container) {
 // InitSessionMiddleware initialize a middleware for session management.
 func InitSessionMiddleware(e *echo.Echo, container container.Container) {
 	conf := container.GetConfig()
-	logger := container.GetLogger()
 
-	e.Use(SessionMiddleware(container))
-
+	e.Use(session.Middleware(container.GetSession().GetStore()))
 	if conf.Extension.SecurityEnabled {
-		if conf.Redis.Enabled {
-			logger.GetZapLogger().Infof("Try redis connection")
-			address := fmt.Sprintf("%s:%s", conf.Redis.Host, conf.Redis.Port)
-			store, err := redistore.NewRediStore(conf.Redis.ConnectionPoolSize, "tcp", address, "", []byte("secret"))
-			if err != nil {
-				logger.GetZapLogger().Errorf("Failure redis connection")
-			}
-			e.Use(session.Middleware(store))
-			logger.GetZapLogger().Infof(fmt.Sprintf("Success redis connection, %s", address))
-		} else {
-			e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
-		}
 		e.Use(AuthenticationMiddleware(container))
 	}
 }
@@ -63,7 +46,7 @@ func RequestLoggerMiddleware(container container.Container) echo.MiddlewareFunc 
 				case "remote_ip":
 					return w.Write([]byte(c.RealIP()))
 				case "account_name":
-					if account := container.GetSession().GetAccount(); account != nil {
+					if account := container.GetSession().GetAccount(c); account != nil {
 						return w.Write([]byte(account.Name))
 					}
 					return w.Write([]byte("None"))
@@ -94,19 +77,6 @@ func ActionLoggerMiddleware(container container.Container) echo.MiddlewareFunc {
 				c.Error(err)
 			}
 			logger.GetZapLogger().Debugf(c.Path() + " Action End")
-			return nil
-		}
-	}
-}
-
-// SessionMiddleware is a middleware for setting a context to a session.
-func SessionMiddleware(container container.Container) echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			container.GetSession().SetContext(c)
-			if err := next(c); err != nil {
-				c.Error(err)
-			}
 			return nil
 		}
 	}
@@ -155,16 +125,16 @@ func hasAuthorization(c echo.Context, container container.Container) bool {
 		if equalPath(currentPath, container.GetConfig().Security.ExculdePath) {
 			return true
 		}
-		account := container.GetSession().GetAccount()
+		account := container.GetSession().GetAccount(c)
 		if account == nil {
 			return false
 		}
 		if account.Authority.Name == "Admin" && equalPath(currentPath, container.GetConfig().Security.AdminPath) {
-			_ = container.GetSession().Save()
+			_ = container.GetSession().Save(c)
 			return true
 		}
 		if account.Authority.Name == "User" && equalPath(currentPath, container.GetConfig().Security.UserPath) {
-			_ = container.GetSession().Save()
+			_ = container.GetSession().Save(c)
 			return true
 		}
 		return false

@@ -23,15 +23,15 @@ func TestSessionRace_Success(t *testing.T) {
 	session := sessionController{container: container}
 
 	router.GET(config.API+"1", func(c echo.Context) error {
-		_ = session.container.GetSession().SetValue(sessionKey, 1)
-		_ = session.container.GetSession().Save()
+		_ = session.container.GetSession().SetValue(c, sessionKey, 1)
+		_ = session.container.GetSession().Save(c)
 		time.Sleep(3 * time.Second)
-		return c.String(http.StatusOK, session.container.GetSession().GetValue(sessionKey))
+		return c.String(http.StatusOK, session.container.GetSession().GetValue(c, sessionKey))
 	})
 	router.GET(config.API+"2", func(c echo.Context) error {
-		_ = session.container.GetSession().SetValue(sessionKey, 2)
-		_ = session.container.GetSession().Save()
-		return c.String(http.StatusOK, session.container.GetSession().GetValue(sessionKey))
+		_ = session.container.GetSession().SetValue(c, sessionKey, 2)
+		_ = session.container.GetSession().Save(c)
+		return c.String(http.StatusOK, session.container.GetSession().GetValue(c, sessionKey))
 	})
 
 	req1 := httptest.NewRequest("GET", config.API+"1", nil)

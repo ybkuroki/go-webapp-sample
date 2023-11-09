@@ -59,7 +59,7 @@ func (controller *accountController) GetLoginAccount(c echo.Context) error {
 	if !controller.context.GetConfig().Extension.SecurityEnabled {
 		return c.JSON(http.StatusOK, controller.dummyAccount)
 	}
-	return c.JSON(http.StatusOK, controller.context.GetSession().GetAccount())
+	return c.JSON(http.StatusOK, controller.context.GetSession().GetAccount(c))
 }
 
 // Login is the method to login using username and password by http post.
@@ -79,14 +79,14 @@ func (controller *accountController) Login(c echo.Context) error {
 	}
 
 	sess := controller.context.GetSession()
-	if account := sess.GetAccount(); account != nil {
+	if account := sess.GetAccount(c); account != nil {
 		return c.JSON(http.StatusOK, account)
 	}
 
 	authenticate, a := controller.service.AuthenticateByUsernameAndPassword(dto.UserName, dto.Password)
 	if authenticate {
-		_ = sess.SetAccount(a)
-		_ = sess.Save()
+		_ = sess.SetAccount(c, a)
+		_ = sess.Save(c)
 		return c.JSON(http.StatusOK, a)
 	}
 	return c.NoContent(http.StatusUnauthorized)
@@ -102,7 +102,7 @@ func (controller *accountController) Login(c echo.Context) error {
 // @Router /auth/logout [post]
 func (controller *accountController) Logout(c echo.Context) error {
 	sess := controller.context.GetSession()
-	_ = sess.SetAccount(nil)
-	_ = sess.Delete()
+	_ = sess.SetAccount(c, nil)
+	_ = sess.Delete(c)
 	return c.NoContent(http.StatusOK)
 }
