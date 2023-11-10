@@ -1,0 +1,35 @@
+pipeline {
+
+    agent any
+    
+    tools {
+        go 'go-1.20'
+    }
+
+    environment {
+        GO111MODULE='on'
+    }
+
+    stages {
+        stage('test') {
+            steps {
+                git 'https://github.com/rotoro-cloud/go-webapp-sample.git'
+                sh 'go test ./...'
+            }
+        }
+
+        stage('build') {
+            steps {
+                sh 'go build .' 
+                sh 'cp -f ./go-webapp-sample /tmp/'
+            }
+        }
+        
+        stage('run') {
+            steps {
+              sh 'export JENKINS_NODE_COOKIE=dontKillMe && /tmp/go-webapp-sample &'
+            }
+        }
+    }
+
+}
