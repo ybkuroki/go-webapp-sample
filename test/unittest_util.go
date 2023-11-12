@@ -78,7 +78,7 @@ func createConfig(isSecurity bool) *config.Config {
 
 func initContainer(conf *config.Config, logger logger.Logger) container.Container {
 	rep := repository.NewBookRepository(logger, conf)
-	sess := session.NewSession()
+	sess := session.NewSession(logger, conf)
 	messages := map[string]string{
 		"ValidationErrMessageBookTitle": "Please enter the title with 3 to 50 characters.",
 		"ValidationErrMessageBookISBN":  "Please enter the ISBN with 10 to 20 characters."}

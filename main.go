@@ -47,7 +47,7 @@ func main() {
 	logger.GetZapLogger().Infof("Loaded messages.properties")
 
 	rep := repository.NewBookRepository(logger, conf)
-	sess := session.NewSession()
+	sess := session.NewSession(logger, conf)
 	container := container.NewContainer(rep, sess, conf, messages, logger, env)
 
 	migration.CreateDatabase(container)
