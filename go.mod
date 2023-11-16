@@ -10,7 +10,7 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/gorilla/sessions v1.2.1
 	github.com/labstack/echo-contrib v0.15.0
-	github.com/labstack/echo/v4 v4.11.1
+	github.com/labstack/echo/v4 v4.11.3
 	github.com/leodido/go-urn v1.2.4 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
