@@ -20,6 +20,9 @@ builds:
       - linux
       - windows
       - darwin
+    ignore:
+      - goos: windows
+        goarch: '386'
 
 archives:
   - format: tar.gz
