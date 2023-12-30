@@ -18,7 +18,7 @@ import (
 // @license.name MIT
 // @license.url https://opensource.org/licenses/mit-license.php
 
-// @host localhost:8080
+// @host localhost:8000
 // @BasePath /api
 func main() {
 	e := echo.New()

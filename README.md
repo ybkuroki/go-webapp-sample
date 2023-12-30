@@ -6,6 +6,7 @@
 [![release](https://img.shields.io/github/release/ybkuroki/go-webapp-sample?style=for-the-badge&logo=github)](https://github.com/ybkuroki/go-webapp-sample/releases)
 
 ## Preface
+
 This repository is the sample of web application using golang.
 This sample uses [Echo](https://echo.labstack.com/) as web application framework, [Gorm](https://gorm.io/) as OR mapper and [Zap logger](https://pkg.go.dev/go.uber.org/zap) as logger.
 This sample application provides only several functions as Web APIs.
@@ -18,94 +19,110 @@ Please refer to the 'Starting Server' section about checking the behavior of thi
 If you would like to develop a web application using golang, please feel free to use this sample.
 
 ## Install
+
 Perform the following steps:
+
 1. Download and install [MinGW(gcc)](https://sourceforge.net/projects/mingw-w64/files/?source=navbar).
 1. Download and install [Visual Studio Code(VS Code)](https://code.visualstudio.com/).
 1. Download and install [Golang](https://golang.org/).
 1. Get the source code of this repository by the following command.
-    ```bash
-    go get -u github.com/ybkuroki/go-webapp-sample
-    ```
+   ```bash
+   go get -u github.com/ybkuroki/go-webapp-sample
+   ```
 
 ## Starting Server
+
 There are 2 methods for starting server.
 
 ### Without Web Server
+
 1. Starting this web application by the following command.
-    ```bash
-    go run main.go
-    ```
+   ```bash
+   go run main.go
+   ```
 1. When startup is complete, the console shows the following message:
-    ```
-    http server started on [::]:8080
-    ```
-1. Access [http://localhost:8080](http://localhost:8080) in your browser.
+   ```
+   http server started on [::]:8000
+   ```
+1. Access [http://localhost:8000](http://localhost:8000) in your browser.
 1. Login with the following username and password.
-    - username : ``test``
-    - password : ``test``
+   - username : `test`
+   - password : `test`
 
 ### With Web Server
+
 #### Starting Application Server
+
 1. Starting this web application by the following command.
-    ```bash
-    go run main.go
-    ```
+   ```bash
+   go run main.go
+   ```
 1. When startup is complete, the console shows the following message:
-    ```
-    http server started on [::]:8080
-    ```
-1. Access [http://localhost:8080/api/health](http://localhost:8080/api/health) in your browser and confirm that this application has started.
-    ```
-    healthy
-    ```
+   ```
+   http server started on [::]:8000
+   ```
+1. Access [http://localhost:8000/api/health](http://localhost:8000/api/health) in your browser and confirm that this application has started.
+   ```
+   healthy
+   ```
+
 #### Starting Web Server
+
 1. Clone [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project and install some tools.
 1. Start by the following command.
-    ```bash
-    npm run serve
-    ```
+   ```bash
+   npm run serve
+   ```
 1. When startup is complete, the console shows the following message:
-    ```
-    DONE Compiled successfully in *****ms
-    
-    App running at:
-    - Local:   http://localhost:3000/
-    - Network: http://192.168.***.***:3000/
-    
-    Note that the development build is not optimized.
-    To create a production build, run npm run build.
-    ```
+
+   ```
+   DONE Compiled successfully in *****ms
+
+   App running at:
+   - Local:   http://localhost:3000/
+   - Network: http://192.168.***.***:3000/
+
+   Note that the development build is not optimized.
+   To create a production build, run npm run build.
+   ```
+
 1. Access [http://localhost:3000](http://localhost:3000) in your browser.
 1. Login with the following username and password.
-    - username : ``test``
-    - password : ``test``
+   - username : `test`
+   - password : `test`
 
 ## Using Swagger
+
 In this sample, Swagger is enabled only when executed this application on the development environment.
 Swagger isn't enabled on the another environments in default.
 
 ### Accessing to Swagger
+
 1. Start this application according to the 'Starting Application Server' section.
-2. Access [http://localhost:8080/swagger/index.html](http://localhost:8080/swagger/index.html) in your browser.
+2. Access [http://localhost:8000/swagger/index.html](http://localhost:8000/swagger/index.html) in your browser.
 
 ### Updating the existing Swagger document
+
 1. Update some comments of some controllers.
 2. Download Swag library. (Only first time)
-    ```bash
-    go get github.com/swaggo/swag/cmd/swag
-    ```
-3. Update ``docs/docs.go``.
-    ```bash
-    swag init
-    ```
+   ```bash
+   go get github.com/swaggo/swag/cmd/swag
+   ```
+3. Update `docs/docs.go`.
+   ```bash
+   swag init
+   ```
 
 ## Build executable file
+
 Build this source code by the following command.
+
 ```bash
 go build main.go
 ```
 
 ## Project Map
+
 The follwing figure is the map of this sample project.
 
 ```
@@ -125,50 +142,57 @@ The follwing figure is the map of this sample project.
 ```
 
 ## Services
+
 This sample provides 3 services: book management, account management, and master management.
 Regarding the detail of the API specification, please refer to the 'Using Swagger' section.
 
 ### Book Management
+
 There are the following services in the book management.
 
-|Service Name|HTTP Method|URL|Parameter|Summary|
-|:---|:---:|:---|:---|:---|
-|Get Service|GET|``/api/books/[BOOK_ID]``|Book ID|Get a book data.|
-|List/Search Service|GET|``/api/books?query=[KEYWORD]&page=[PAGE_NUMBER]&size=[PAGE_SIZE]``|Page, Keyword(Optional)|Get a list of books.|
-|Regist Service|POST|``/api/books``|Book|Regist a book data.|
-|Edit Service|PUT|``/api/books``|Book|Edit a book data.|
-|Delete Service|DELETE|``/api/books``|Book|Delete a book data.|
+| Service Name        | HTTP Method | URL                                                              | Parameter               | Summary              |
+| :------------------ | :---------: | :--------------------------------------------------------------- | :---------------------- | :------------------- |
+| Get Service         |     GET     | `/api/books/[BOOK_ID]`                                           | Book ID                 | Get a book data.     |
+| List/Search Service |     GET     | `/api/books?query=[KEYWORD]&page=[PAGE_NUMBER]&size=[PAGE_SIZE]` | Page, Keyword(Optional) | Get a list of books. |
+| Regist Service      |    POST     | `/api/books`                                                     | Book                    | Regist a book data.  |
+| Edit Service        |     PUT     | `/api/books`                                                     | Book                    | Edit a book data.    |
+| Delete Service      |   DELETE    | `/api/books`                                                     | Book                    | Delete a book data.  |
 
 ### Account Management
+
 There are the following services in the Account management.
 
-|Service Name|HTTP Method|URL|Parameter|Summary|
-|:---|:---:|:---|:---|:---|
-|Login Service|POST|``/api/auth/login``|Session ID, User Name, Password|Session authentication with username and password.|
-|Logout Service|POST|``/api/auth/logout``|Session ID|Logout a user.|
-|Login Status Check Service|GET|``/api/auth/loginStatus``|Session ID|Check if the user is logged in.|
-|Login Username Service|GET|``/api/auth/loginAccount``|Session ID|Get the login user's username.|
+| Service Name               | HTTP Method | URL                      | Parameter                       | Summary                                            |
+| :------------------------- | :---------: | :----------------------- | :------------------------------ | :------------------------------------------------- |
+| Login Service              |    POST     | `/api/auth/login`        | Session ID, User Name, Password | Session authentication with username and password. |
+| Logout Service             |    POST     | `/api/auth/logout`       | Session ID                      | Logout a user.                                     |
+| Login Status Check Service |     GET     | `/api/auth/loginStatus`  | Session ID                      | Check if the user is logged in.                    |
+| Login Username Service     |     GET     | `/api/auth/loginAccount` | Session ID                      | Get the login user's username.                     |
 
 ### Master Management
+
 There are the following services in the Master management.
 
-|Service Name|HTTP Method|URL|Parameter|Summary|
-|:---|:---:|:---|:---|:---|
-|Category List Service|GET|``/api/categories``|Nothing|Get a list of categories.|
-|Format List Service|GET|``/api/formats``|Nothing|Get a list of formats.|
+| Service Name          | HTTP Method | URL               | Parameter | Summary                   |
+| :-------------------- | :---------: | :---------------- | :-------- | :------------------------ |
+| Category List Service |     GET     | `/api/categories` | Nothing   | Get a list of categories. |
+| Format List Service   |     GET     | `/api/formats`    | Nothing   | Get a list of formats.    |
 
 ## Libraries
+
 This sample uses the following libraries.
 
-|Library Name|Version|
-|:---|:---:|
-|echo|4.6.1|
-|gorm|1.22.3|
-|go-playground/validator.v9|9.31.0|
-|zap|1.19.1|
+| Library Name               | Version |
+| :------------------------- | :-----: |
+| echo                       |  4.6.1  |
+| gorm                       | 1.22.3  |
+| go-playground/validator.v9 | 9.31.0  |
+| zap                        | 1.19.1  |
 
 ## Contribution
+
 Please read [CONTRIBUTING.md](https://github.com/ybkuroki/go-webapp-sample/blob/master/CONTRIBUTING.md) for proposing new functions, reporting bugs and submitting pull requests before contributing to this repository.
 
 ## License
-The License of this sample is *MIT License*.
+
+The License of this sample is _MIT License_.
