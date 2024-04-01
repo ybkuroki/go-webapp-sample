@@ -19,7 +19,6 @@ If you would like to develop a web application using golang, please feel free to
 
 ## Install
 Perform the following steps:
-1. Download(`x86_64-8.1.0-release-posix-seh-rt_v6-rev0.7z`) and install [MinGW(gcc)](https://sourceforge.net/projects/mingw-w64/files/?source=navbar).
 1. Download and install [Visual Studio Code(VS Code)](https://code.visualstudio.com/).
 1. Download and install [Golang](https://golang.org/).
 1. Get the source code of this repository by the following command.
@@ -62,18 +61,18 @@ There are 2 methods for starting server.
 1. Clone [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project and install some tools.
 1. Start by the following command.
     ```bash
-    npm run serve
+    npm run dev
     ```
 1. When startup is complete, the console shows the following message:
     ```
-    DONE Compiled successfully in *****ms
+    > vuejs-webapp-sample@*.*.* dev
+    > vite --mode development
     
-    App running at:
-    - Local:   http://localhost:3000/
-    - Network: http://192.168.***.***:3000/
     
-    Note that the development build is not optimized.
-    To create a production build, run npm run build.
+    VITE v*.*.*  ready in 1362 ms
+    
+    ➜  Local:   http://localhost:3000/
+    ➜  press h to show help
     ```
 1. Access [http://localhost:3000](http://localhost:3000) in your browser.
 1. Login with the following username and password.
@@ -170,10 +169,10 @@ This sample uses the following libraries.
 
 |Library Name|Version|
 |:---|:---:|
-|echo|4.10.2|
-|gorm|1.24.6|
+|echo|4.11.4|
+|gorm|1.25.9|
 |go-playground/validator.v9|9.31.0|
-|zap|1.24.0|
+|zap|1.26.0|
 
 ## Contribution
 Please read [CONTRIBUTING.md](https://github.com/ybkuroki/go-webapp-sample/blob/master/CONTRIBUTING.md) for proposing new functions, reporting bugs and submitting pull requests before contributing to this repository.

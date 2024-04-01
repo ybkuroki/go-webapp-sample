@@ -13,14 +13,14 @@ jobs:
       - name: set up
         uses: actions/setup-go@v5
         with:
-          go-version: '1.20'
+          go-version: '1.22'
         id: go
       # Check out this repository
       - name: checkout
         uses: actions/checkout@v4
       # Store cache
       - name: cache
-        uses: actions/cache@v4.0.0
+        uses: actions/cache@v4.0.2
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
