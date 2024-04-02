@@ -38,7 +38,7 @@ require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
-	github.com/glebarez/sqlite v1.10.0
+	github.com/glebarez/sqlite v1.11.0
 	github.com/go-openapi/jsonpointer v0.19.6 // indirect
 	github.com/go-openapi/spec v0.20.9 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
