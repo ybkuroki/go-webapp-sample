@@ -1,15 +1,14 @@
-FROM golang:1.22-alpine
+FROM golang:1.20
 
-WORKDIR /app
+WORKDIR /go/src/app
 
-COPY go.mod go.sum ./
+COPY . .
 
+RUN go mod tidy
 RUN go mod download
 
-COPY *.go ./
-
-RUN go build .
+RUN go build -o /app
 
 EXPOSE 8080
 
-CMD [ "/master" ]
+CMD [ "/app"]
