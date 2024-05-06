@@ -8,15 +8,14 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go get github.com/ybkuroki/go-webapp-sample/config
-RUN go build github.com/ybkuroki/go-webapp-sample/config
-RUN go build github.com/ybkuroki/go-webapp-sample/container
-RUN go build github.com/ybkuroki/go-webapp-sample/logger
-RUN go build github.com/ybkuroki/go-webapp-sample/middleware
-RUN go build github.com/ybkuroki/go-webapp-sample/migration
-RUN go build github.com/ybkuroki/go-webapp-sample/repository
-RUN go build github.com/ybkuroki/go-webapp-sample/router
-RUN go build github.com/ybkuroki/go-webapp-sample/session
+RUN go build ./go-webapp-sample/config
+RUN go build ./go-webapp-sample/container
+RUN go build ./go-webapp-sample/logger
+RUN go build ./go-webapp-sample/middleware
+RUN go build ./go-webapp-sample/migration
+RUN go build ./go-webapp-sample/repository
+RUN go build ./go-webapp-sample/router
+RUN go build ./go-webapp-sample/session
 
 EXPOSE 8080
 
