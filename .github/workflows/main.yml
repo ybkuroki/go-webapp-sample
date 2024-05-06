@@ -40,6 +40,7 @@ jobs:
 
       - uses: actions/checkout@master
       - name: Bump version and push tag
+        id: tags
         uses: Instrument/github-tag-action@v1.0
         env:
           GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
@@ -48,7 +49,7 @@ jobs:
 
       - name: Push Image
         run: |
-          docker push alhusseinahmed/go-webapp-sample
+          docker push alhusseinahmed/go-webapp-sample:${{ steps.tags.outputs.new_tag }}
 
 
 
