@@ -8,7 +8,7 @@ RUN go mod download
 
 COPY *.go ./
 
-RUN go build -o /master
+RUN go build github.com/ybkuroki/go-webapp-sample/
 
 EXPOSE 8080
 
