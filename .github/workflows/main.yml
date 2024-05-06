@@ -38,10 +38,13 @@ jobs:
           sleep 5  # Allow for container startup
           curl http://localhost:8080/api/health | grep -q "healthy"  
 
-      - name: Semantic Version Tagging
-        run: |
-          VERSION=$(git describe --tags --abbrev=0)  # Adjust if needed 
-          docker tag alhusseinahmed/go-webapp-sample:1 alhusseinahmed/go-webapp-sample:latest
+      - uses: actions/checkout@master
+      - name: Bump version and push tag
+        uses: Instrument/github-tag-action@v1.0
+        env:
+            GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
+            BRANCH: master
+            BUMP: major
 
       - name: Push Image
         run: |
