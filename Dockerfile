@@ -8,6 +8,7 @@ RUN go mod download
 
 COPY *.go ./
 
+RUN go get github.com/ybkuroki/go-webapp-sample/config
 RUN go build github.com/ybkuroki/go-webapp-sample/config
 RUN go build github.com/ybkuroki/go-webapp-sample/container
 RUN go build github.com/ybkuroki/go-webapp-sample/logger
