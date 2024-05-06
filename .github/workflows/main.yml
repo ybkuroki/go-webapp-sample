@@ -53,7 +53,7 @@ jobs:
       - name: Push Image
         run: |
           docker tag alhusseinahmed/go-webapp-sample alhusseinahmed/go-webapp-sample:${{ steps.calculate-version.outputs.version-string }}
-          docker push alhusseinahmed/go-webapp-sample:${{ steps.calculate-version.outputs.version-string }}
+          docker push alhusseinahmed/go-webapp-sample:latest
 
 
 
