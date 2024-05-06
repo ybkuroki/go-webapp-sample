@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  release:
+  build-test-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker hub
@@ -29,12 +29,24 @@ jobs:
       - name: Build 
         run: go build -v ./...
 
-      - name: Build and push docker image
-        id: docker_build
-        uses: docker/build-push-action@v3
-        with:
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/${{ github.event.repository.name }}:latest
+      - name: Build Image
+        run: docker build -t alhusseinahmed/go-webapp-sample:1 .
+
+      - name: Test Image 
+        run: |  
+          docker run -d -p 8080:8080 alhusseinahmed/go-webapp-sample:1 
+          sleep 5  # Allow for container startup
+          curl http://localhost:8080/api/health | grep -q "healthy"  
+
+      - name: Semantic Version Tagging
+        run: |
+          VERSION=$(git describe --tags --abbrev=0)  # Adjust if needed 
+          docker tag alhusseinahmed/go-webapp-sample:1 alhusseinahmed/go-webapp-sample:latest
+
+      - name: Push Image
+        run: |
+          docker push alhusseinahmed/go-webapp-sample:1 
+          docker push alhusseinahmed/go-webapp-sample:latest
 
 
 
