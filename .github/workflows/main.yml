@@ -48,7 +48,7 @@ jobs:
 
       - name: Push Image
         run: |
-          docker push alhusseinahmed/go-webapp-sample:1
+          docker push alhusseinahmed/go-webapp-sample
 
 
 
