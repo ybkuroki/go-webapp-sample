@@ -40,11 +40,9 @@ jobs:
 
       - uses: actions/checkout@master
       - name: Bump version and push tag
-        uses: Instrument/github-tag-action@v1.0
-        env:
-            GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-            BRANCH: master
-            BUMP: major
+        uses: hennejg/github-tag-action@v4.1.jh1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Push Image
         run: |
