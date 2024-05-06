@@ -5,14 +5,14 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/ybkuroki/go-webapp-sample/config"
-	"github.com/ybkuroki/go-webapp-sample/container"
-	"github.com/ybkuroki/go-webapp-sample/logger"
-	"github.com/ybkuroki/go-webapp-sample/middleware"
-	"github.com/ybkuroki/go-webapp-sample/migration"
-	"github.com/ybkuroki/go-webapp-sample/repository"
-	"github.com/ybkuroki/go-webapp-sample/router"
-	"github.com/ybkuroki/go-webapp-sample/session"
+	"github.com/alhusseinahmed/go-webapp-sample/config"
+	"github.com/alhusseinahmed/go-webapp-sample/container"
+	"github.com/alhusseinahmed/go-webapp-sample/logger"
+	"github.com/alhusseinahmed/go-webapp-sample/middleware"
+	"github.com/alhusseinahmed/go-webapp-sample/migration"
+	"github.com/alhusseinahmed/go-webapp-sample/repository"
+	"github.com/alhusseinahmed/go-webapp-sample/router"
+	"github.com/alhusseinahmed/go-webapp-sample/session"
 )
 
 //go:embed resources/config/application.*.yml
