@@ -38,18 +38,20 @@ jobs:
           sleep 5  # Allow for container startup
           curl http://localhost:8080/api/health | grep -q "healthy"  
 
-      - uses: actions/checkout@master
-      - name: Bump version and push tag
-        id: tags
-        uses: Instrument/github-tag-action@v1.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.REPO_TOKEN }}
-          BRANCH: master
-          BUMP: major
+      - name: calculate version
+        id: calculate-version
+        uses: bitshifted/git-auto-semver@v1
+        with:
+          main_branch: master
+          create_tag: true
+          tag_prefix: 'tags'
+
+      - name: Use version
+        run: echo "Calculated version: ${{ steps.calculate-version.outputs.version-string }}"
 
       - name: Push Image
         run: |
-          docker push alhusseinahmed/go-webapp-sample:${{ steps.tags.outputs.new_tag }}
+          docker push alhusseinahmed/go-webapp-sample:${{ steps.calculate-version.outputs.version-string }}
 
 
 
