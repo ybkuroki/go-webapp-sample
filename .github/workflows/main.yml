@@ -36,7 +36,7 @@ jobs:
         run: |  
           docker run -d -p 8080:8080 alhusseinahmed/go-webapp-sample
           sleep 5 
-          curl -K http://localhost:8080/api/health 
+          curl http://localhost:8080/api/health | grep -q "healthy"
 
 
       - name: calculate version
