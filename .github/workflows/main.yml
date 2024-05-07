@@ -45,7 +45,7 @@ jobs:
         with:
           main_branch: master
           create_tag: true
-          tag_prefix: 'tags'
+          tag_prefix: 'v'
         
       - name: Use version
         run: |
