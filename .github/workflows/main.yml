@@ -34,7 +34,7 @@ jobs:
 
       - name: Test Image 
         run: |  
-          docker run -d -p 8080:8080 alhusseinahmed/go-webapp-sample:1 
+          docker run -d -p 8080:8080 alhusseinahmed/go-webapp-sample
           sleep 5 
           curl http://localhost:8080/api/health | grep -q "healthy"  
 
