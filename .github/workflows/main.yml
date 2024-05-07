@@ -6,7 +6,7 @@ on:
 
 
 jobs:
-  build-test-deploy:
+  build-test-push:
     runs-on: ubuntu-latest
     steps:
       - name: Login to Docker hub
