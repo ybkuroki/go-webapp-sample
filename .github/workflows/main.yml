@@ -30,7 +30,7 @@ jobs:
         run: go build -v ./...
 
       - name: Build Image
-        run: docker build alhusseinahmed/go-webapp-sample .
+        run: docker build -t alhusseinahmed/go-webapp-sample .
 
       - name: Test Image 
         run: |  
