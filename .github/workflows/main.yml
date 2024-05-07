@@ -29,16 +29,8 @@ jobs:
       - name: Build 
         run: go build -v ./...
 
-      - name: calculate version
-        id: calculate-version
-        uses: bitshifted/git-auto-semver@v1
-      
-      - name: Use version
-        run: |
-          echo "Calculated version: ${{ steps.calculate-version.outputs.version-string }}"
-
       - name: Build Image
-        run: docker build -t alhusseinahmed/go-webapp-sample:${{ steps.calculate-version.outputs.version-string }} .
+        run: docker build alhusseinahmed/go-webapp-sample .
 
       - name: Test Image 
         run: |  
@@ -46,8 +38,18 @@ jobs:
           sleep 5  # Allow for container startup
           curl http://localhost:8080/api/health | grep -q "healthy"  
 
+
+      - name: calculate version
+        id: calculate-version
+        uses: bitshifted/git-auto-semver@v1
+        
+      - name: Use version
+        run: |
+          echo "Calculated version: ${{ steps.calculate-version.outputs.version-string }}"
+
       - name: Push Image
         run: |
+          docker tag alhusseinahmed/go-webapp-sample alhusseinahmed/go-webapp-sample:${{ steps.calculate-version.outputs.version-string }}
           docker push alhusseinahmed/go-webapp-sample:${{ steps.calculate-version.outputs.version-string }}
 
 
