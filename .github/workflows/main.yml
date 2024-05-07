@@ -35,13 +35,17 @@ jobs:
       - name: Test Image 
         run: |  
           docker run -d -p 8080:8080 alhusseinahmed/go-webapp-sample:1 
-          sleep 5  # Allow for container startup
+          sleep 5 
           curl http://localhost:8080/api/health | grep -q "healthy"  
 
 
       - name: calculate version
         id: calculate-version
         uses: bitshifted/git-auto-semver@v1
+        with:
+          main_branch: master
+          create_tag: true
+          tag_prefix: 'tags'
         
       - name: Use version
         run: |
