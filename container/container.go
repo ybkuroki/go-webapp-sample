@@ -17,7 +17,8 @@ type Container interface {
 	GetEnv() string
 }
 
-// container struct is for sharing data which such as database setting, the setting of application and logger in overall this application.
+// container struct is for sharing data which such as database setting,
+// the setting of application and logger in overall this application.
 type container struct {
 	rep      repository.Repository
 	session  session.Session
