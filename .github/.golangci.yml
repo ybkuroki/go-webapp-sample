@@ -15,7 +15,7 @@ linters-settings:
     min-occurrences: 2
   gocyclo:
     min-complexity: 15
-  gomnd:
+  mnd:
     # don't include the "operation" and "assign"
     checks:
       - argument
@@ -25,7 +25,6 @@ linters-settings:
   gofmt:
     simplify: true
   govet:
-    check-shadowing: true
     settings:
       printf:
         funcs:
@@ -33,6 +32,9 @@ linters-settings:
           - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
           - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
           - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+    enable:
+      - nilness
+      - shadow
   lll:
     line-length: 120
   misspell:
@@ -94,7 +96,7 @@ linters:
     - gocyclo
     - gofmt
     - goimports
-    - gomnd
+    - mnd
     - govet
     - lll
     - misspell
@@ -109,4 +111,4 @@ linters:
 # https://github.com/golangci/golangci/wiki/Configuration
 # latest version: https://github.com/golangci/golangci-lint
 service:
-  golangci-lint-version: 1.51.2
+  golangci-lint-version: 1.58.2

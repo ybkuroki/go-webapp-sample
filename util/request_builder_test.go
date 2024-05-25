@@ -12,7 +12,9 @@ func TestGetRequestURL_PathParam(t *testing.T) {
 }
 
 func TestGetRequestURL_RequestParam(t *testing.T) {
-	result := NewRequestBuilder().URL("https://www.test/").RequestParams("hoge", "123").RequestParams("huga", "abcd").Build().GetRequestURL()
+	result := NewRequestBuilder().URL("https://www.test/").
+		RequestParams("hoge", "123").
+		RequestParams("huga", "abcd").Build().GetRequestURL()
 	assert.Condition(t, isValidURL(result))
 }
 

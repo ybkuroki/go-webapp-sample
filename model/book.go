@@ -96,7 +96,8 @@ func (b *Book) FindByTitle(rep repository.Repository, title string, page string,
 	return p, nil
 }
 
-func findRows(rep repository.Repository, sqlquery string, page string, size string, args []interface{}) ([]Book, error) {
+func findRows(rep repository.Repository, sqlquery string, page string,
+	size string, args []interface{}) ([]Book, error) {
 	var books []Book
 
 	var rec RecordBook
@@ -159,7 +160,8 @@ func (b *Book) Save(rep repository.Repository) (*Book, error) {
 
 // Update updates this book data.
 func (b *Book) Update(rep repository.Repository) (*Book, error) {
-	if err := rep.Model(Book{}).Where("id = ?", b.ID).Select("title", "isbn", "category_id", "format_id").Updates(b).Error; err != nil {
+	if err := rep.Model(Book{}).Where("id = ?", b.ID).
+		Select("title", "isbn", "category_id", "format_id").Updates(b).Error; err != nil {
 		return nil, err
 	}
 	return b, nil
@@ -188,7 +190,8 @@ func convertToBook(rec *RecordBook) optional.Option[*Book] {
 	c := &Category{ID: rec.CategoryID, Name: rec.CategoryName}
 	f := &Format{ID: rec.FormatID, Name: rec.FormatName}
 	return optional.Some(
-		&Book{ID: rec.ID, Title: rec.Title, Isbn: rec.Isbn, CategoryID: rec.CategoryID, Category: c, FormatID: rec.FormatID, Format: f})
+		&Book{ID: rec.ID, Title: rec.Title, Isbn: rec.Isbn,
+			CategoryID: rec.CategoryID, Category: c, FormatID: rec.FormatID, Format: f})
 }
 
 // ToString is return string of object
