@@ -1,0 +1,95 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Set up Go environment
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.22.3
+
+    # Install dependencies
+    - name: Install dependencies
+      run: go mod download
+
+    # Run tests (assuming you have tests defined)
+    - name: Run tests
+      run: go test ./...
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # Determine semantic version tag
+    - name: Set semantic version
+      id: semver
+      run: |
+        VERSION=$(date +'%Y.%m.%d.%H%M%S')
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    # Build and push Docker image
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: |
+          docker.io/pawandevops/cockpit-docker-images:latest
+          docker.io/pawandevops/cockpit-docker-images:${{ env.VERSION }}
+
+    test-docker-image:
+    runs-on: ubuntu-latest
+    needs: [ build ]
+
+    steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Load the Docker image from build stage
+      run: docker load -i /tmp/image.tar
+      working-directory: ${{ github.workspace }}
+
+    - name: Run the Docker container
+      run: docker run -d -p 8080:8080 --name go-webapp-sample pawandevops/cockpit-docker-images:${{ env.VERSION }}
+
+    - name: Test the health endpoint
+      run: |
+        sleep 10 # Wait for the container to be fully up and running
+        curl -f http://localhost:8080/api/health || (docker logs go-webapp-sample && exit 1)
+      continue-on-error: true
+
+    - name: Check test result
+      run: |
+        if [ $? -eq 0 ]; then
+          echo "Tests passed successfully"
+        else
+          echo "Tests failed"
+          exit 1
+        fi
+
+    - name: Stop and remove the Docker container
+      run: |
+        docker stop go-webapp-sample
+        docker rm go-webapp-sample
