@@ -43,7 +43,7 @@ jobs:
       run: |
         response=$(curl -s http://localhost:8080/api/health)
         echo "Response: $response"
-        if [ "$response" != "healthy" ]; then
+        if [ "$response" != "\"healthy\"" ]; then
           echo "Health check failed"
           exit 1
         fi
