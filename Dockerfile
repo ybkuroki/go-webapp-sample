@@ -1,11 +1,6 @@
 # Start from golang base image
 FROM golang:1.22.3-alpine3.20 AS builder
 
-# Set environment variables for Go modules and GOPATH
-ENV GO111MODULE=on \
-    GOPATH=/go \
-    PATH=$PATH:/go/bin
-
 # Set the Current Working Directory inside the container
 WORKDIR /app
 
@@ -24,10 +19,6 @@ RUN go build -o main .
 # Start a new stage from scratch
 FROM debian:buster-slim
 
-# Set environment variables for Go modules and GOPATH
-ENV GO111MODULE=on \
-    GOPATH=/go \
-    PATH=$PATH:/go/bin
 
 # Set the Current Working Directory inside the container
 WORKDIR /app
