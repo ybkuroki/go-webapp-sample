@@ -1,4 +1,4 @@
-name: Sem ver CI/CD Pipeline
+name: Sem Ver CI/CD Pipeline
 
 on:
   push:
