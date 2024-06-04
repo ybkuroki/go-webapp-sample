@@ -1,6 +1,4 @@
-name: Sem Ver CI/CD Pipeline
-
-#2nd run
+name: Sem ver CI/CD Pipeline
 
 on:
   push:
@@ -112,5 +110,10 @@ jobs:
       run: |
         git config --global user.email "you@example.com"
         git config --global user.name "Your Name"
-        git tag ${{ env.VERSION }}
-        git push origin ${{ env.VERSION }}
+        git fetch --tags
+        if git rev-parse ${{ env.VERSION }} >/dev/null 2>&1; then
+          echo "Tag ${{ env.VERSION }} already exists"
+        else
+          git tag ${{ env.VERSION }}
+          git push origin ${{ env.VERSION }}
+        fi
