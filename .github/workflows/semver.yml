@@ -10,110 +10,110 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    # Set up Go environment
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.22.3
+      # Set up Go environment
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.22.3
 
-    # Install dependencies
-    - name: Install dependencies
-      run: go mod download
+      # Install dependencies
+      - name: Install dependencies
+        run: go mod download
 
-    # Run Go tests (assuming you have tests defined)
-    - name: Run Go tests
-      run: go test ./...
+      # Run Go tests (assuming you have tests defined)
+      - name: Run Go tests
+        run: go test ./...
 
-    # Build Docker image for testing
-    - name: Build Docker image
-      run: docker build . -t test-image
+      # Build Docker image for testing
+      - name: Build Docker image
+        run: docker build . -t test-image
 
-    # Run Docker container
-    - name: Run Docker container
-      run: docker run -d -p 8080:8080 --name test-container test-image
+      # Run Docker container
+      - name: Run Docker container
+        run: docker run -d -p 8080:8080 --name test-container test-image
 
-    # Wait for the service to be ready
-    - name: Wait for the service to be ready
-      run: sleep 10
+      # Wait for the service to be ready
+      - name: Wait for the service to be ready
+        run: sleep 10
 
-    # Test the health endpoint
-    - name: Test health endpoint
-      run: |
-        response=$(curl -s http://localhost:8080/api/health)
-        echo "Response: $response"
-        if [ "$response" != "\"healthy\"" ]; then
-          echo "Health check failed"
-          exit 1
-        fi
+      # Test the health endpoint
+      - name: Test health endpoint
+        run: |
+          response=$(curl -s http://localhost:8080/api/health)
+          echo "Response: $response"
+          if [ "$response" != "\"healthy\"" ]; then
+            echo "Health check failed"
+            exit 1
+          fi
 
-    # Stop the Docker container
-    - name: Stop Docker container
-      run: docker stop test-container
+      # Stop the Docker container
+      - name: Stop Docker container
+        run: docker stop test-container
 
-    # Remove the Docker container
-    - name: Remove Docker container
-      run: docker rm test-container
+      # Remove the Docker container
+      - name: Remove Docker container
+        run: docker rm test-container
 
   build:
     runs-on: ubuntu-latest
     needs: [test]
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    # Log in to Docker Hub
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+      # Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-    # Determine semantic version tag
-    - name: Determine semantic version
-      id: semver
-      run: |
-        # Get the latest tag
-        git fetch --tags
-        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "0.0.0")
-        echo "Latest tag: $latest_tag"
+      # Determine semantic version tag
+      - name: Determine semantic version
+        id: semver
+        run: |
+          # Get the latest tag
+          git fetch --tags
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "0.0.0")
+          echo "Latest tag: $latest_tag"
 
-        # Extract MAJOR, MINOR, PATCH from the latest tag
-        IFS='.' read -r -a version_parts <<< "$latest_tag"
-        major=${version_parts[0]:-0}
-        minor=${version_parts[1]:-0}
-        patch=${version_parts[2]:-0}
+          # Extract MAJOR, MINOR, PATCH from the latest tag
+          IFS='.' read -r -a version_parts <<< "$latest_tag"
+          major=${version_parts[0]:-0}
+          minor=${version_parts[1]:-0}
+          patch=${version_parts[2]:-0}
 
-        # Increment the patch version
-        patch=$((patch + 1))
+          # Increment the patch version
+          patch=$((patch + 1))
 
-        # Generate new tag
-        new_tag="$major.$minor.$patch"
-        echo "New tag: $new_tag"
+          # Generate new tag
+          new_tag="$major.$minor.$patch"
+          echo "New tag: $new_tag"
 
-        # Set the new version tag as an environment variable
-        echo "VERSION=$new_tag" >> $GITHUB_ENV
+          # Set the new version tag as an environment variable
+          echo "VERSION=$new_tag" >> $GITHUB_ENV
 
-    # Build and push Docker image
-    - name: Build and push Docker image
-      uses: docker/build-push-action@v4
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: |
-          docker.io/pawandevops/cockpit-docker-images:latest
-          docker.io/pawandevops/cockpit-docker-images:${{ env.VERSION }}
+      # Build and push Docker image
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: |
+            docker.io/pawandevops/cockpit-docker-images:latest
+            docker.io/pawandevops/cockpit-docker-images:${{ env.VERSION }}
 
-    # Tag the repository with the new version
-    - name: Tag repository
-      run: |
-        git config --global user.email "you@example.com"
-        git config --global user.name "Your Name"
-        git fetch --tags
-        if git rev-parse ${{ env.VERSION }} >/dev/null 2>&1; then
-          echo "Tag ${{ env.VERSION }} already exists"
-        else
-          git tag ${{ env.VERSION }}
-          git push origin ${{ env.VERSION }}
+      # Tag the repository with the new version
+      - name: Tag repository
+        run: |
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+          git fetch --tags
+          if git rev-parse ${{ env.VERSION }} >/dev/null 2>&1; then
+            echo "Tag ${{ env.VERSION }} already exists"
+          else
+            git tag ${{ env.VERSION }}
+            git push origin ${{ env.VERSION }}
