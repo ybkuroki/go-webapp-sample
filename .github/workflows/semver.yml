@@ -1,12 +1,10 @@
 name: Sem ver CI/CD Pipeline
 
-#2nd run
-
 on:
   push:
-    branches: [ "master" ]
+    branches: ["master"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
 jobs:
   test:
@@ -60,7 +58,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [ test ]
+    needs: [test]
 
     steps:
     - uses: actions/checkout@v3
@@ -77,6 +75,7 @@ jobs:
       id: semver
       run: |
         # Get the latest tag
+        git fetch --tags
         latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "0.0.0")
         echo "Latest tag: $latest_tag"
 
@@ -88,7 +87,7 @@ jobs:
 
         # Increment the patch version
         patch=$((patch + 1))
-        
+
         # Generate new tag
         new_tag="$major.$minor.$patch"
         echo "New tag: $new_tag"
@@ -118,4 +117,3 @@ jobs:
         else
           git tag ${{ env.VERSION }}
           git push origin ${{ env.VERSION }}
-        fi
