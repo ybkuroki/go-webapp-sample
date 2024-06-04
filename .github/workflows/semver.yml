@@ -1,5 +1,7 @@
 name: Sem Ver CI/CD Pipeline
 
+#2nd run
+
 on:
   push:
     branches: [ "master" ]
