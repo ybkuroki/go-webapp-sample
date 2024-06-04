@@ -75,7 +75,7 @@ jobs:
       id: semver
       run: |
         # Get the latest tag
-        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+        latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "0.0.0")
         echo "Latest tag: $latest_tag"
 
         # Extract MAJOR, MINOR, PATCH from the latest tag
@@ -108,5 +108,7 @@ jobs:
     # Tag the repository with the new version
     - name: Tag repository
       run: |
+        git config --global user.email "you@example.com"
+        git config --global user.name "Your Name"
         git tag ${{ env.VERSION }}
         git push origin ${{ env.VERSION }}
