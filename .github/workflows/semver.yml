@@ -1,12 +1,12 @@
-name: market place CI/CD Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches: ["master"]
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches: ["master"]
-  #tags:
-   # - 'v*.*.*'
 
 jobs:
   test:
@@ -64,6 +64,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
+      # Configure Git safe directory
+      - name: Configure Git safe directory
+        run: git config --global --add safe.directory /github/workspace
 
       # Log in to Docker Hub
       - name: Log in to Docker Hub
