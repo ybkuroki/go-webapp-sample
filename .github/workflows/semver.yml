@@ -1,10 +1,12 @@
-name: Sem Ver CI/CD Pipeline
+name: market place CI/CD Pipeline
 
 on:
   push:
     branches: ["master"]
   pull_request:
     branches: ["master"]
+  #tags:
+   # - 'v*.*.*'
 
 jobs:
   test:
@@ -70,50 +72,25 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Determine semantic version tag
-      - name: Determine semantic version
-        id: semver
-        run: |
-          # Get the latest tag
-          git fetch --tags
-          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1` 2>/dev/null || echo "0.0.0")
-          echo "Latest tag: $latest_tag"
-
-          # Extract MAJOR, MINOR, PATCH from the latest tag
-          IFS='.' read -r -a version_parts <<< "$latest_tag"
-          major=${version_parts[0]:-0}
-          minor=${version_parts[1]:-0}
-          patch=${version_parts[2]:-0}
-
-          # Increment the patch version
-          patch=$((patch + 1))
-
-          # Generate new tag
-          new_tag="$major.$minor.$patch"
-          echo "New tag: $new_tag"
-
-          # Set the new version tag as an environment variable
-          echo "VERSION=$new_tag" >> $GITHUB_ENV
-
-      # Build and push Docker image
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v4
+      # Build Docker image
+      - name: Build Docker image
+        uses: flownative/action-docker-build@master
         with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: |
-            docker.io/pawandevops/cockpit-docker-images:latest
-            docker.io/pawandevops/cockpit-docker-images:${{ env.VERSION }}
+          tag_ref: ${{ github.ref }}
+          image_name: docker.pkg.github.com/pawan-tomar/go-webapp-sample/go-webapp-sample
+          registry_password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Tag the repository with the new version
-      - name: Tag repository
-        run: |
-          git config --global user.email "you@example.com"
-          git config --global user.name "Your Name"
-          git fetch --tags
-          if git rev-parse ${{ env.VERSION }} >/dev/null 2>&1; then
-            echo "Tag ${{ env.VERSION }} already exists"
-          else
-            git tag ${{ env.VERSION }}
-            git push origin ${{ env.VERSION }}
+      # Publish release to docker.io
+      - name: Publish release to docker.io
+        uses: flownative/action-docker-publish-semver@master
+        with:
+          tag_ref: ${{ github.ref }}
+          tag_latest: 'yes'
+          source_image_name: docker.pkg.github.com/pawan-tomar/go-webapp-sample/go-webapp-sample
+          source_registry_username: github
+          source_registry_password: ${{ secrets.GITHUB_TOKEN }}
+          source_registry_endpoint: https://docker.pkg.github.com/v2/
+          target_image_name: pawandevops/go-webapp-sample
+          target_registry_username: ${{ secrets.DOCKER_USERNAME }}
+          target_registry_password: ${{ secrets.DOCKER_PASSWORD }}
+          target_registry_endpoint: https://index.docker.io/v1/
