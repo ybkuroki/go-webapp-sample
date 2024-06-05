@@ -2,6 +2,7 @@ provider "aws" {
   region  = "us-east-1"
   //version = "~> 2.46" (No longer necessary)
 }
+#random comment
 
 resource "aws_default_vpc" "default" {
 
