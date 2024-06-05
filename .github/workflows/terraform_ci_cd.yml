@@ -1,4 +1,4 @@
-name: Terraform Deployment
+name: Working Terraform Deployment
 
 on:
   push:
