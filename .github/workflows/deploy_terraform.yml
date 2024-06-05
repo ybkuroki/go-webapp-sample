@@ -37,7 +37,7 @@ jobs:
       - name: Get Terraform Outputs
         id: outputs
         run: |
-          echo "::set-output name=http_server_public_dns::$(terraform output -raw http_server_public_dns)"
+          echo "http_server_public_dns=$(terraform output -raw http_server_public_dns)" >> $GITHUB_ENV
         working-directory: ./terraform
 
       # Add SSH key to agent
@@ -52,4 +52,4 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
-          ssh -o StrictHostKeyChecking=no ec2-user@${{ steps.outputs.outputs.http_server_public_dns }} 'sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && sudo docker run -d pawandevops/cockpit-docker-images:latest'
+          ssh -o StrictHostKeyChecking=no ec2-user@$http_server_public_dns 'sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && sudo docker run -d pawandevops/cockpit-docker-images:latest'
