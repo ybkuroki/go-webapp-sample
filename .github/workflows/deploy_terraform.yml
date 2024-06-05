@@ -10,14 +10,13 @@ jobs:
   run-docker-on-ec2:
     runs-on: ubuntu-latest
     
-
     steps:
       - name: Add SSH key to agent
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Run Docker image on EC2
+      - name: SSH into EC2 and manage Docker containers
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -25,5 +24,10 @@ jobs:
         run: |
           ssh -t -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} << 'EOF'
             echo $DOCKER_PASSWORD | sudo docker login -u $DOCKER_USERNAME --password-stdin
+            # Stop existing container
+            sudo docker stop $(sudo docker ps -q)
+            # Remove existing container
+            sudo docker rm $(sudo docker ps -a -q)
+            # Run new container
             sudo docker run -d -p 8080:8080 pawandevops/cockpit-docker-images:latest
           EOF
