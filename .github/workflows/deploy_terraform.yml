@@ -1,4 +1,4 @@
-name: New Terraform Deployment
+name: Terraform Deployment
 
 on:
   push:
@@ -37,7 +37,8 @@ jobs:
       - name: Get Terraform Outputs
         id: outputs
         run: |
-          echo "http_server_public_dns=$(terraform output -raw http_server_public_dns)" >> $GITHUB_ENV
+          http_server_public_dns=$(terraform output -raw http_server_public_dns)
+          echo "http_server_public_dns=${http_server_public_dns}" >> $GITHUB_ENV
         working-directory: ./terraform
 
       # Add SSH key to agent
