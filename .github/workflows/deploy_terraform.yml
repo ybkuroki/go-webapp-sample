@@ -23,7 +23,7 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           EC2_PUBLIC_IP: ${{ secrets.EC2_HOST }} # Provided as a secret
         run: |
-          ssh -tt -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} << 'EOF'
+          ssh -t -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} << 'EOF'
             echo $DOCKER_PASSWORD | sudo docker login -u $DOCKER_USERNAME --password-stdin
             sudo docker run -d -p 8080:8080 pawandevops/cockpit-docker-images:latest
           EOF
