@@ -1,0 +1,44 @@
+name: DockerTerraform Deployment
+
+on:
+  push:
+    paths:
+      - 'terraform/**'
+  pull_request:
+    paths:
+      - 'terraform/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Install Terraform
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      # Terraform init
+      - name: Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      # Terraform apply
+      - name: Terraform Apply
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform apply -auto-approve
+        working-directory: ./terraform
+
+      # Add SSH key to agent
+      - name: Add SSH key to agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Run Docker image on EC2
+      - name: Run Docker image on EC2
+        run: |
+          ssh -o StrictHostKeyChecking=no ec2-user@${{ steps.terraform.outputs.public_ip }} 'sudo docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && sudo docker run -d pawandevops/cockpit-docker-images:latest'
