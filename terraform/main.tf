@@ -1,56 +1,82 @@
-# main.tf
-
-resource "aws_vpc" "docker_vpc" {
-  cidr_block = var.vpc_cidr_block
-  tags = {
-    Name = var.vpc_name
-  }
+provider "aws" {
+  region  = "us-east-1"
+  //version = "~> 2.46" (No longer necessary)
 }
 
-resource "aws_subnet" "docker_subnet" {
-  vpc_id            = aws_vpc.docker_vpc.id
-  cidr_block        = var.subnet_cidr_block
-  availability_zone = "${var.region}a"
+resource "aws_default_vpc" "default" {
 
-  tags = {
-    Name = var.subnet_name
-  }
 }
 
-resource "aws_security_group" "docker_server_sg" {
-  name   = var.security_group_name
-  vpc_id = aws_vpc.docker_vpc.id
+resource "aws_security_group" "http_server_sg" {
+  name = "http_server_sg"
+  //vpc_id = "vpc-c49ff1be"
+  vpc_id = aws_default_vpc.default.id
 
-  dynamic "ingress" {
-    for_each = var.allowed_ports
-    content {
-      from_port   = ingress.value
-      to_port     = ingress.value
-      protocol    = "tcp"
-      cidr_blocks = var.cidr_blocks
-    }
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
-  dynamic "egress" {
-    for_each = var.egress_ports
-    content {
-      from_port   = egress.value
-      to_port     = egress.value
-      protocol    = -1
-      cidr_blocks = var.cidr_blocks
-    }
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = -1
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
-    Name = var.security_group_name
+    name = "http_server_sg"
   }
 }
 
-resource "aws_instance" "docker_server" {
+resource "aws_instance" "http_server" {
+  #ami                   = "ami-062f7200baf2fa504"
   ami                    = data.aws_ami.aws_linux_2_latest.id
-  instance_type          = var.instance_type
-  vpc_security_group_ids = [aws_security_group.docker_server_sg.id]
-  subnet_id              = aws_subnet.docker_subnet.id
+  key_name               = "default-ec2"
+  instance_type          = "t2.micro"
+  vpc_security_group_ids = [aws_security_group.http_server_sg.id]
 
-  tags = var.tags
+  //subnet_id              = "subnet-3f7b2563"
+  subnet_id = data.aws_subnets.default_subnets.ids[0]
+
+  //user_data = <<-EOF
+              #!/bin/bash
+              #sudo yum update -y
+              #sudo amazon-linux-extras install docker -y
+              #sudo service docker start
+              #sudo usermod -a -G docker ec2-user
+              #EOF 
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo yum update -y",
+      "sudo amazon-linux-extras install docker -y",
+      "sudo service docker start",
+      "sudo usermod -a -G docker ec2-user"
+    ]
+  }
+
+  connection {
+    type        = "ssh"
+    host        = self.public_ip
+    user        = "ec2-user"
+    private_key = file(var.aws_key_pair)
+  } 
+
+ /* provisioner "remote-exec" {
+    inline = [
+      "sudo yum install httpd -y",
+      "sudo service httpd start",
+      "echo Welcome to in28minutes - Virtual Server is at ${self.public_dns} | sudo tee /var/www/html/index.html"
+    ]
+  }*/
 }
