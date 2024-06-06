@@ -22,12 +22,16 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           EC2_PUBLIC_IP: ${{ secrets.EC2_HOST }} # Provided as a secret
         run: |
-          ssh -T -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} << 'EOF'
-            echo $DOCKER_PASSWORD | sudo docker login -u $DOCKER_USERNAME --password-stdin
+          ssh -t -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} << 'EOF'
+            # Login to Docker Hub non-interactively using password from secret
+            echo $DOCKER_PASSWORD | sudo docker login --username $DOCKER_USERNAME --password-stdin
+
             # Stop containers with the specified image
             sudo docker stop $(sudo docker ps -q --filter ancestor=pawandevops/cockpit-docker-images:latest)
+
             # Remove containers with the specified image
             sudo docker rm $(sudo docker ps -a -q --filter ancestor=pawandevops/cockpit-docker-images:latest)
+
             # Run new container
             sudo docker run -d -p 8080:8080 pawandevops/cockpit-docker-images:latest
           EOF
