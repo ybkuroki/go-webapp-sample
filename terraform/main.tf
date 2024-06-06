@@ -1,16 +1,11 @@
 provider "aws" {
-  region  = "us-east-1"
-  //version = "~> 2.46" (No longer necessary)
+  region = "us-east-1"
 }
-#random comment
 
-resource "aws_default_vpc" "default" {
-
-}
+resource "aws_default_vpc" "default" {}
 
 resource "aws_security_group" "http_server_sg" {
-  name = "http_server_sg"
-  //vpc_id = "vpc-c49ff1be"
+  name   = "http_server_sg"
   vpc_id = aws_default_vpc.default.id
 
   ingress {
@@ -40,29 +35,21 @@ resource "aws_security_group" "http_server_sg" {
 }
 
 resource "aws_instance" "http_server" {
-  #ami                   = "ami-062f7200baf2fa504"
   ami                    = data.aws_ami.aws_linux_2_latest.id
-  #key_name               = "default-ec2"
+  key_name               = "default-ec2"
   instance_type          = "t2.micro"
   vpc_security_group_ids = [aws_security_group.http_server_sg.id]
+  subnet_id              = data.aws_subnets.default_subnets.ids[0]
 
-  //subnet_id              = "subnet-3f7b2563"
-  subnet_id = data.aws_subnets.default_subnets.ids[0]
-
-  //user_data = <<-EOF
-              #!/bin/bash
-              #sudo yum update -y
-              #sudo amazon-linux-extras install docker -y
-              #sudo service docker start
-              #sudo usermod -a -G docker ec2-user
-              #EOF 
-
-  /*provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = [
       "sudo yum update -y",
       "sudo amazon-linux-extras install docker -y",
       "sudo service docker start",
-      "sudo usermod -a -G docker ec2-user"
+      "sudo usermod -a -G docker ec2-user",
+
+      # Docker login
+      "echo ${var.DOCKER_PASSWORD} | sudo docker login --username ${var.DOCKER_USERNAME} --password-stdin"
     ]
   }
 
@@ -70,14 +57,22 @@ resource "aws_instance" "http_server" {
     type        = "ssh"
     host        = self.public_ip
     user        = "ec2-user"
-    private_key = file(var.aws_key_pair)
-  } */
+    private_key = file(var.ssh_private_key_path)
+  }
+}
 
- /* provisioner "remote-exec" {
-    inline = [
-      "sudo yum install httpd -y",
-      "sudo service httpd start",
-      "echo Welcome to in28minutes - Virtual Server is at ${self.public_dns} | sudo tee /var/www/html/index.html"
-    ]
-  }*/
+data "aws_subnets" "default_subnets" {
+  filter {
+    name   = "vpc-id"
+    values = [aws_default_vpc.default.id]
+  }
+}
+
+data "aws_ami" "aws_linux_2_latest" {
+  most_recent = true
+  owners      = ["amazon"]
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*"]
+  }
 }
