@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_default_vpc" "default" {}
 
 resource "aws_security_group" "http_server_sg" {
-  name   = "http_server_sg"
+  name = "http_server_sg"
   vpc_id = aws_default_vpc.default.id
 
   ingress {
@@ -47,7 +47,6 @@ resource "aws_instance" "http_server" {
       "sudo amazon-linux-extras install docker -y",
       "sudo service docker start",
       "sudo usermod -a -G docker ec2-user",
-
       # Docker login
       "echo ${var.DOCKER_PASSWORD} | sudo docker login --username ${var.DOCKER_USERNAME} --password-stdin"
     ]
@@ -58,21 +57,5 @@ resource "aws_instance" "http_server" {
     host        = self.public_ip
     user        = "ec2-user"
     private_key = file(var.ssh_private_key_path)
-  }
-}
-
-data "aws_subnets" "default_subnets" {
-  filter {
-    name   = "vpc-id"
-    values = [aws_default_vpc.default.id]
-  }
-}
-
-data "aws_ami" "aws_linux_2_latest" {
-  most_recent = true
-  owners      = ["amazon"]
-  filter {
-    name   = "name"
-    values = ["amzn2-ami-hvm-*"]
   }
 }
