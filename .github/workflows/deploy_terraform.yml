@@ -24,10 +24,10 @@ jobs:
         run: |
           ssh -t -o StrictHostKeyChecking=no ec2-user@${EC2_PUBLIC_IP} << 'EOF'
             echo $DOCKER_PASSWORD | sudo docker login -u $DOCKER_USERNAME --password-stdin
-            # Stop existing container
-            sudo docker stop $(sudo docker ps -q)
-            # Remove existing container
-            sudo docker rm $(sudo docker ps -a -q)
+            # Stop containers with the specified image
+            sudo docker stop $(sudo docker ps -q --filter ancestor=pawandevops/cockpit-docker-images:latest)
+            # Remove containers with the specified image
+            sudo docker rm $(sudo docker ps -a -q --filter ancestor=pawandevops/cockpit-docker-images:latest)
             # Run new container
             sudo docker run -d -p 8080:8080 pawandevops/cockpit-docker-images:latest
           EOF
