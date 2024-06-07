@@ -11,13 +11,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
       # Configure Git safe directory
-      - name: Configure Git safe directory
-        run: git config --global --add safe.directory /github/workspace
+      - name: Configure Git Safe Directory
+        run: |
+          git config --global --add safe.directory /github/workspace
 
       # Log in to Docker Hub
       - name: Log in to Docker Hub
