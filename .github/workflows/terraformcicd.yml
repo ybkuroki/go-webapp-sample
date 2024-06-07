@@ -1,4 +1,4 @@
-name: Secrets Terraform Deployment
+name: Terraform Deployment
 
 on:
   push:
