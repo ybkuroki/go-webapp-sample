@@ -39,26 +39,19 @@ jobs:
         id: latest_tag
         run: echo "::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))"
 
-      # Determine semantic version tag
-      #- name: Set semantic version
-      #  id: semver
-     #   run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
-
-      # If there's no tag associated with the commit, use the latest tag available in the GitHub repository
-     # - if: steps.semver.outputs.version == ''
-     #   run: echo "::set-output name=version::${{ steps.latest_tag.outputs.tag }}"
-           # Determine semantic version tag
+            # Determine semantic version tag
       - name: Set semantic version
         id: semver
         run: |
+          echo "Checking version in the git push..."
           VERSION=${GITHUB_REF#refs/tags/}
-          if [ -z "$VERSION" ]; then
-            VERSION=$(git describe --tags $(git rev-list --tags --max-count=1))
-            echo "Latest tag found: $VERSION"
-          else
-            echo "Tag found in the push: $VERSION"
-          fi
           echo "::set-output name=version::$VERSION"
+
+
+     #  If there's no tag associated with the commit, use the latest tag available in the GitHub repository
+      - if: steps.semver.outputs.version == ''
+        run: echo "::set-output name=version::${{ steps.latest_tag.outputs.tag }}"
+    
 
 
       # Build and push Docker image
