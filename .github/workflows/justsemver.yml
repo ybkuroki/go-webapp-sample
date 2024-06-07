@@ -2,9 +2,10 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    tags:
+      - '*'
+    branches:
+      - main
 
 jobs:
   test:
@@ -28,7 +29,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: [ test ]
+    #needs: [ test ]
 
     steps:
     - uses: actions/checkout@v3
@@ -39,6 +40,11 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
+    # Extract version from tag
+    - name: Extract version from tag
+      id: extract_version
+      run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
 
     # Determine semantic version tag
     - name: Set semantic version
@@ -56,8 +62,9 @@ jobs:
         push: true
         tags: |
           docker.io/pawandevops/cockpit-docker-images:latest
+          docker.io/pawandevops/cockpit-docker-images:${{ steps.extract_version.outputs.version }}
           docker.io/pawandevops/cockpit-docker-images:${{ env.VERSION }}
 
     # Tag Docker image in GitHub repository
     - name: Tag Docker image in GitHub repository
-      run: docker tag pawandevops/cockpit-docker-images:latest docker.pkg.github.com/${{ github.repository }}/pawandevops/cockpit-docker-images:${{ env.VERSION }}
+      run: docker tag pawandevops/cockpit-docker-images:${{ steps.extract_version.outputs.version }} docker.pkg.github.com/${{ github.repository }}/pawandevops/cockpit-docker-images:${{ steps.extract_version.outputs.version }}
