@@ -1,41 +1,63 @@
-name: Build and Push Docker Image
+name: CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - master
+    branches: [ "master" ]
   pull_request:
-    branches:
-      - master
+    branches: [ "master" ]
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    # Set up Go environment
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.22.3
+
+    # Install dependencies
+    - name: Install dependencies
+      run: go mod download
+
+    # Run tests (assuming you have tests defined)
+    - name: Run tests
+      run: go test ./...
+
   build:
     runs-on: ubuntu-latest
+    needs: [ test ]
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Log in to Docker Hub
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
+    # Determine semantic version tag
+    - name: Set semantic version
+      id: semver
+      run: |
+        VERSION=$(date +'%Y.%m.%d.%H%M%S')
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      - name: Extract version from tag
-        id: extract_version
-        run: echo "::set-output name=version::${GITHUB_REF#refs/tags/}"
+    # Build and push Docker image
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: |
+          docker.io/pawandevops/cockpit-docker-images:latest
+          docker.io/pawandevops/cockpit-docker-images:${{ env.VERSION }}
 
-      - name: Set up Docker Build and Push
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./path/to/Dockerfile
-          push: true
-          tags: |
-            pawandevops/cockpit-docker-images:${{ steps.extract_version.outputs.version }}
-            pawandevops/cockpit-docker-images:latest
+    # Tag Docker image in GitHub repository
+    - name: Tag Docker image in GitHub repository
+      run: docker tag pawandevops/cockpit-docker-images:latest docker.pkg.github.com/${{ github.repository }}/pawandevops/cockpit-docker-images:${{ env.VERSION }}
