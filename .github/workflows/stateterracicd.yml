@@ -31,14 +31,24 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
 
-      # Try to download Terraform state artifact, ignore errors if not found
+      # Download Terraform state artifact
       - name: Download Terraform state
-        id: download_state
-        continue-on-error: true
-        uses: actions/download-artifact@v3
+        uses: dawidd6/action-download-artifact@v5
         with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: Terraform Deployment
           name: terraform-state
           path: ./terraform
+          if_no_artifact_found: warn
+
+      # Check if the state file was downloaded
+      - name: Check Terraform state file
+        run: |
+          if [ -f ./terraform/terraform.tfstate ]; then
+            echo "Terraform state file downloaded."
+          else
+            echo "No Terraform state file found."
+          fi
 
       # Terraform init
       - name: Terraform Init
@@ -61,6 +71,10 @@ jobs:
             -var="DOCKER_PASSWORD=${{ secrets.DOCKER_PASSWORD }}" \
             -var="ssh_private_key_path=~/.ssh/default-ec2.pem"
         working-directory: ./terraform
+
+      # List files in the terraform directory for debugging
+      - name: List files in terraform directory
+        run: ls -la ./terraform
 
       # Upload Terraform state artifact
       - name: Upload Terraform state
