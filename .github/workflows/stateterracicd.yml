@@ -34,13 +34,11 @@ jobs:
       # Try to download Terraform state artifact, ignore errors if not found
       - name: Download Terraform state
         id: download_state
-        run: |
-          mkdir -p ./terraform
-          if ! gh run list -L 1 | grep -q terraform-state; then
-            echo "No previous state found, skipping download."
-          else
-            gh run download --name terraform-state --dir ./terraform || echo "No previous state found, proceeding with new state."
-          fi
+        continue-on-error: true
+        uses: actions/download-artifact@v3
+        with:
+          name: terraform-state
+          path: ./terraform
 
       # Terraform init
       - name: Terraform Init
