@@ -31,13 +31,16 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v1
 
-      # Download Terraform state artifact if it exists
+      # Try to download Terraform state artifact, ignore errors if not found
       - name: Download Terraform state
-        if: always()
-        uses: actions/download-artifact@v3
-        with:
-          name: terraform-state
-          path: ./terraform
+        id: download_state
+        run: |
+          mkdir -p ./terraform
+          if ! gh run list -L 1 | grep -q terraform-state; then
+            echo "No previous state found, skipping download."
+          else
+            gh run download --name terraform-state --dir ./terraform || echo "No previous state found, proceeding with new state."
+          fi
 
       # Terraform init
       - name: Terraform Init
@@ -63,7 +66,6 @@ jobs:
 
       # Upload Terraform state artifact
       - name: Upload Terraform state
-        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: terraform-state
