@@ -11,15 +11,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
       # Configure Git safe directory
-      - name: Configure Git Safe Directory
-        run: |
-          git config --global --add safe.directory /github/workspace
+      - name: Create .gitconfig
+        run: echo "[safe]\ndirectory = /github/workspace" > .gitconfig
 
       # Log in to Docker Hub
       - name: Log in to Docker Hub
@@ -43,7 +41,7 @@ jobs:
           tag_ref: ${{ github.ref }}
           tag_latest: 'yes'
           tag_custom: 'some-custom-tag'
-          
+
           source_image_name: docker.pkg.github.com/pawan-tomar/go-webapp-sample/go-webapp-sample
           source_registry_username: github
           source_registry_password: ${{ secrets.GITHUB_TOKEN }}
