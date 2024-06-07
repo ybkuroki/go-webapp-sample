@@ -41,7 +41,7 @@ jobs:
           tag_ref: ${{ github.ref }}
           tag_latest: 'yes'
           tag_custom: 'some-custom-tag'
-
+          
           source_image_name: docker.pkg.github.com/pawan-tomar/go-webapp-sample/go-webapp-sample
           source_registry_username: github
           source_registry_password: ${{ secrets.GITHUB_TOKEN }}
