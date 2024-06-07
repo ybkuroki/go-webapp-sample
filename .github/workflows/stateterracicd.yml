@@ -39,6 +39,7 @@ jobs:
           workflow: Terraform Deployment
           name: terraform-state
           path: ./terraform
+          workflow_search: true
           if_no_artifact_found: warn
 
       # Check if the state file was downloaded
