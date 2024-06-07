@@ -16,7 +16,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    #needs: [test]
+    needs: [test]
 
     steps:
       - uses: actions/checkout@v2
@@ -37,18 +37,6 @@ jobs:
         id: latest_tag
         run: echo "::set-output name=tag::$(git describe --tags $(git rev-list --tags --max-count=1))"
 
-      # Determine semantic version tag
-      - name: Set semantic version
-        id: semver
-        run: |
-          echo "Checking version in the git push..."
-          VERSION=${GITHUB_REF#refs/tags/}
-          echo "::set-output name=version::$VERSION"
-
-      # If there's no tag associated with the commit, use the latest tag available in the GitHub repository
-      - if: steps.semver.outputs.version == ''
-        run: echo "::set-output name=version::${{ steps.latest_tag.outputs.tag }}"
-
       # Build and push Docker image using docker/build-push-action
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
@@ -58,4 +46,4 @@ jobs:
           push: true
           tags: |
             docker.io/pawandevops/cockpit-docker-images:latest
-            docker.io/pawandevops/cockpit-docker-images:${{ steps.semver.outputs.version }}
+            docker.io/pawandevops/cockpit-docker-images:${{ steps.latest_tag.outputs.tag }}
