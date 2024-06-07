@@ -2,9 +2,16 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
+    paths-ignore:
+      - 'terraform/**'
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
+    paths-ignore:
+      - 'terraform/**'
+
 
 jobs:
   test:
