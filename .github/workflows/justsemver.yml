@@ -2,11 +2,9 @@ name: Safe CI/CD Pipeline
 
 on:
   push:
-    branches: ["master"]
-    tags:
-      - 'v*.*.*'
+    branches: [ "master" ]
   pull_request:
-    branches: ["master"]
+    branches: [ "master" ]
 
 jobs:
   build:
@@ -14,6 +12,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
 
       # Configure Git safe directory
       - name: Configure Git safe directory
@@ -34,16 +34,19 @@ jobs:
           image_name: docker.pkg.github.com/pawan-tomar/go-webapp-sample/go-webapp-sample
           registry_password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Publish release to docker.io
+      # Publish release to docker.io with semantic versioning
       - name: Publish release to docker.io
         uses: flownative/action-docker-publish-semver@master
         with:
           tag_ref: ${{ github.ref }}
           tag_latest: 'yes'
+          tag_custom: 'some-custom-tag'
+
           source_image_name: docker.pkg.github.com/pawan-tomar/go-webapp-sample/go-webapp-sample
           source_registry_username: github
           source_registry_password: ${{ secrets.GITHUB_TOKEN }}
           source_registry_endpoint: https://docker.pkg.github.com/v2/
+
           target_image_name: pawandevops/go-webapp-sample
           target_registry_username: ${{ secrets.DOCKER_USERNAME }}
           target_registry_password: ${{ secrets.DOCKER_PASSWORD }}
