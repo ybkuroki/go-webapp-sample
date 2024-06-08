@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "example" {
   }
 }
 
-resource "aws_dynamodb_table" "statelockfile" {
+/*resource "aws_dynamodb_table" "statelockfile" {
   name = "statelockfile"
 
   billing_mode = "PAY_PER_REQUEST"
@@ -32,4 +32,4 @@ resource "aws_dynamodb_table" "statelockfile" {
     name = "LockID"
     type = "S"
   }
-}
+}*/
