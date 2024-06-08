@@ -1,4 +1,3 @@
-
 # main.tf
 
 resource "aws_internet_gateway" "docker_igw" {
