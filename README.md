@@ -83,10 +83,12 @@ There are 2 methods for starting server.
 #### building Docker image
 1. Clone [vuejs-webapp-sample](https://github.com/ybkuroki/vuejs-webapp-sample) project and install some tools. 
 2. Run the below following commands:
-    ```docker build -t go-webapp-sample .
+    ```bash
+    docker build -t go-webapp-sample .
     ```
 3. command to start the container at port 8080
-    ```docker run -p 8080:8080 go-webapp-sample
+    ```bash
+    docker run -p 8080:8080 go-webapp-sample
     ``` 
 4. Access [http://localhost:8000](http://localhost:8000) in your browser.
 5. Login with the following username and password.
