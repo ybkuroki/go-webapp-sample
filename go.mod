@@ -1,6 +1,7 @@
 module github.com/ybkuroki/go-webapp-sample
 
 go 1.22
+toolchain go1.23.0
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
@@ -8,7 +9,7 @@ require (
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/gorilla/sessions v1.2.2
+	github.com/gorilla/sessions v1.4.0
 	github.com/labstack/echo-contrib v0.17.1
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/leodido/go-urn v1.4.0 // indirect
